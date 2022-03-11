@@ -19,7 +19,7 @@ Go to the controller directory:
     fab vlc2 setup_vlc_rx
 
 Fab somehow doensn't work when related to changing interface: You need to create vitual interface by ssh directly to BBB
-#BBB1-vitual interface 10:0
+#BBB1-virtual interface 10:0
 
     sudo ip link add eth10 type dummy
 
@@ -27,7 +27,7 @@ Fab somehow doensn't work when related to changing interface: You need to create
 
     sudo ip addr add 192.168.10.1/24 brd + dev eth10 label eth10:0
 
-#BBB2-vitual interface 10:0
+#BBB2-virtual interface 10:0
 
     sudo ip link add eth10 type dummy
 
