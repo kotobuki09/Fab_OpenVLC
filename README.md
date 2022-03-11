@@ -1,9 +1,7 @@
 # Fab_OpenVLC
- Simple Control
+ Simple Control Unit for OpenVLC
  
  ![Fab_032022](https://user-images.githubusercontent.com/34347264/157910137-6f7f791e-4902-4057-868a-5b31315243ff.png)
- Unit for OpenVLC
-
 
 ![MobaXterm_r3aSd3Miqa](https://user-images.githubusercontent.com/34347264/157898274-9802bb1f-b001-4f71-b3f0-d30647b6240f.png)
 
