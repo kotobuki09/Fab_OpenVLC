@@ -45,10 +45,13 @@ Fab somehow doensn't work when related to changing interface: You need to create
     fab vlc2 start_iperf_server
 
 #Activate wifi link
+    
     fab vlc1 wifi_link
 
 #Activate vlc link
+    
     fab vlc1 vlc_link
 
 #Enable the schedule_controller
+
     fab vlc1 schedule_controller
