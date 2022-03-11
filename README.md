@@ -20,6 +20,7 @@ Go to the controller directory:
 
 Fab somehow doensn't work when related to changing interface: You need to create vitual interface by ssh directly to BBB
 #BBB1-vitual interface 10:0
+
     sudo ip link add eth10 type dummy
 
     sudo ifconfig eth10 hw ether 00:22:22:ff:ff:ff
@@ -27,6 +28,7 @@ Fab somehow doensn't work when related to changing interface: You need to create
     sudo ip addr add 192.168.10.1/24 brd + dev eth10 label eth10:0
 
 #BBB2-vitual interface 10:0
+
     sudo ip link add eth10 type dummy
 
     sudo ifconfig eth10 hw ether 00:22:22:ff:ff:f0
@@ -35,6 +37,7 @@ Fab somehow doensn't work when related to changing interface: You need to create
 
 
 #Start Iperf (wifi, vlc, vitual link)
+
     fab vlc1 start_iperf_client:wifi
     fab vlc2 start_iperf_server:wifi
 
