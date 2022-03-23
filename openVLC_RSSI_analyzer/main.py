@@ -18,14 +18,16 @@ import os
 
 
 cwd = os.getcwd()
-filename_idle_0_5 = "raw/test2.raw"
-filename_iperf_0_5 = "raw/outbox_0_5m_iperf_nlos.raw"
+print(cwd)
 
-filename_idle_1 = "raw/outbox_1m_idle_nlos.raw"
-filename_iperf_1 = "raw/outbox_1m_iperf_nlos.raw"
+filename_idle_0_5 = "E:\\Fab_OpenVLC\\openVLC_RSSI_analyzer\\raw\\test2.raw"
+#filename_iperf_0_5 = "raw/outbox_0_5m_iperf_nlos.raw"
 
-filename_idle_1_5 = "raw/outbox_1_5m_idle_nlos.raw"
-filename_iperf_1_5 = "raw/outbox_1_5m_iperf_nlos.raw"
+#filename_idle_1 = "raw/outbox_1m_idle_nlos.raw"
+#filename_iperf_1 = "raw/outbox_1m_iperf_nlos.raw"
+
+#filename_idle_1_5 = "raw/outbox_1_5m_idle_nlos.raw"
+#filename_iperf_1_5 = "raw/outbox_1_5m_iperf_nlos.raw"
 
 def get_rssi(filename):
     df = pd.read_csv(filename,skiprows=23, sep=" ",names=["pos", "1", "2", "3","4","5"])
@@ -34,18 +36,20 @@ def get_rssi(filename):
     rssi_array=df.to_numpy().flatten()
     rssi=[int(rssi_array[i],16) for i in range(len(rssi_array))]
     return rssi
+
 def main():
 
     rssi_idle_0_5=get_rssi(filename_idle_0_5)
-    rssi_iperf_0_5=get_rssi(filename_iperf_0_5)
+    #rssi_iperf_0_5=get_rssi(filename_iperf_0_5)
 
-    rssi_idle_1=get_rssi(filename_idle_1)
-    rssi_iperf_1=get_rssi(filename_iperf_1)
+    #rssi_idle_1=get_rssi(filename_idle_1)
+    #rssi_iperf_1=get_rssi(filename_iperf_1)
 
-    rssi_idle_1_5=get_rssi(filename_idle_1_5)
-    rssi_iperf_1_5=get_rssi(filename_iperf_1_5)
+    #rssi_idle_1_5=get_rssi(filename_idle_1_5)
+    #rssi_iperf_1_5=get_rssi(filename_iperf_1_5)
     fig = plt.figure()
-    # Initialise the subplot function using number of rows and columns
+
+    #Initialise the subplot function using number of rows and columns
     #figure, axis = plt.subplots(2, 2)
 
     plt.plot(rssi_idle_0_5[1:-1],label="IPERF test1")
