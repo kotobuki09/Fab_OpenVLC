@@ -18,8 +18,8 @@ import os
 
 
 cwd = os.getcwd()
-filename_idle="raw/outbox_0_5m_idle_nlos.raw"
-filename_iperf="raw/outbox_0_5m_iperf_nlos.raw"
+filename_idle="raw/outbox_1_5m_idle.raw"
+filename_iperf="raw/outbox_1_5m_iperf.raw"
 
 def get_rssi(filename):
     df = pd.read_csv(filename,skiprows=23, sep=" ",names=["pos", "1", "2", "3","4","5"])
@@ -34,16 +34,17 @@ def main():
     #print(rssi_idle)
     rssi_iperf=get_rssi(filename_iperf)
     fig = plt.figure()
-    plt.plot(rssi_idle,label="IDLE")
-    plt.plot(rssi_iperf,label="IPERF")
+    plt.plot(rssi_idle[1:-1],label="IDLE")
+    plt.plot(rssi_iperf[1:-1],label="IPERF")
 
     plt.legend()
     plt.grid()
     plt.xlabel("#instruction event")
     plt.ylabel("RSSI level")
     plt.xlim(0,300)
-    fig.savefig("IDLE vs IPERF RSSI 0_5 NLOS.pdf")
-    fig.savefig("IDLE vs IPERF RSSI 0_5 NLOS.png")
+    #plt.ylim(800,1200)
+    fig.savefig("IDLE vs IPERF RSSI 1_5.pdf")
+    fig.savefig("IDLE vs IPERF RSSI 1_5.png")
     plt.show()
 
     print("wait...")
