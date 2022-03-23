@@ -1,0 +1,26 @@
+diff --git a/prudbg.c b/prudbg.c
+index 8db2423..4ce6f99 100644
+--- a/prudbg.c
++++ b/prudbg.c
+@@ -159,6 +159,7 @@ int main(int argc, char *argv[])
+ 	opt_pruss_addr = 0;
+ 	pru_access_mode = ACCESS_GUESS;
+ 	pi = DEFAULT_PROCESSOR_INDEX;
++
+ 	while ((opt = getopt(argc, argv, "?a:p:um")) != -1) {
+ 		switch (opt) {
+ 			case 'a':
+@@ -287,6 +288,13 @@ int main(int argc, char *argv[])
+ 	}
+ 	printf("\n");
+ 
++	printf("::: dump selected area\n\n");
++	offset=0x0;
++	addr = 0x4000;
++	len = 2048;
++	printf ("Absolute addr = 0x%04x, offset = 0x%04x, Len = %u\n", addr + offset, addr, len);
++	cmd_d(offset, addr, len);
++	return(1);
+ 
+ 	// Command prompt handler
+ 	do {
