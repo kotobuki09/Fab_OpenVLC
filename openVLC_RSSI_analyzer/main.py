@@ -14,8 +14,13 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
-filename_idle="raw/dump_idle.raw"
-filename_iperf="raw/dump_iperf_400K.raw"
+import os
+
+
+cwd = os.getcwd()
+filename_idle="raw/outbox_0_5m_idle_nlos.raw"
+filename_iperf="raw/outbox_0_5m_iperf_nlos.raw"
+
 def get_rssi(filename):
     df = pd.read_csv(filename,skiprows=23, sep=" ",names=["pos", "1", "2", "3","4","5"])
     del df["pos"]
@@ -26,6 +31,7 @@ def get_rssi(filename):
 def main():
 
     rssi_idle=get_rssi(filename_idle)
+    #print(rssi_idle)
     rssi_iperf=get_rssi(filename_iperf)
     fig = plt.figure()
     plt.plot(rssi_idle,label="IDLE")
@@ -36,8 +42,8 @@ def main():
     plt.xlabel("#instruction event")
     plt.ylabel("RSSI level")
     plt.xlim(0,300)
-    fig.savefig("IDLE vs IPERF RSSI.pdf")
-    fig.savefig("IDLE vs IPERF RSSI.png")
+    fig.savefig("IDLE vs IPERF RSSI 0_5 NLOS.pdf")
+    fig.savefig("IDLE vs IPERF RSSI 0_5 NLOS.png")
     plt.show()
 
     print("wait...")
