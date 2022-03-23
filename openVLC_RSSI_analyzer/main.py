@@ -18,7 +18,7 @@ import os
 
 
 cwd = os.getcwd()
-filename_idle_0_5 = "raw/outbox_0_5m_idle_nlos.raw"
+filename_idle_0_5 = "raw/test2.raw"
 filename_iperf_0_5 = "raw/outbox_0_5m_iperf_nlos.raw"
 
 filename_idle_1 = "raw/outbox_1m_idle_nlos.raw"
@@ -48,14 +48,14 @@ def main():
     # Initialise the subplot function using number of rows and columns
     #figure, axis = plt.subplots(2, 2)
 
-    plt.plot(rssi_idle_0_5[1:-1],label="IDLE 0.5")
-    plt.plot(rssi_iperf_0_5[1:-1],label="IPERF 0.5")
+    plt.plot(rssi_idle_0_5[1:-1],label="IPERF test1")
+    #plt.plot(rssi_iperf_0_5[1:-1],label="IPERF 0.5")
 
-    plt.plot(rssi_idle_1[1:-1],label="IDLE 1")
-    plt.plot(rssi_iperf_1[1:-1],label="IPERF 1")
+    #plt.plot(rssi_idle_1[1:-1],label="IDLE 1")
+    #plt.plot(rssi_iperf_1[1:-1],label="IPERF 1")
 
-    plt.plot(rssi_idle_1_5[1:-1],label="IDLE 1.5")
-    plt.plot(rssi_iperf_1_5[1:-1],label="IPERF 1.5")
+    #plt.plot(rssi_idle_1_5[1:-1],label="IDLE 1.5")
+    #plt.plot(rssi_iperf_1_5[1:-1],label="IPERF 1.5")
 
 
 
@@ -66,8 +66,8 @@ def main():
     plt.ylabel("RSSI level")
     plt.xlim(0,300)
     #plt.ylim(800,1200)
-    fig.savefig("IDLE vs IPERF RSSI ALL NLOS.pdf")
-    fig.savefig("IDLE vs IPERF RSSI ALL NLOS.png")
+    fig.savefig("IDLE vs IPERF RSSI TEST2.pdf")
+    fig.savefig("IDLE vs IPERF RSSI TEST2.png")
     plt.show()
 
     print("wait...")
