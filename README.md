@@ -66,5 +66,12 @@ Fab somehow doensn't work when related to changing interface: You need to create
 	sudo ./prubgb > 2048sample. raw # Get the sample out
 
 then used the python script to draw the output
+
+    
+    ![IDLE vs IPERF RSSI TEST1](https://user-images.githubusercontent.com/34347264/159901798-0caa98e9-8112-4e92-878e-5fee35c05c39.png)
+
+    ![IDLE vs IPERF RSSI TEST2](https://user-images.githubusercontent.com/34347264/159901808-d332b080-69db-43df-9af6-b55b75bd6a1d.png)
+
+
     
     
