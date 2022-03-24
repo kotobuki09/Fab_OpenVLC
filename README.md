@@ -67,11 +67,9 @@ Fab somehow doensn't work when related to changing interface: You need to create
 
 then used the python script to draw the output
 
-    
-    ![IDLE vs IPERF RSSI TEST1](https://user-images.githubusercontent.com/34347264/159901798-0caa98e9-8112-4e92-878e-5fee35c05c39.png)
-
-    ![IDLE vs IPERF RSSI TEST2](https://user-images.githubusercontent.com/34347264/159901808-d332b080-69db-43df-9af6-b55b75bd6a1d.png)
-
-
+ ![Noncom](https://raw.githubusercontent.com/kotobuki09/Fab_OpenVLC/main/openVLC_RSSI_analyzer/IDLE%20vs%20IPERF%20RSSI%20TEST1.png?token=GHSAT0AAAAAABOOP7LNHBDZQ5F4M2HITHMQYSFRGFA)
+ 
+  ![400Kcom](https://raw.githubusercontent.com/kotobuki09/Fab_OpenVLC/main/openVLC_RSSI_analyzer/IDLE%20vs%20IPERF%20RSSI%20TEST2.png?token=GHSAT0AAAAAABOOP7LN4FKIBREWLLTMTUYOYSFRK3A)
+  
     
     
