@@ -62,7 +62,8 @@ Fab somehow doensn't work when related to changing interface: You need to create
 
 
 #For getting RSSI value
-    sudo ./prubgb > 2048sample. raw # Get the sample out
+    
+	sudo ./prubgb > 2048sample. raw # Get the sample out
 
 then used the python script to draw the output
     
