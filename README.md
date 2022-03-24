@@ -66,5 +66,10 @@ Fab somehow doensn't work when related to changing interface: You need to create
 	sudo ./prubgb > 2048sample. raw # Get the sample out
 
 then used the python script to draw the output
+
+ ![Noncom](https://raw.githubusercontent.com/kotobuki09/Fab_OpenVLC/main/openVLC_RSSI_analyzer/IDLE%20vs%20IPERF%20RSSI%20TEST1.png?token=GHSAT0AAAAAABOOP7LNHBDZQ5F4M2HITHMQYSFRGFA)
+ 
+  ![400Kcom](https://raw.githubusercontent.com/kotobuki09/Fab_OpenVLC/main/openVLC_RSSI_analyzer/IDLE%20vs%20IPERF%20RSSI%20TEST2.png?token=GHSAT0AAAAAABOOP7LN4FKIBREWLLTMTUYOYSFRK3A)
+  
     
     
