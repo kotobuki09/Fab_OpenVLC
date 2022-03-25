@@ -80,7 +80,7 @@ def main():
     
     plt.plot(x,t1, label="max RSSI values")
     plt.plot(x,t2, label="min RSSI values")
-    #plt.plot(x,t3, label="variance values")
+    plt.plot(x,t3, label="variance values")
 
 
     plt.legend()
@@ -93,9 +93,9 @@ def main():
     fig.savefig("IDLE vs IPERF RSSI TEST test var.png")
     plt.show()
 
-    print("wait...")
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    main()
 
+#    print("wait...")
+# Press the green button in the gutter to run the script.
+#if __name__ == '__main__':
+#    main()
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
