@@ -21,7 +21,11 @@ cwd = os.getcwd()
 print(cwd)
 
 filename_no = "E:\\Fab_OpenVLC\\openVLC_RSSI_analyzer\\raw\\test_no.raw"
+filename_05m = "E:\\Fab_OpenVLC\\openVLC_RSSI_analyzer\\raw\\test_05m.raw"
+filename_05i = "E:\\Fab_OpenVLC\\openVLC_RSSI_analyzer\\raw\\test_05idle.raw"
+
 filename_1m = "E:\\Fab_OpenVLC\\openVLC_RSSI_analyzer\\raw\\test_1m.raw"
+
 filename_2m = "E:\\Fab_OpenVLC\\openVLC_RSSI_analyzer\\raw\\test_2m.raw"
 filename_3m = "E:\\Fab_OpenVLC\\openVLC_RSSI_analyzer\\raw\\test_3m.raw"
 filename_maxdist = "E:\\Fab_OpenVLC\\openVLC_RSSI_analyzer\\raw\\test_maxdist.raw"
@@ -41,6 +45,8 @@ def get_rssi(filename):
 def main():
 
     rssi_no = get_rssi(filename_no)
+    rssi_05m = get_rssi(filename_05m)
+    rssi_05i = get_rssi(filename_05i)
     rssi_1m = get_rssi(filename_1m)
     rssi_2m = get_rssi(filename_2m)
     rssi_3m = get_rssi(filename_3m)
@@ -56,9 +62,9 @@ def main():
     #Initialise the subplot function using number of rows and columns
     #figure, axis = plt.subplots(2, 2)
         
-    t1= [ np.max(rssi_1m[1:-1]), np.max(rssi_2m[1:-1]), np.max(rssi_3m[1:-1]), np.max(rssi_max[1:-1]), np.max(rssi_no[1:-1])]
-    t2= [ np.min(rssi_1m[1:-1]), np.min(rssi_2m[1:-1]), np.min(rssi_3m[1:-1]), np.min(rssi_max[1:-1]), np.min(rssi_no[1:-1])]
-    t3= [ np.var(rssi_1m[1:-1]), np.var(rssi_2m[1:-1]), np.var(rssi_3m[1:-1]), np.var(rssi_max[1:-1]), np.var(rssi_no[1:-1])]
+    t1= [ np.max(rssi_05m[1:-1]),np.max(rssi_1m[1:-1]), np.max(rssi_2m[1:-1]), np.max(rssi_3m[1:-1]), np.max(rssi_max[1:-1]), np.max(rssi_no[1:-1]),np.max(rssi_05i[1:-1])]
+    t2= [ np.min(rssi_05m[1:-1]),np.min(rssi_1m[1:-1]), np.min(rssi_2m[1:-1]), np.min(rssi_3m[1:-1]), np.min(rssi_max[1:-1]), np.min(rssi_no[1:-1]),np.min(rssi_05i[1:-1])]
+    t3= [ np.var(rssi_05m[1:-1]),np.var(rssi_1m[1:-1]), np.var(rssi_2m[1:-1]), np.var(rssi_3m[1:-1]), np.var(rssi_max[1:-1]), np.var(rssi_no[1:-1]),np.var(rssi_05i[1:-1])]
 
     #plt.plot(rssi_idle_0_5[1:-1],label="Max distance")
     #plt.plot(rssi_iperf_0_5[1:-1],label="IPERF 0.5")
@@ -69,7 +75,7 @@ def main():
 
     #plt.plot(rssi_idle_1_5[1:-1],label="Max 400")
     #plt.plot(rssi_iperf_1_5[1:-1],label="IPERF 1.5")
-    x = np.array([1, 2.1, 3, "4.2(max distance)", "out range"])
+    x = np.array([0.5, 1, 2.1, 3, "4.2(max)", "out range","0.5i"])
 
     
     plt.plot(x,t1, label="max RSSI values")
