@@ -102,3 +102,13 @@ def schedule_controller():
         execute('wifi_link')
         time.sleep(20)
 
+@fab.task
+def icontrol():
+    if type=="vlc":
+        command = "iperf -u -l 800 -s -i3 -B 192.168.0.2 -p 10001"
+    elif type=="wifi":
+        command = "iperf -u -l 800 -s -i3 -B 192.168.12.26 -p 10002"
+    else:
+        command = "iperf -u -l 800 -s -i3 -B 192.168.10.2 -p 10003"
+    fab.run(command, pty=False)
+
