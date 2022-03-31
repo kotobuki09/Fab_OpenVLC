@@ -1,0 +1,24 @@
+#!/usr/bin/python
+
+import sys, socket
+import time
+
+def main(args):
+    ip = args[1]
+    port = int(args[2])
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    #message = "Light Emitting Diodes (LEDs) are driving a revolution in lighting systems due to their superior energy efficiency, and are already entering the Internet of Things (IoT) market with embedded sensory functionalities. By bringing connectivity to every LED bulb, Visible Light Communication (VLC) offers the opportunity to write the next chapter of the LED revolution with the language of ubiquitous networks.With VLC networking still in its infancy, ENLIGHT’EM will take the unique opportunity to design IoT systems that leverage the low baseline energy consumption of LEDs to jointly deliver lighting and networked communication. ENLIGHT’EM will explore the emerging field of low-energy VLC systems for the IoT to design and demonstrate sustainable networking solutions."
+    message = "Light Emitting Diodes are driving a revolution in lighting systems due to their superior energy efficiency and are already entering the Internet of Things (IoT) market with embedded"
+    #i=0
+    while 1:
+    #for i in range(1000):
+        #i=i+1
+        #fp = open(file, 'r')
+        #for line in fp:
+        #print("MESSAGE: %s" % message)
+        sock.sendto(message.encode('utf-8'), (ip, port))
+        #sock.close()
+        #fp.close()
+        #time.sleep(0.05)
+
+main(sys.argv)

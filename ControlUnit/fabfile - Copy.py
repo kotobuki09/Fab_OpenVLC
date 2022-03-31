@@ -30,9 +30,9 @@ def getRSSI():
 def start_iperf_client(type=""):
     #fab.run("killall -9 iperf")
     if type=="vlc":
-        command = 'nohup %s &> /dev/null &' % "iperf -c 192.168.0.2 -u -b 1M -l 800 -p 10001 -t 100000"
+        command = 'nohup %s &> /dev/null &' % "nohup iperf -c 192.168.0.2 -u -b 1M -l 800 -p 10001 -t 100000"
     elif type=="wifi":
-        command = 'nohup %s &> /dev/null &' % "iperf -c 10.0.0.16 -u -b 1M -l 800 -p 10002 -t 100000"
+        command = 'nohup %s &> /dev/null &' % "iperf -c 192.168.12.26 -u -b 1M -l 800 -p 10002 -t 100000"
     else:
         command = 'nohup %s &> /dev/null &' % "iperf -c 192.168.10.2 -u -b 1000M -l 800 -p 10003 -t 100000"
     fab.run(command, pty=False)
@@ -50,7 +50,7 @@ def start_iperf_server(type=""):
         #command = "iperf -u -l 800 -s -i3 -B 192.168.0.2 -p 10001"
     elif type=="wifi":
         rx_host="192.168.12.26"
-        #command = "iperf -u -l 800 -s -i3 -B 10.0.0.16 -p 10002"
+        #command = "iperf -u -l 800 -s -i3 -B 192.168.12.26 -p 10002"
     else:
         rx_host="192.168.10.2"
         command = "iperf -u -l 800 -s -i3 -B 192.168.10.2 -p 10002"
@@ -60,15 +60,13 @@ def start_iperf_server(type=""):
 
 @fab.task
 def setup_wifi_ap():
-    #fab.sudo("service dnsmasq stop")
-    #fab.sudo("create_ap -c 6 -n wlan0 MyAccessPoint 12345678")
-    fab.sudo("killall wpa_supplicant") 
-    fab.sudo("sudo hostapd -B /etc/hostapd/hostapd.conf")
+    fab.sudo("service dnsmasq stop")
+    fab.sudo("create_ap -c 6 -n wlan0 MyAccessPoint 12345678")
 
 @fab.task
 def setup_wifi_sta():
     fab.sudo("connmanctl scan wifi")
-    fab.sudo("connmanctl connect wifi_7c8bca088c00_6f70656e564c432d73736964_managed_none")
+    fab.sudo("connmanctl connect wifi_74da38e6ba57_4d79416363657373506f696e74_managed_psk")
 
 @fab.task
 def setup_vlc_tx():
@@ -119,24 +117,11 @@ def schedule_controller():
         execute('wifi_link')
         time.sleep(5)
 
-@fab.task
-def iperf1():
-    #fab.sudo=("iperf -c 192.168.0.2 -u -b 1M -l 800 -p 10001 -t 100000")
-    fab.sudo = ('nohup %s &> /dev/null &' % "iperf -c 192.168.0.2 -u -b 10M -l 800 -p 10003 -t 100000")
-@fab.task
-def iperf2():
-    #fab.sudo=("iperf -u -l 800 -s -i3 -B 192.168.0.2 -p 10001")
-    fab.sudo = ('iperf -u -l 800 -s -i3 -B 192.168.0.2 -p 10003')
-
-def dumpUDP():
-    with cd('/home/debian/OpenVLC/Latest_Version/'):
-        fab.sudo("python3 dumpUDP 192.168.0.2 55555 &")
-
 #Intelligent Control
 @fab.task
 def icontrol(capture=True):
     T=1
-    Twatchdog=0.5
+    Twatchdog=0.1
     execute(vlc1)
     execute(vlc_link)
     current_state="VLC"
@@ -146,9 +131,8 @@ def icontrol(capture=True):
         #Watchdog for VLC
         if current_state=="WIFI":
             execute(vlc1)
-            execute(dumpUDP)
-            #execute(vlc_link)
-            #current_state="VLC"
+            execute(vlc_link)
+            current_state="VLC"
             time.sleep(Twatchdog)
         #RX
         execute(vlc2)
@@ -161,7 +145,7 @@ def icontrol(capture=True):
 
         execute(vlc1)
         
-        if output[0]<1060: # and current_state=="VLC":
+        if output[0]<1061 and current_state=="VLC":
                 print("Switching to WiFi channel \n")
                 execute(wifi_link)
                 current_state="WIFI"
@@ -170,5 +154,21 @@ def icontrol(capture=True):
                 print("Switching to VLC channel \n")
                 execute(vlc_link)
                 current_state="VLC"
+	
 
+
+        """
+        if  output[0]>1060:
+            print("VLC channel is stable")
+        else:
+        #TX
+            execute(vlc1)
+            if output[0]<1061:
+                print("Switching to WiFi channel \n")
+                execute(wifi_link)
+            else:
+                print("Switching to VLC channel \n")
+                execute(vlc_link)
+        
+        """
         time.sleep(T)
