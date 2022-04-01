@@ -1,6 +1,6 @@
 import fabric.api as fab
 import fabric.utils
-from fabric.api import run, env, execute, roles
+from fabric.api import run, env, execute, roles, settings, hide
 from fabric.context_managers import cd
 import time
 
@@ -123,14 +123,30 @@ def schedule_controller():
 def iperf1():
     #fab.sudo=("iperf -c 192.168.0.2 -u -b 1M -l 800 -p 10001 -t 100000")
     fab.sudo = ('nohup %s &> /dev/null &' % "iperf -c 192.168.0.2 -u -b 10M -l 800 -p 10003 -t 100000")
+
 @fab.task
 def iperf2():
     #fab.sudo=("iperf -u -l 800 -s -i3 -B 192.168.0.2 -p 10001")
     fab.sudo = ('iperf -u -l 800 -s -i3 -B 192.168.0.2 -p 10003')
 
+@fab.task
 def dumpUDP():
     with cd('/home/debian/OpenVLC/Latest_Version/'):
         fab.sudo("python3 dumpUDP 192.168.0.2 55555 &")
+
+@fab.task
+def kill_dumpUDP():
+    with settings( hide('warnings', 'running', 'stdout', 'stderr'), warn_only=True):
+        fab.sudo("ps aux | grep dumpUDP | grep -v grep | awk '{print $2}' | xargs kill")
+
+@fab.task
+def wchannel(capture=True):
+    link_quality = fab.sudo('iwconfig wlan0 | grep -o "Link Quality=[0-9]*" | sed -e "s/.*=//g"')
+    signal_level = fab.sudo('iwconfig wlan0 | grep -o "Signal level=-[0-9]*" | sed -e "s/.*=//g"')
+    noise_level = fab.sudo('iwconfig wlan0 | grep -o "Noise level=[0-9]*" | sed -e "s/.*=//g"')
+    print("link quality = "+link_quality)
+    print("signal_level = "+signal_level)
+    print("noise_level = "+noise_level)
 
 #Intelligent Control
 @fab.task
@@ -160,14 +176,15 @@ def icontrol(capture=True):
         #print("CURRENT STATE={}".format(current_state))
 
         execute(vlc1)
-        
-        if output[0]<1060: # and current_state=="VLC":
+        #execute(kill_dumpUDP)
+        if output[0]<1089 and output[1]>935 and output[2] <20: # and current_state=="VLC":
                 print("Switching to WiFi channel \n")
                 execute(wifi_link)
                 current_state="WIFI"
         else:
             #if current_state=="WIFI":
                 print("Switching to VLC channel \n")
+                execute(kill_dumpUDP)
                 execute(vlc_link)
                 current_state="VLC"
 
