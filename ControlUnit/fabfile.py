@@ -141,12 +141,24 @@ def kill_dumpUDP():
 
 @fab.task
 def wchannel(capture=True):
-    link_quality = fab.sudo('iwconfig wlan0 | grep -o "Link Quality=[0-9]*" | sed -e "s/.*=//g"')
-    signal_level = fab.sudo('iwconfig wlan0 | grep -o "Signal level=-[0-9]*" | sed -e "s/.*=//g"')
-    noise_level = fab.sudo('iwconfig wlan0 | grep -o "Noise level=[0-9]*" | sed -e "s/.*=//g"')
-    print("link quality = "+link_quality)
-    print("signal_level = "+signal_level)
-    print("noise_level = "+noise_level)
+    link_quality = int(fab.sudo('iwconfig wlan0 | grep -o "Link Quality=[0-9]*" | sed -e "s/.*=//g"'))
+    signal_level = int(fab.sudo('iwconfig wlan0 | grep -o "Signal level=-[0-9]*" | sed -e "s/.*=//g"'))
+    noise_level = int(fab.sudo('iwconfig wlan0 | grep -o "Noise level=[0-9]*" | sed -e "s/.*=//g"'))
+    print("link quality = %d" %link_quality)
+    print("signal_level = %d" %signal_level)
+    print("noise_level = %d" %noise_level)
+    if link_quality >= 90:
+        print("Link quality channel: %d >=90 \n" %(link_quality))
+    else:
+        print("Link quality channel: %d <90 \n" %(link_quality))
+
+@fab.task
+def iwifi(capture=True):
+    iwifi=fab.sudo("python3 iwifi.py")
+    iwifi=iwifi.split()
+    print(iwifi)
+    print(type(iwifi))
+    print("Bandwidth = %s, Jitter = %s, LossP = %s " %(iwifi[0], iwifi[1], iwifi[2]))
 
 #Intelligent Control
 @fab.task
