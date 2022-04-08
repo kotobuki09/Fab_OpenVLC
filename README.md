@@ -74,32 +74,51 @@ then used the python script to draw the output
     		
 	
 1) Current network: wifi or VLC available (interface vlc0 - up or wlan0- up) (default vlc0)
+
 	network = vlc0
+	
 	if (ifconfig vlc1 = False & ifconfig wlan0 =True)
+	
 		then network = wlan0
 	
 
 2)  
+
 If network = vlc0:
+
 	how to read RSSI value from the prubgb
+	
 	if (RSSI max_value >= 1061 & min_value <= 989)
+	
 		then (switch to wifi)
+		
 	else
+	
 		remain
 else()
+
 	if (wlan0 down ) #bitrate < 100 Kb/s 
+	
 		then (switch to VLC)
+		
 	else
+	
 		remain
 				
 Read the value from node+fabric
 
 Read channel info wifi channel:
+
 	fab vlc2 wchannel
+	
 Read info from iperf application
+
 Start iperf server:
+
 	iperf -u -s -B 10.0.0.16 -p 10002
+	
 then
+
 	fab vlc1 iwifi
 
 
