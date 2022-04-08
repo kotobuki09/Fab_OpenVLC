@@ -3,11 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3d38635b-a971-4295-971e-fcf715c4b557" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ControlUnit/fabfile.py" beforeDir="false" afterPath="$PROJECT_DIR$/ControlUnit/fabfile.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI TEST1.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI TEST2.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/openVLC_RSSI_analyzer/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,6 +91,7 @@
       <workItem from="1648466141283" duration="673000" />
       <workItem from="1648636177747" duration="152000" />
       <workItem from="1648642590331" duration="1518000" />
+      <workItem from="1649407674592" duration="643000" />
     </task>
     <servers />
   </component>
@@ -117,7 +114,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/openVLC_RSSI_analyzer/main.py</url>
-          <line>51</line>
+          <line>68</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>

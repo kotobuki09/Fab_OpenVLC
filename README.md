@@ -13,7 +13,7 @@ Go to the controller directory:
     
     fab vlc1 setup_wifi_ap
 
-    fab vlc2 setup_wifi_sta
+	fab vlc2 setup_wifi_sta
 
     fab vlc1 setup_vlc_tx
 
@@ -67,24 +67,27 @@ Fab somehow doensn't work when related to changing interface: You need to create
 
 then used the python script to draw the output
 
- ![Noncom](https://raw.githubusercontent.com/kotobuki09/Fab_OpenVLC/main/openVLC_RSSI_analyzer/IDLE%20vs%20IPERF%20RSSI%20TEST1.png?token=GHSAT0AAAAAABOOP7LNHBDZQ5F4M2HITHMQYSFRGFA)
- 
-  ![400Kcom](https://raw.githubusercontent.com/kotobuki09/Fab_OpenVLC/main/openVLC_RSSI_analyzer/IDLE%20vs%20IPERF%20RSSI%20TEST2.png?token=GHSAT0AAAAAABOOP7LN4FKIBREWLLTMTUYOYSFRK3A)
-  
-    		
-	
-1) Current network: wifi or VLC available (interface vlc0 - up or wlan0- up) (default vlc0)
 
+![Test2](https://github.com/kotobuki09/Fab_OpenVLC/blob/main/IDLE%20vs%20IPERF%20RSSI%20TEST2.png)
+
+
+![New](https://github.com/kotobuki09/Fab_OpenVLC/blob/main/IDLE%20vs%20IPERF%20RSSI%203103.png)
+	
+1) Current network: 
+
+    
+	WiFIi or VLC available (interface vlc0 - up or wlan0- up) (default vlc0)
+    
 	network = vlc0
-	
+    
 	if (ifconfig vlc1 = False & ifconfig wlan0 =True)
-	
-		then network = wlan0
-	
+    
+	then network = wlan0	
 
-2)  
+3)  
 
-If network = vlc0:
+	
+	If network = vlc0:
 
 	how to read RSSI value from the prubgb
 	
@@ -95,7 +98,8 @@ If network = vlc0:
 	else
 	
 		remain
-else()
+	
+	else()
 
 	if (wlan0 down ) #bitrate < 100 Kb/s 
 	
