@@ -1,0 +1,71 @@
+import fabric.api as fab
+import fabric.utils
+from fabric.api import env
+
+#nice workaround solution to embed the host access parameters as a fabric task
+@fab.task
+def vlc1():
+    env.hosts={'debian@10.8.10.5'}
+    env.passwords = {'debian@10.8.10.5:22': 'temppwd'}
+
+@fab.task
+def vlc2():
+    env.hosts={'debian@10.8.10.8'}
+    env.passwords = {'debian@10.8.10.5:22': 'temppwd'}
+
+
+@fab.task
+def start_iperf_server():
+    #command = 'nohup %s &> /dev/null &' % "iperf -s -u -i1 -p 12345"
+    command = "sudo iperf -u -l 800 -s -i3 -B 192.168.0.2 -p 10001"
+    fab.run(command, pty=False)
+
+@fab.task
+def stop_iperf():
+    fab.run("killall -9 iperf")
+
+@fab.task
+def start_iperf_client(duration=120,bitrate="2M",verbose=True):
+    #start iperf
+    #destination_ip="hendrix.local"
+    #if verbose:
+        #command = "iperf -c {} -p 12345 -u -i 1 -b {} -t {}".format(destination_ip,bitrate,duration)
+    #else:
+        #command = "nohup iperf -c {} -p 12345 -u -i 1 -b {} -t {} &> /dev/null &".format(destination_ip,bitrate,duration)
+    command = "sudo iperf -u -l 800 -s -i3 -B 192.168.0.2 -p 10001" 
+    fab.run(command, pty=False)
+
+@fab.task
+def remote_ls():
+    fab.run("ls")
+
+#DRAFT...
+@fab.task
+def setup_wifi_ap():
+    
+    #remote_dst="/home/X/tools/"     #TBD
+    #fab.put('tools/', remote_dst)   #copy tool directory in remote node
+    #fab.sudo("killall -9 hostapd")  # kill hostapd
+    #fab.sudo("hostapd -i wlan0 {}/hostapd.conf -B".format(remote_dst)) #execute hostapd
+    #fab.sudo("ifconfig wlan0 192.168.1.1") # assign IP address
+    #fab.sudo("killall wpa_supplicant")
+    fab.sudo("service dnsmasq stop")
+    #fab.sudo("create_ap -n wlan0 MyAccessPoint 12345678")
+
+@fab.task
+def setup_wifi_sta():
+    fab.sudo("connmanctl connect wifi_74da38e6ba57_4d79416363657373506f696e74_managed_psk")
+
+
+@fab.task
+def setup_wifi_sta():
+    print("TBD")
+    fab.run("cd OpenVLC/Latest_Version/")
+    fab.run("./tx.sh")
+
+@fab.task
+def setup_vlc_node():
+    print("TBD")
+    fab.run("cd OpenVLC/Latest_Version/")
+    fab.run("./rx.sh")
+

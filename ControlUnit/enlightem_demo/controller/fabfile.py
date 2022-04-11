@@ -179,25 +179,25 @@ def icontrol(capture=True):
             #current_state="VLC"
             time.sleep(Twatchdog)
         #RX
-    execute(vlc2)
-    output = execute(getRSSI)
-    output=output[list(env.hosts)[0]].split(" ")
-    print(output)
-        
+        execute(vlc2)
+        output = execute(getRSSI)
+        output=output[list(env.hosts)[0]].split(" ")
+        print(output)
 	output = [int(i) for i in output]
-    print("Checking the RSSI value in VLC channel: "+str(output))
-    #print("CURRENT STATE={}".format(current_state))
+        print("Checking the RSSI value in VLC channel: "+str(output))
+        #print("CURRENT STATE={}".format(current_state))
 
-    execute(vlc1)
-    #execute(kill_dumpUDP)
-    if output[0]<1089 and output[1]>935 and output[2] <20: # and current_state=="VLC":
-        print("Switching to WiFi channel \n")
-        execute(wifi_link)
-        current_state="WIFI"
-    else:
-        #if current_state=="WIFI":
-        print("Switching to VLC channel \n")
-        execute(kill_dumpUDP)
-        execute(vlc_link)
-        current_state="VLC"
-    time.sleep(T)
+        execute(vlc1)
+        #execute(kill_dumpUDP)
+        if output[0]<1089 and output[1]>935 and output[2] <20: # and current_state=="VLC":
+                print("Switching to WiFi channel \n")
+                execute(wifi_link)
+                current_state="WIFI"
+        else:
+            #if current_state=="WIFI":
+                print("Switching to VLC channel \n")
+                execute(kill_dumpUDP)
+                execute(vlc_link)
+                current_state="VLC"
+
+        time.sleep(T)

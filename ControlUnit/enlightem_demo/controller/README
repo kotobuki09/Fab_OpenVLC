@@ -1,0 +1,1 @@
+fab -H <host or ip> -p <password> <command>
