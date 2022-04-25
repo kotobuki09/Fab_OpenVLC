@@ -184,7 +184,7 @@ def icontrol(capture=True):
     output=output[list(env.hosts)[0]].split(" ")
     print(output)
         
-	output = [int(i) for i in output]
+    output = [int(i) for i in output]
     print("Checking the RSSI value in VLC channel: "+str(output))
     #print("CURRENT STATE={}".format(current_state))
 
