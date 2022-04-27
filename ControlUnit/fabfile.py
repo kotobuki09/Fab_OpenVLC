@@ -20,6 +20,11 @@ def vlc1():
 def vlc2():
     env.hosts={'debian@10.8.10.8'}
     env.passwords = {'debian@10.8.10.8:22':'temppwd'}
+    
+@fab.task
+def vlc3():
+    env.hosts={'debian@10.8.10.6'}
+    env.passwords = {'debian@10.8.10.6:22':'temppwd'}
 
 @fab.task
 def getRSSI():
@@ -113,11 +118,17 @@ def vlc_link():
 #The stream will make a jump to different network after 10 seconds
 @fab.task
 def schedule_controller():
-    while True: 
+    while True:
+        start_time = time.time()
         execute('vlc_link')
-        time.sleep(5)
+        wifiToVLC_time = time.time() - start_time
+        print("Wifi to VLC : " + str(wifiToVLC_time))
+        time.sleep(10)
+        start_time2 = time.time()
         execute('wifi_link')
-        time.sleep(5)
+        vlcToWifi_time = time.time() - start_time2
+        print("VLC to WiFi : " + str(wifiToVLC_time))
+        time.sleep(10)
 
 @fab.task
 def iperf1():
