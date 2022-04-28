@@ -44,7 +44,7 @@ def start_iperf_client(type=""):
 
 @fab.task
 def stop_iperf():
-    fab.run("killall iperf")
+    fab.sudo("killall iperf")
 
 @fab.task
 def start_iperf_server(type=""):
@@ -123,12 +123,14 @@ def schedule_controller():
         execute('vlc_link')
         wifiToVLC_time = time.time() - start_time
         print("Wifi to VLC : " + str(wifiToVLC_time))
+        
         time.sleep(10)
+        
         start_time2 = time.time()
         execute('wifi_link')
         vlcToWifi_time = time.time() - start_time2
         print("VLC to WiFi : " + str(wifiToVLC_time))
-        time.sleep(10)
+        time.sleep(15)
 
 @fab.task
 def iperf1():
@@ -201,7 +203,7 @@ def icontrol(capture=True):
 
     execute(vlc1)
     #execute(kill_dumpUDP)
-    if output[0]<1089 and output[1]>935 and output[2] <20: # and current_state=="VLC":
+    if output[0]<1089: #and output[1]>935 and output[2] <20: # and current_state=="VLC":
         print("Switching to WiFi channel \n")
         execute(wifi_link)
         current_state="WIFI"
@@ -212,3 +214,53 @@ def icontrol(capture=True):
         execute(vlc_link)
         current_state="VLC"
     time.sleep(T)
+
+@fab.task
+def iperf():
+    #fab.sudo('nohup %s &> /dev/null &' % "iperf -c 192.168.10.2 -u -b 1000M -l 800 -p 10003 -t 100000")
+    #fab.run("nohup iperf -c 192.168.10.2 -u -b 1000M -l 800 -p 10003 -t 100000 --daemon")
+    fab.sudo("python3 iperf.py")
+
+#Handover
+@fab.task
+def handover(capture=True):
+    current_state="VLCT1"
+    while 1:
+        execute(vlc2)
+        output = execute(getRSSI)
+        output=output[list(env.hosts)[0]].split(" ")
+        print(output)
+        output = [int(i) for i in output]
+        print("Checking the RSSI value in VLC channel: "+ str(output))
+        time.sleep(1)
+        
+        if output[2]<50 and current_state=="VLCT1":
+            start_time = time.time()
+            execute(vlc3)
+            execute(iperf)
+            #time.sleep(3)
+            V1ToV2_time = time.time() - start_time
+            print("HANDOVER TIME V1 to V2 : " + str(V1ToV2_time)+" s")
+            time.sleep(3)
+            execute(vlc1)
+            execute(stop_iperf)
+            current_state="VLCT2"
+         
+           
+        elif output[2]<50 and current_state=="VLCT2":
+        
+            start_time = time.time()
+            execute(vlc1)
+            execute(iperf)
+            #time.sleep(3)
+            V2ToV1_time = time.time() - start_time
+            print("HANDOVER TIME V2 to V1 : " + str(V2ToV1_time)+" s")
+            time.sleep(3)
+            execute(vlc3)
+            execute(stop_iperf)
+            current_state="VLCT1"
+         
+           
+          
+        
+        

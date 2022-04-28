@@ -64,7 +64,12 @@ def main():
     rssi_t80=get_rssi(filename_t80)
     rssi_t90=get_rssi(filename_t90)
     rssi_t100=get_rssi(filename_t100)
-    #print(rssi_t2)
+    print(rssi_t20)
+    print(min(rssi_t10))
+    print(min(rssi_t50))
+    print(rssi_t50)
+    
+    
     fig = plt.figure()
     plt.plot(rssi_t0,label="RSSI center")
     plt.plot(rssi_t10,label="RSSI 10cm away")
@@ -111,7 +116,7 @@ def main():
     tave=[statistics.mean(rssi_t0),statistics.mean(rssi_t10),statistics.mean(rssi_t20),statistics.mean(rssi_t30),statistics.mean(rssi_t40),statistics.mean(rssi_t50),statistics.mean(rssi_t60),statistics.mean(rssi_t70),statistics.mean(rssi_t80),statistics.mean(rssi_t90),statistics.mean(rssi_t100)]
 
     #print(tmax, tmin, tdev)
-    
+    print(statistics.mean(rssi_t50))
     fig = plt.figure()
        
     plt.plot(x,tmax,label="Max RSSI")
