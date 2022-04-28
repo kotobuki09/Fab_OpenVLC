@@ -130,7 +130,7 @@ def schedule_controller():
         execute('wifi_link')
         vlcToWifi_time = time.time() - start_time2
         print("VLC to WiFi : " + str(wifiToVLC_time))
-        time.sleep(15)
+        time.sleep(30)
 
 @fab.task
 def iperf1():
