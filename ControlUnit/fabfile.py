@@ -7,8 +7,8 @@ import time
 
 
 #env.hosts={'debian@10.8.10.5'}
-#env.roledefs = { 'vlc1': ['debian@10.8.10.5'], 'vlc2': ['debian@10.8.10.8'] }
-#env.passwords = { 'debian@10.8.10.5:22':'temppwd', 'debian@10.8.10.8:22':'temppwd' }
+env.roledefs = { 'vlc1': ['debian@10.8.10.5'], 'vlc2': ['debian@10.8.10.8'] }
+env.passwords = { 'debian@10.8.10.5:22':'temppwd', 'debian@10.8.10.8:22':'temppwd' }
 
 #nice workaround solution to embed the host access parameters as a fabric task
 @fab.task
@@ -58,7 +58,7 @@ def start_iperf_server(type=""):
         #command = "iperf -u -l 800 -s -i3 -B 10.0.0.16 -p 10002"
     else:
         rx_host="192.168.10.2"
-        command = "iperf -u -l 800 -s -i3 -B 192.168.10.2 -p 10002"
+        command = "iperf -u -l 800 -s -i3 -B 192.168.10.2 -p 10003"
 
     command = "iperf -u -l 800 -s -i3 -B {} -p 10003".format(rx_host)
     fab.run(command, pty=False)
@@ -142,10 +142,11 @@ def iperf2():
     #fab.sudo=("iperf -u -l 800 -s -i3 -B 192.168.0.2 -p 10001")
     fab.sudo = ('iperf -u -l 800 -s -i3 -B 192.168.0.2 -p 10003')
 
+@roles('vlc1')
 @fab.task
 def dumpUDP():
-    with cd('/home/debian/OpenVLC/Latest_Version/'):
-        fab.sudo("python3 dumpUDP 192.168.0.2 55555 &")
+    #with cd('/home/debian/OpenVLC/Latest_Version/'):
+    fab.sudo("python3 dumpUDP 192.168.0.2 55555 &")
 
 @fab.task
 def kill_dumpUDP():
@@ -192,28 +193,35 @@ def icontrol(capture=True):
             #current_state="VLC"
             time.sleep(Twatchdog)
         #RX
-    execute(vlc2)
-    output = execute(getRSSI)
-    output=output[list(env.hosts)[0]].split(" ")
-    print(output)
+        execute(vlc2)
+        output = execute(getRSSI)
+        output=output[list(env.hosts)[0]].split(" ")
+        print(output)
         
-    output = [int(i) for i in output]
-    print("Checking the RSSI value in VLC channel: "+str(output))
-    #print("CURRENT STATE={}".format(current_state))
+        output = [int(i) for i in output]
+        print("Checking the RSSI value in VLC channel: "+str(output))
+        #print("CURRENT STATE={}".format(current_state))
 
-    execute(vlc1)
-    #execute(kill_dumpUDP)
-    if output[0]<1089: #and output[1]>935 and output[2] <20: # and current_state=="VLC":
-        print("Switching to WiFi channel \n")
-        execute(wifi_link)
-        current_state="WIFI"
-    else:
-        #if current_state=="WIFI":
-        print("Switching to VLC channel \n")
-        execute(kill_dumpUDP)
-        execute(vlc_link)
-        current_state="VLC"
-    time.sleep(T)
+        #execute(vlc1)
+        if output[2]<80 and current_state=="VLC": #and output[1]>935 and output[2] <20 and output[0]<1089: # and current_state=="VLC":
+            execute(vlc1)
+            print("Switching to WiFi channel \n")
+            start_time = time.time()
+            execute(wifi_link)
+            vlcToWiFi_time = time.time() - start_time
+            print("HANDOVER TIME VLC to WiFi : " + str(vlcToWiFi_time)+" s")
+            current_state="WIFI"
+            
+        elif output[2]>50 and current_state=="WIFI":
+            #if current_state=="WIFI":
+            execute(vlc1)
+            print("Switching to VLC channel \n")
+            start_time = time.time()
+            execute(vlc_link)
+            wifiToVlc_time = time.time() - start_time
+            print("HANDOVER TIME WiFi to VLC : " + str(wifiToVlc_time)+" s")
+            current_state="VLC"
+        time.sleep(T)
 
 @fab.task
 def iperf():
