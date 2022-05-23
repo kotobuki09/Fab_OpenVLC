@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
+    "\\ControlUnit",
     "\\openVLC_RSSI_analyzer"
   ],
-  "SelectedNode": "\\openVLC_RSSI_analyzer\\main.py",
+  "SelectedNode": "\\ControlUnit\\plot.py",
   "PreviewInSolutionExplorer": false
 }

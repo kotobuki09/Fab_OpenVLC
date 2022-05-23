@@ -3,7 +3,9 @@ import fabric.utils
 from fabric.api import run, env, execute, roles, settings, hide
 from fabric.context_managers import cd
 import time
-
+import numbers
+from datetime import date
+import pandas as pd
 
 
 #env.hosts={'debian@10.8.10.5'}
@@ -28,7 +30,10 @@ def vlc3():
 
 @fab.task
 def getRSSI():
-    output=fab.sudo("python3 getRSSI.py")
+    output = fab.sudo("python3 getRSSI.py")
+    #output=int(output)
+    #output = output[list(env.hosts)[0]].split(" ")
+    #output = [int(i) for i in output]
     return output
 
 @fab.task
@@ -104,7 +109,8 @@ def wifi_link():
     #fab.sudo = ("route del -net 192.168.10.0 gw 192.168.0.1 netmask 255.255.255.0 dev vlc0")
     #fab.run = ("route del -net 192.168.10.0 gw 192.168.0.1 netmask 255.255.255.0 dev vlc0 && route add -net 192.168.10.0 gw 192.168.12.1 netmask 255.255.255.0 dev ap0")
     with cd('/home/debian/OpenVLC/Latest_Version/'):
-        fab.sudo("./wifi_link.sh")
+        v2w_time=fab.sudo("./wifi_link.sh")
+        return v2w_time
 
 #@roles('vlc1')
 @fab.task
@@ -113,7 +119,8 @@ def vlc_link():
     #fab.sudo = ("route del -net 192.168.10.0 gw 192.168.12.1 netmask 255.255.255.0 dev ap0")
     #fab.sudo = ("route del -net 192.168.10.0 gw 192.168.12.1 netmask 255.255.255.0 dev ap0 && route add -net 192.168.10.0 gw 192.168.0.1 netmask 255.255.255.0 dev vlc0")
     with cd('/home/debian/OpenVLC/Latest_Version/'):
-        fab.sudo("./vlc_link.sh")
+        w2v_time=fab.sudo("./vlc_link.sh")
+        return w2v_time
 
 #The stream will make a jump to different network after 10 seconds
 @fab.task
@@ -142,11 +149,13 @@ def iperf2():
     #fab.sudo=("iperf -u -l 800 -s -i3 -B 192.168.0.2 -p 10001")
     fab.sudo = ('iperf -u -l 800 -s -i3 -B 192.168.0.2 -p 10003')
 
-@roles('vlc1')
+#@roles('vlc1')
 @fab.task
 def dumpUDP():
+    with settings( hide('warnings', 'running', 'stdout', 'stderr'), warn_only=True):
     #with cd('/home/debian/OpenVLC/Latest_Version/'):
-    fab.sudo("python3 dumpUDP 192.168.0.2 55555 &")
+        #execute(kill_dumpUDP)
+        fab.sudo("python3 dumpUDP 192.168.0.2 55555 &")
 
 @fab.task
 def kill_dumpUDP():
@@ -158,27 +167,45 @@ def wchannel(capture=True):
     link_quality = int(fab.sudo('iwconfig wlan0 | grep -o "Link Quality=[0-9]*" | sed -e "s/.*=//g"'))
     signal_level = int(fab.sudo('iwconfig wlan0 | grep -o "Signal level=-[0-9]*" | sed -e "s/.*=//g"'))
     noise_level = int(fab.sudo('iwconfig wlan0 | grep -o "Noise level=[0-9]*" | sed -e "s/.*=//g"'))
-    print("link quality = %d" %link_quality)
-    print("signal_level = %d" %signal_level)
-    print("noise_level = %d" %noise_level)
-    if link_quality >= 90:
-        print("Link quality channel: %d >=90 \n" %(link_quality))
-    else:
-        print("Link quality channel: %d <90 \n" %(link_quality))
+    #print("link quality = %d" %link_quality)
+    #print("signal_level = %d" %signal_level)
+    #print("noise_level = %d" %noise_level)
+    #if link_quality >= 90:
+    #    print("Link quality channel: %d >=90 \n" %(link_quality))
+    #else:
+    #    print("Link quality channel: %d <90 \n" %(link_quality))
+    return link_quality,signal_level,noise_level
+    
+    
+@fab.task
+def link_quality(capture=True):
+    link_quality = int(fab.sudo('iwconfig wlan0 | grep -o "Link Quality=[0-9]*" | sed -e "s/.*=//g"'))
+    return link_quality
+    
+@fab.task
+def signal_level(capture=True): 
+    signal_level = int(fab.sudo('iwconfig wlan0 | grep -o "Signal level=-[0-9]*" | sed -e "s/.*=//g"'))
+    return signal_level
+
+@fab.task
+def noise_level(capture=True):
+    noise_level = int(fab.sudo('iwconfig wlan0 | grep -o "Noise level=[0-9]*" | sed -e "s/.*=//g"'))
+    return noise_level
 
 @fab.task
 def iwifi(capture=True):
     iwifi=fab.sudo("python3 iwifi.py")
     iwifi=iwifi.split()
-    print(iwifi)
-    print(type(iwifi))
-    print("Bandwidth = %s, Jitter = %s, LossP = %s " %(iwifi[0], iwifi[1], iwifi[2]))
+    #print(iwifi)
+    #print(type(iwifi))
+    #print("Bandwidth = %s, Jitter = %s, LossP = %s " %(iwifi[0], iwifi[1], iwifi[2]))
+    return iwifi
 
 #Intelligent Control
 @fab.task
 def icontrol(capture=True):
     T=1
-    Twatchdog=0.5
+    Twatchdog=2
     execute(vlc1)
     execute(vlc_link)
     current_state="VLC"
@@ -188,51 +215,56 @@ def icontrol(capture=True):
         #Watchdog for VLC
         if current_state=="WIFI":
             execute(vlc1)
-            execute(dumpUDP)
-            #execute(vlc_link)
+            #execute(dumpUDP)
+            execute(vlc_link)
             #current_state="VLC"
             time.sleep(Twatchdog)
         #RX
         execute(vlc2)
         output = execute(getRSSI)
         output=output[list(env.hosts)[0]].split(" ")
-        print(output)
-        
         output = [int(i) for i in output]
-        print("Checking the RSSI value in VLC channel: "+str(output))
+        print("Checking the RSSI value in VLC channel 1: "+str(output))
+        time.sleep(2)
         #print("CURRENT STATE={}".format(current_state))
 
         #execute(vlc1)
-        if output[2]<80 and current_state=="VLC": #and output[1]>935 and output[2] <20 and output[0]<1089: # and current_state=="VLC":
+        if output[2]<50 and current_state=="VLC": #and output[1]>935 and output[2] <20 and output[0]<1089: # and current_state=="VLC":
             execute(vlc1)
+            execute(kill_dumpUDP)
             print("Switching to WiFi channel \n")
-            start_time = time.time()
-            execute(wifi_link)
-            vlcToWiFi_time = time.time() - start_time
-            print("HANDOVER TIME VLC to WiFi : " + str(vlcToWiFi_time)+" s")
+            
+            v2w_time=execute(wifi_link)
+            #v2w_time=[num for num in v2w_time if isinstance(num, numbers.Number)]
+            #print(v2w_time)
+            print("HANDOVER TIME VLC to WiFi : " + str(v2w_time)+" ms")
             current_state="WIFI"
             
         elif output[2]>50 and current_state=="WIFI":
-            #if current_state=="WIFI":
             execute(vlc1)
+            
             print("Switching to VLC channel \n")
-            start_time = time.time()
-            execute(vlc_link)
-            wifiToVlc_time = time.time() - start_time
-            print("HANDOVER TIME WiFi to VLC : " + str(wifiToVlc_time)+" s")
+            
+            w2v_time=execute(vlc_link)
+            #w2v_time=[num for num in w2v_time if isinstance(num, numbers.Number)]
+            print("HANDOVER TIME WiFi to VLC : " + str(w2v_time)+" ms")
             current_state="VLC"
         time.sleep(T)
 
 @fab.task
-def iperf():
+def iperf(capture=True):
     #fab.sudo('nohup %s &> /dev/null &' % "iperf -c 192.168.10.2 -u -b 1000M -l 800 -p 10003 -t 100000")
     #fab.run("nohup iperf -c 192.168.10.2 -u -b 1000M -l 800 -p 10003 -t 100000 --daemon")
-    fab.sudo("python3 iperf.py")
+    i=fab.sudo("python3 iperf.py")
+    return i
 
 #Handover
 @fab.task
 def handover(capture=True):
     current_state="VLCT1"
+    data=[]
+    i=0
+    i2=0
     while 1:
         execute(vlc2)
         output = execute(getRSSI)
@@ -241,15 +273,23 @@ def handover(capture=True):
         output = [int(i) for i in output]
         print("Checking the RSSI value in VLC channel: "+ str(output))
         time.sleep(1)
+        i=0
+        i2=0
+        data.append([output])
+        import pandas as pd
+        df = pd.DataFrame(data)
+        print(df)
         
         if output[2]<50 and current_state=="VLCT1":
-            start_time = time.time()
+            
             execute(vlc3)
-            execute(iperf)
+            start_time = time.time()
+            i=execute(iperf)
+            print(i)
             #time.sleep(3)
-            V1ToV2_time = time.time() - start_time
-            print("HANDOVER TIME V1 to V2 : " + str(V1ToV2_time)+" s")
-            time.sleep(3)
+            #V1ToV2_time = time.time() - start_time
+            print("HANDOVER TIME V1 to V2 : " + str(i)+" ms")
+            time.sleep(1)
             execute(vlc1)
             execute(stop_iperf)
             current_state="VLCT2"
@@ -257,18 +297,131 @@ def handover(capture=True):
            
         elif output[2]<50 and current_state=="VLCT2":
         
-            start_time = time.time()
             execute(vlc1)
-            execute(iperf)
+            start_time = time.time()
+            i2=execute(iperf)
+            print(i2)
             #time.sleep(3)
-            V2ToV1_time = time.time() - start_time
-            print("HANDOVER TIME V2 to V1 : " + str(V2ToV1_time)+" s")
-            time.sleep(3)
+            #V2ToV1_time = time.time() - start_time
+            print("HANDOVER TIME V2 to V1 : " + str(i2)+" ms")
+            time.sleep(1)
             execute(vlc3)
             execute(stop_iperf)
             current_state="VLCT1"
-         
-           
-          
+            
+            
+#Intelligent Control
+@fab.task
+def icontrol2(capture=True):
+    T=1
+    Twatchdog=2
+    execute(vlc1)
+    execute(vlc_link)
+    current_state="VLC1"
+    time.sleep(T)
+
+    while 1:
+        #Watchdog for VLC
+        execute(vlc2)
+        output = execute(getRSSI)
+        output=output[list(env.hosts)[0]].split(" ")
+        output = [int(i) for i in output]
+        print("Checking the RSSI value in VLC channel 1: "+str(output))
+        time.sleep(2)
+        #print("CURRENT STATE={}".format(current_state))
+        
+        execute(vlc3)
+        execute(dumpUDP)
+        time.sleep(1)
+        execute(vlc2)
+        output_2 = execute(getRSSI)
+        output_2=output_2[list(env.hosts)[0]].split(" ")
+        output_2 = [int(i) for i in output_2]
+        print("Checking the RSSI value in VLC channel 2: "+str(output_2))
+        time.sleep(2)
+
+        if current_state=="WIFI":
+            if output[2]>50 and output_2[2]<50:
+                execute(vlc1)
+                execute(vlc_link)
+                current_state="VLC1"
+            elif output[2]<50 and output_2[2]>50:
+                execute(vlc1)
+                execute(vlc_link)
+                current_state="VLC2"
+            elif output[2]<50 and output_2[2]<50:
+                execute(vlc1)
+                execute(vlc_link)
+                current_state="VLC1"
+                
+        elif current_state=="VLC1": 
+            if output[2]<50 and output_2[2]>50:
+                execute(vlc3)
+                execute(iperf)
+                time.sleep(3)
+                execute(vlc1)
+                execute(stop_iperf)
+                current_state="VLC2"
+                print("Currently in VLC2")
+                
+            elif output[2]<50 and output_2[2]<50:
+                execute(vlc1)
+                execute(wifi_link)
+                current_state="WIFI"
+                
+        elif current_state=="VLC2": 
+            if output[2]>50 and output_2[2]<50:
+                execute(vlc1)
+                execute(iperf)
+                time.sleep(3)
+                execute(vlc3)
+                execute(stop_iperf)
+                current_state="VLC1"
+                print("Currently in VLC1")
+                
+            elif output[2]<50 and output_2[2]<50:
+                execute(vlc1)
+                execute(wifi_link)
+                current_state="WIFI"
+
+        time.sleep(T)
+        
+#Test collecting data
+@fab.task
+def data(capture=True):
+    data = []
+    link=0
+    signal=0
+    noise=0
+    tt=0
+    
+    while 1:
+        execute(vlc2)
+        output = execute(getRSSI)
+        output=output[list(env.hosts)[0]].split(" ")
+        output = [int(i) for i in output]
+        #print("Checking the RSSI value in VLC channel 1: "+str(output))
         
         
+        link=execute(link_quality)
+        link=link['debian@10.8.10.8']
+        signal=execute(signal_level)
+        signal=signal['debian@10.8.10.8']
+        noise=execute(noise_level)
+        noise=noise['debian@10.8.10.8']
+        tt+=1
+        
+        #execute(vlc1)
+        #iwi=execute(iwifi)
+        #iwi=iwi['debian@10.8.10.5']
+        #print(iwi)
+        
+        #data.append([tt,output[0],output[1],output[2],link,signal,noise,iwi[0],iwi[1],iwi[2]])
+        data.append([tt,output[0],output[1],output[2],link,signal,noise])         
+        #df = pd.DataFrame(data,columns=["Time (s)","Max_RSSI_VLC","Min_RSSI_VLC","Std_RSSI_VLC", "link_quality_wifi","signal_level_wifi","noise_level_wifi","bandwidth_wifi", "jitter_wifi", "lossPacket_wifi"])
+        df = pd.DataFrame(data,columns=["Time (s)","Max_RSSI_VLC","Min_RSSI_VLC","Std_RSSI_VLC", "link_quality_wifi","signal_level_wifi","noise_level_wifi"])
+
+        print(df)
+        df.to_csv('file3.csv')
+        
+        time.sleep(1)
