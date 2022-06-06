@@ -126,5 +126,6 @@ then
 	fab vlc1 iwifi
 
 Clean all log file after 2 days in BBB:
+
 	find /var/log -mindepth 1 -mtime +2 -delete
 	
