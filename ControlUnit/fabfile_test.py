@@ -118,12 +118,14 @@ def schedule_controller():
         time.sleep(5)
 
 @fab.task
-def iperf1():
-    command = "iperf -c 192.168.0.2 -u -b 1M -l 800 -p 10001 -t 10"
+def iperf1()
+     execute(vlc1)
+     fab.sudo = ("iperf -c 192.168.0.2 -u -b 1M -l 800 -p 10001 -t 20")
 
 @fab.task
 def iperf2():
-    command = "iperf -u -l 800 -s -i3 -B 192.168.0.2 -p 10001"
+     execute(vlc2)
+     fab.sudo= ("iperf -u -l 800 -s -i3 -B 192.168.0.2 -p 10001")
 
 #Intelligent Control
 @fab.task

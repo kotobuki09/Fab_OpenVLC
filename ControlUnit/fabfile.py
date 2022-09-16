@@ -19,12 +19,12 @@ def vlc1():
     env.passwords = {'debian@10.8.10.5:22':'temppwd'}
 
 @fab.task
-def vlc2():
+def vlc3():
     env.hosts={'debian@10.8.10.8'}
     env.passwords = {'debian@10.8.10.8:22':'temppwd'}
     
 @fab.task
-def vlc3():
+def vlc2():
     env.hosts={'debian@10.8.10.6'}
     env.passwords = {'debian@10.8.10.6:22':'temppwd'}
 
@@ -44,7 +44,7 @@ def start_iperf_client(type=""):
     elif type=="wifi":
         command = 'nohup %s &> /dev/null &' % "iperf -c 10.0.0.16 -u -b 1M -l 800 -p 10002 -t 100000"
     else:
-        command = 'nohup %s &> /dev/null &' % "iperf -c 192.168.10.2 -u -b 1000M -l 800 -p 10003 -t 100000"
+        command = 'nohup %s &> /dev/null &' % "iperf -c 192.168.10.2 -u -b 1000M -l 800 -p 10001 -t 100000"
     fab.run(command, pty=False)
 
 @fab.task
@@ -63,7 +63,7 @@ def start_iperf_server(type=""):
         #command = "iperf -u -l 800 -s -i3 -B 10.0.0.16 -p 10002"
     else:
         rx_host="192.168.10.2"
-        command = "iperf -u -l 800 -s -i3 -B 192.168.10.2 -p 10003"
+        command = "iperf -u -l 800 -s -i3 -B 192.168.10.2 -p 10001"
 
     command = "iperf -u -l 800 -s -i3 -B {} -p 10003".format(rx_host)
     fab.run(command, pty=False)
@@ -78,7 +78,7 @@ def setup_wifi_ap():
 @fab.task
 def setup_wifi_sta():
     fab.sudo("connmanctl scan wifi")
-    fab.sudo("connmanctl connect wifi_7c8bca088c00_6f70656e564c432d73736964_managed_none")
+    fab.sudo("connmanctl connect wifi_7c8bca091d71_6f70656e564c432d73736964_managed_none")
 
 @fab.task
 def setup_vlc_tx():
@@ -131,13 +131,13 @@ def schedule_controller():
         wifiToVLC_time = time.time() - start_time
         print("Wifi to VLC : " + str(wifiToVLC_time))
         
-        time.sleep(10)
+        time.sleep(5)
         
         start_time2 = time.time()
         execute('wifi_link')
         vlcToWifi_time = time.time() - start_time2
         print("VLC to WiFi : " + str(wifiToVLC_time))
-        time.sleep(30)
+        time.sleep(5)
 
 @fab.task
 def iperf1():
@@ -215,8 +215,8 @@ def icontrol(capture=True):
         #Watchdog for VLC
         if current_state=="WIFI":
             execute(vlc1)
-            #execute(dumpUDP)
-            execute(vlc_link)
+            execute(dumpUDP)
+            #execute(vlc_link)
             #current_state="VLC"
             time.sleep(Twatchdog)
         #RX
@@ -393,7 +393,7 @@ def data(capture=True):
     link=0
     signal=0
     noise=0
-    tt=0
+    #tt=0
     
     while 1:
         execute(vlc2)
@@ -404,12 +404,12 @@ def data(capture=True):
         
         
         link=execute(link_quality)
-        link=link['debian@10.8.10.8']
+        link=link['debian@10.8.10.6']
         signal=execute(signal_level)
-        signal=signal['debian@10.8.10.8']
+        signal=signal['debian@10.8.10.6']
         noise=execute(noise_level)
-        noise=noise['debian@10.8.10.8']
-        tt+=1
+        noise=noise['debian@10.8.10.6']
+        #tt+=1
         
         #execute(vlc1)
         #iwi=execute(iwifi)
@@ -417,11 +417,22 @@ def data(capture=True):
         #print(iwi)
         
         #data.append([tt,output[0],output[1],output[2],link,signal,noise,iwi[0],iwi[1],iwi[2]])
-        data.append([tt,output[0],output[1],output[2],link,signal,noise])         
+        #data.append([tt,output[0],output[1],output[2],link,signal,noise])
+        data.append([output[0],output[1],output[2],link,signal,noise])    
         #df = pd.DataFrame(data,columns=["Time (s)","Max_RSSI_VLC","Min_RSSI_VLC","Std_RSSI_VLC", "link_quality_wifi","signal_level_wifi","noise_level_wifi","bandwidth_wifi", "jitter_wifi", "lossPacket_wifi"])
-        df = pd.DataFrame(data,columns=["Time (s)","Max_RSSI_VLC","Min_RSSI_VLC","Std_RSSI_VLC", "link_quality_wifi","signal_level_wifi","noise_level_wifi"])
+        #df = pd.DataFrame(data,columns=["Time (s)","Max_RSSI_VLC","Min_RSSI_VLC","Std_RSSI_VLC", "link_quality_wifi","signal_level_wifi","noise_level_wifi"])
+        df = pd.DataFrame(data,columns=["Max_RSSI_VLC","Min_RSSI_VLC","Std_RSSI_VLC", "link_quality_wifi","signal_level_wifi","noise_level_wifi"])
 
-        print(df)
-        df.to_csv('file3.csv')
+        #print(df)
+        df.to_csv('Palermo6.csv')
         
+        time.sleep(2)
+        
+@fab.task
+def getRSSI_infi():
+    while True:
+        output = fab.sudo("python3 getRSSI.py")
+    #output=int(output)
+    #output = output[list(env.hosts)[0]].split(" ")
+    #output = [int(i) for i in output]
         time.sleep(1)
