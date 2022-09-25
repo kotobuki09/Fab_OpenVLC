@@ -1,0 +1,81 @@
+#!/bin/bash
+
+sudo route add -net 192.168.6.0/24 gw 192.168.7.2 #Add USB client interface route
+sudo ifconfig enp8s0 192.168.2.10 #Configure the ethernet interface IP
+sudo route del -net 192.168.2.0/24 #Delete the default routing for the ethernet
+sudo route add -net 192.168.2.0/24 gw 192.168.7.2 #Route client computer through VLC (BBB)
+echo "1" | sudo tee /proc/sys/net/ipv4/ip_forward #Enable forwarding
+sudo sysctl -w net.ipv4.conf.all.rp_filter=0 #Disable IP filter for all interfaces
+sudo sysctl -w net.ipv4.conf.enx04a316b84e64.rp_filter=0 #Disable IP filter for USB interface
+sudo sysctl -w net.ipv4.conf.enp8s0.rp_filter=0 #Disable IP filter for ethernet interface
+sudo ufw disable #Disable Ubuntu firewall
+
+
+
+
+#Create the network 
+sudo ip link add eth10 type dummy
+
+sudo ifconfig eth10 hw ether 00:22:22:ff:ff:ff
+
+sudo ip addr add 192.168.20.1/24 brd + dev eth10 label eth10:0
+
+
+#Delete the default route then add new one
+sudo route del -net 192.168.2.0/24 
+sudo route add -net 192.168.2.0/24 gw 10.8.10.5 
+echo "1" | sudo tee /proc/sys/net/ipv4/ip_forward #Enable forwarding
+
+
+
+route add -net 192.168.20.0 gw 192.168.0.1 netmask 255.255.255.0 dev vlc0
+route add -net 192.168.20.0 gw 10.8.9.13 netmask 255.255.0.0 dev eth0
+
+
+
+sudo ip route add default via 10.8.10.5
+sudo ip route del default via 10.8.0.1
+
+
+
+
+sudo ip link add eno10 type dummy
+
+sudo ifconfig eno10 hw ether 00:22:22:ff:ff:ff
+
+sudo ip addr add 192.168.20.1/24 brd + dev eno10 label eno10:0
+
+
+route add -net 192.168.20.0 netmask 255.255.0.0 gw 10.8.9.13 dev eth0
+
+
+
+#Tx
+sudo ip link add eth10 type dummy
+sudo ifconfig eth10 hw ether C8:D7:4A:4E:47:50
+sudo ip addr add 192.168.20.1/24 brd + dev eth10 label eth10:0
+sudo ip link set dev eth10 up
+
+#Rx
+sudo ip link add eth0 type dummy
+sudo ifconfig eth0 hw ether C8:D7:4A:4E:47:51
+sudo ip addr add 192.168.20.2/24 brd + dev eth0 label eth0:0
+sudo ip link set dev eth0 up
+
+
+
+#route add -net 192.168.20.0/24 dev vlc0
+#sudo route add -net 192.168.20.0/24 gw 10.8.10.5 dev eno1
+
+
+#Tx
+sudo route add -net 192.168.20.0/24 gw 10.8.10.5 dev eth0
+
+
+#BBBTx-wifi work
+sudo route add -net 192.168.20.0/24 gw 10.0.0.13 dev wlan0
+#BBBTX-VLC
+sudo route add -net 192.168.20.0/24 gw 192.168.0.2 dev vlc0
+
+#Rx
+route add -net 192.168.20.0 netmask 255.255.255.0 gw 10.8.10.6 dev eth0
