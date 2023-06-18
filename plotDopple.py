@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 #Save database URL to url  
 #url = "https://raw.githubusercontent.com/kotobuki09/TrackLocation/master/icontrol_data.csv"
-url = "https://raw.githubusercontent.com/kotobuki09/Fab_OpenVLC/main/Dopper_2302.csv?token=GHSAT0AAAAAAB6XFZLN23ECBD4ZALOBOLXCY7YXKLA"
+url = "https://raw.githubusercontent.com/kotobuki09/Fab_OpenVLC/main/Dopper_1806.csv?token=GHSAT0AAAAAACCS5Q76SJ4K5Z2ZSAH2ITCAZEO3KDQ"
 
 
 # Creating a DataFrame with dataset and change all the "NM" value to missing value 

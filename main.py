@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 
 #Save database URL to url
 #url = "https://raw.githubusercontent.com/kotobuki09/TrackLocation/master/icontrol_data.csv"
-url = "https://raw.githubusercontent.com/kotobuki09/kngo/main/Dopper_2302.csv"
+#url = "https://raw.githubusercontent.com/kotobuki09/kngo/main/Dopper_2302.csv"
+url = "https://raw.githubusercontent.com/kotobuki09/Fab_OpenVLC/main/Dopper_1806.csv?token=GHSAT0AAAAAACCS5Q76SJ4K5Z2ZSAH2ITCAZEO3KDQ"
 
 
 
@@ -49,11 +50,11 @@ values = [i/5 for i in range(0, 601)]
 
 
 #print(y)
-plt.plot(x, y)
+#plt.plot(x, y)
 #plt.title('Doppler velocity extracted from testbed scenario')
-plt.xlabel('Time(s)')
-plt.ylabel('Doppler velocity')
-plt.show()
+#plt.xlabel('Time(s)')
+#plt.ylabel('Doppler velocity')
+#plt.show()
 
 #df2 = pd.DataFrame (x, columns = ['Time'])
 #print(df2.head)
@@ -72,7 +73,7 @@ import matplotlib
 #use red for bars with value less than 10 and green for all other bars
 
 #cols = ['red' if y < 2 else 'green' for y in df.Doppler]
-cols = ['green' if y < 3 else 'blue' if 3 <= y < 6 else 'red' for y in df.Doppler]
+cols = ['green' if y < 3 else 'blue' if 3 <= y < 7 else 'red' for y in df.Doppler]
 x=df["Time"]
 y=df["Doppler"]
 fig=sns.barplot(x=x, y=y,palette=cols)
@@ -91,4 +92,3 @@ plt.margins(y=0)
 plt.show()
 
 fig.figure.savefig("Doppler062023.png",transparent = True, bbox_inches = 'tight', pad_inches = 0.2)
-
