@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Define data URL
-url = "https://raw.githubusercontent.com/kotobuki09/Fab_OpenVLC/main/Dopper_1806.csv?token=GHSAT0AAAAAACCS5Q76SJ4K5Z2ZSAH2ITCAZEO3KDQ"
+url = "https://raw.githubusercontent.com/kotobuki09/Fab_OpenVLC/main/Dopper_1806.csv?token=GHSAT0AAAAAACCS5Q77UBTLQPXPWDPQSOIQZEO7CUQ"
 
 # Read the data into a DataFrame, handling missing values
 missing_values = ["NM"]
@@ -19,7 +19,7 @@ x = np.linspace(0, 120, 601)
 df['Time'] = x
 
 # Generate continuous color map using "cividis" from Matplotlib
-color_map = plt.cm.get_cmap("inferno")
+color_map = plt.cm.get_cmap("cividis")
 norm = plt.Normalize(df['Doppler'].min(), df['Doppler'].max())
 colors = color_map(norm(df['Doppler']))
 
@@ -37,4 +37,4 @@ plt.margins(y=0)
 
 # Show and save the plot
 plt.show()
-fig.savefig("Doppler062023v5.png", transparent=True, bbox_inches='tight', pad_inches=0.2)
+fig.savefig("Doppler062023v2.png", transparent=True, bbox_inches='tight', pad_inches=0.2)
