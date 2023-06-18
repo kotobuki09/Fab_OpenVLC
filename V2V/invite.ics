@@ -1,0 +1,102 @@
+BEGIN:VCALENDAR
+METHOD:REQUEST
+PRODID:Microsoft Exchange Server 2010
+VERSION:2.0
+BEGIN:VTIMEZONE
+TZID:GMT Standard Time
+BEGIN:STANDARD
+DTSTART:16010101T020000
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0000
+RRULE:FREQ=YEARLY;INTERVAL=1;BYDAY=-1SU;BYMONTH=10
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:16010101T010000
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0100
+RRULE:FREQ=YEARLY;INTERVAL=1;BYDAY=-1SU;BYMONTH=3
+END:DAYLIGHT
+END:VTIMEZONE
+BEGIN:VEVENT
+ORGANIZER;CN=Jagdeep Singh;SENT-BY="mailto:kien.ngotrung@unipa.it":mailto:jag
+ deep.singh@toshiba-bril.com
+ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;CN=kien.ngotr
+ ung@community.unipa.it:mailto:kien.ngotrung@community.unipa.it
+ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;CN=Tim Farnha
+ m:mailto:Tim.Farnham@toshiba-bril.com
+ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;CN=KIEN NGO T
+ RUNG:mailto:kien.ngotrung@unipa.it
+ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;CN=ILENIA TIN
+ NIRELLO:mailto:ilenia.tinnirello@unipa.it
+DESCRIPTION:\n________________________________\nFrom: Jagdeep Singh <jagdee
+ p.singh@toshiba-bril.com>\nSent: Friday\, March 31\, 2023 3:02:44 PM (UTC+
+ 02:00) Helsinki\, Kyiv\, Riga\, Sofia\, Tallinn\, Vilnius\nTo: Tim Farnham
+  <Tim.Farnham@toshiba-bril.com>\; kien.ngotrung@community.unipa.it <kien.n
+ gotrung@community.unipa.it>\; KIEN NGO TRUNG <kien.ngotrung@unipa.it>\; IL
+ ENIA TINNIRELLO <ilenia.tinnirello@unipa.it>\nSubject: UNIPA-Toshiba\nWhen
+ : Friday\, March 31\, 2023 4:00 PM-4:30 PM.\nWhere: Microsoft Teams Meetin
+ g\n\nYou don't often get email from jagdeep.singh@toshiba-bril.com. Learn 
+ why this is important<https://aka.ms/LearnAboutSenderIdentification>\n\n__
+ __________________________________________________________________________
+ ____\nMicrosoft Teams meeting\nJoin on your computer\, mobile app or room 
+ device\nClick here to join the meeting<https://teams.microsoft.com/l/meetu
+ p-join/19%3ameeting_Y2Y4YzIyNWUtMzRjYS00MjI5LThiNjQtMTMwYmQwZjNmMTI3%40thr
+ ead.v2/0?context=%7b%22Tid%22%3a%222a54ae08-1554-453d-ada9-cc6681276b3c%22
+ %2c%22Oid%22%3a%22801ce090-1757-4b2a-8691-1155b094e16b%22%7d>\nMeeting ID:
+  333 609 842 911\nPasscode: 7gX6Vf\nDownload Teams<https://www.microsoft.c
+ om/en-us/microsoft-teams/download-app> | Join on the web<https://www.micro
+ soft.com/microsoft-teams/join-a-meeting>\nLearn More<https://aka.ms/JoinTe
+ amsMeeting> | Meeting options<https://teams.microsoft.com/meetingOptions/?
+ organizerId=801ce090-1757-4b2a-8691-1155b094e16b&tenantId=2a54ae08-1554-45
+ 3d-ada9-cc6681276b3c&threadId=19_meeting_Y2Y4YzIyNWUtMzRjYS00MjI5LThiNjQtM
+ TMwYmQwZjNmMTI3@thread.v2&messageId=0&language=en-US>\n___________________
+ _____________________________________________________________\n\n\n\n_____
+ ___________________________\nThis email has been scanned for email related
+  threats and delivered safely by Mimecast.\nFor more information please vi
+ sit http://www.mimecast.com\n________________________________\n
+UID:040000008200E00074C5B7101A82E00800000000D0CA7EFED063D901000000000000000
+ 010000000C8C893FCE4779E48B703EE298B7B2E98
+SUMMARY:FW: UNIPA-Toshiba
+DTSTART;TZID=GMT Standard Time:20230331T140000
+DTEND;TZID=GMT Standard Time:20230331T143000
+CLASS:PUBLIC
+PRIORITY:5
+DTSTAMP:20230331T120242Z
+TRANSP:OPAQUE
+STATUS:CONFIRMED
+SEQUENCE:0
+LOCATION:Microsoft Teams Meeting
+X-MICROSOFT-CDO-APPT-SEQUENCE:0
+X-MICROSOFT-CDO-OWNERAPPTID:98514919
+X-MICROSOFT-CDO-BUSYSTATUS:TENTATIVE
+X-MICROSOFT-CDO-INTENDEDSTATUS:BUSY
+X-MICROSOFT-CDO-ALLDAYEVENT:FALSE
+X-MICROSOFT-CDO-IMPORTANCE:1
+X-MICROSOFT-CDO-INSTTYPE:0
+X-MICROSOFT-SKYPETEAMSMEETINGURL:https://teams.microsoft.com/l/meetup-join/
+ 19%3ameeting_Y2Y4YzIyNWUtMzRjYS00MjI5LThiNjQtMTMwYmQwZjNmMTI3%40thread.v2/
+ 0?context=%7b%22Tid%22%3a%222a54ae08-1554-453d-ada9-cc6681276b3c%22%2c%22O
+ id%22%3a%22801ce090-1757-4b2a-8691-1155b094e16b%22%7d
+X-MICROSOFT-SCHEDULINGSERVICEUPDATEURL:https://api.scheduler.teams.microsof
+ t.com/teams/2a54ae08-1554-453d-ada9-cc6681276b3c/801ce090-1757-4b2a-8691-1
+ 155b094e16b/19_meeting_Y2Y4YzIyNWUtMzRjYS00MjI5LThiNjQtMTMwYmQwZjNmMTI3@th
+ read.v2/0
+X-MICROSOFT-SKYPETEAMSPROPERTIES:{"cid":"19:meeting_Y2Y4YzIyNWUtMzRjYS00MjI
+ 5LThiNjQtMTMwYmQwZjNmMTI3@thread.v2"\,"private":true\,"type":0\,"mid":0\,"
+ rid":0\,"uid":null}
+X-MICROSOFT-ONLINEMEETINGCONFLINK:conf:sip:jagdeep.singh@toshiba-bril.com\;
+ gruu\;opaque=app:conf:focus:id:teams:2:0!19:meeting_Y2Y4YzIyNWUtMzRjYS00Mj
+ I5LThiNjQtMTMwYmQwZjNmMTI3-thread.v2!801ce09017574b2a86911155b094e16b!2a54
+ ae081554453dada9cc6681276b3c
+X-MICROSOFT-DONOTFORWARDMEETING:FALSE
+X-MICROSOFT-DISALLOW-COUNTER:FALSE
+X-MICROSOFT-LOCATIONS:[ { "DisplayName" : "Microsoft Teams Meeting"\, "Loca
+ tionAnnotation" : ""\, "LocationSource" : 0\, "Unresolved" : false\, "Loca
+ tionUri" : "" } ]
+BEGIN:VALARM
+DESCRIPTION:REMINDER
+TRIGGER;RELATED=START:-PT15M
+ACTION:DISPLAY
+END:VALARM
+END:VEVENT
+END:VCALENDAR

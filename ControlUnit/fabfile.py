@@ -9,7 +9,7 @@ import pandas as pd
 
 
 #env.hosts={'debian@10.8.10.5'}
-env.roledefs = { 'vlc1': ['debian@10.8.10.5'], 'vlc2': ['debian@10.8.10.8'] }
+env.roledefs = { 'vlc1': ['debian@10.8.10.5'], 'vlc2': ['debian@10.8.10.6'] }
 env.passwords = { 'debian@10.8.10.5:22':'temppwd', 'debian@10.8.10.8:22':'temppwd' }
 
 #nice workaround solution to embed the host access parameters as a fabric task
@@ -20,8 +20,8 @@ def vlc1():
 
 @fab.task
 def vlc3():
-    env.hosts={'debian@10.8.10.8'}
-    env.passwords = {'debian@10.8.10.8:22':'temppwd'}
+    env.hosts={'debian@10.8.10.9'}
+    env.passwords = {'debian@10.8.10.9:22':'temppwd'}
     
 @fab.task
 def vlc2():
@@ -42,7 +42,7 @@ def start_iperf_client(type=""):
     if type=="vlc":
         command = 'nohup %s &> /dev/null &' % "iperf -c 192.168.0.2 -u -b 1M -l 800 -p 10001 -t 100000"
     elif type=="wifi":
-        command = 'nohup %s &> /dev/null &' % "iperf -c 10.0.0.16 -u -b 1M -l 800 -p 10002 -t 100000"
+        command = 'nohup %s &> /dev/null &' % "iperf -c 10.0.0.13 -u -b 1M -l 800 -p 10002 -t 100000"
     else:
         command = 'nohup %s &> /dev/null &' % "iperf -c 192.168.10.2 -u -b 1000M -l 800 -p 10001 -t 100000"
     fab.run(command, pty=False)
@@ -60,7 +60,7 @@ def start_iperf_server(type=""):
         #command = "iperf -u -l 800 -s -i3 -B 192.168.0.2 -p 10001"
     elif type=="wifi":
         rx_host="192.168.12.26"
-        #command = "iperf -u -l 800 -s -i3 -B 10.0.0.16 -p 10002"
+        #command = "iperf -u -l 800 -s -i3 -B 10.0.0.13 -p 10002"
     else:
         rx_host="192.168.10.2"
         command = "iperf -u -l 800 -s -i3 -B 192.168.10.2 -p 10001"
@@ -436,3 +436,55 @@ def getRSSI_infi():
     #output = output[list(env.hosts)[0]].split(" ")
     #output = [int(i) for i in output]
         time.sleep(1)
+        
+        
+        
+#Intelligent Control test
+@fab.task
+def icontrol_demo(capture=True):
+    T=1
+    Twatchdog=1
+    execute(vlc1)
+    execute(vlc_link)
+    current_state="VLC"
+    time.sleep(T)
+
+    while 1:
+        #Watchdog for VLC
+        if current_state=="WIFI":
+            execute(vlc1)
+            execute(dumpUDP)
+            execute(vlc_link)
+            current_state="VLC"
+            #time.sleep(Twatchdog)
+        #RX
+        execute(vlc2)
+        output = execute(getRSSI)
+        output=output[list(env.hosts)[0]].split(" ")
+        output = [int(i) for i in output]
+        print("Checking the RSSI value in VLC channel 1: "+str(output))
+        time.sleep(2)
+        #print("CURRENT STATE={}".format(current_state))
+
+        #execute(vlc1)
+        if output[2]<50 and current_state=="VLC": #and output[1]>935 and output[2] <20 and output[0]<1089: # and current_state=="VLC":
+            execute(vlc1)
+            execute(kill_dumpUDP)
+            print("Switching to WiFi channel \n")
+            
+            v2w_time=execute(wifi_link)
+            #v2w_time=[num for num in v2w_time if isinstance(num, numbers.Number)]
+            #print(v2w_time)
+            print("HANDOVER TIME VLC to WiFi : " + str(v2w_time)+" ms")
+            current_state="WIFI"
+            
+        elif output[2]>50 and current_state=="WIFI":
+            execute(vlc1)
+            
+            print("Switching to VLC channel \n")
+            
+            w2v_time=execute(vlc_link)
+            #w2v_time=[num for num in w2v_time if isinstance(num, numbers.Number)]
+            print("HANDOVER TIME WiFi to VLC : " + str(w2v_time)+" ms")
+            current_state="VLC"
+        time.sleep(T)

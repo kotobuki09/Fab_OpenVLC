@@ -246,8 +246,8 @@ def main():
     plt.xlabel("Distance from the center Tx1")
     plt.ylabel("RSSI level")
     #plt.xlim(0,2)
-    fig.savefig("RSSI characteristic in horizontal handoverv3e deactlight ave.pdf")
-    fig.savefig("RSSI characteristic in horizontal handoverv3e deactlight ave png")
+    fig.savefig("RSSI characteristic in horizontal handoverv3e deactlight ave 2023.pdf")
+    fig.savefig("RSSI characteristic in horizontal handoverv3e deactlight ave 2023.png")
     plt.show()
 
     print("wait...")
