@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Define data URL
-url = "https://raw.githubusercontent.com/kotobuki09/Fab_OpenVLC/main/Dopper_1806.csv?token=GHSAT0AAAAAACCS5Q77UBTLQPXPWDPQSOIQZEO7CUQ"
+url = "https://raw.githubusercontent.com/kotobuki09/Fab_OpenVLC/main/Dopper_2302.csv?token=GHSAT0AAAAAACFWXAL4PKZAONDAPKDMY2Y6ZHNZH4Q"
 
 # Read the data into a DataFrame, handling missing values
 missing_values = ["NM"]
