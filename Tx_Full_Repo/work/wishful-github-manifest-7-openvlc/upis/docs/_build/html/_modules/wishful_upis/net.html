@@ -1,0 +1,405 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>wishful_upis.net &#8212; WiSHFUL Framework 2.0 2.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">WiSHFUL Framework 2.0 2.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/wishful.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for wishful_upis.net</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.lte.net</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.wifi.net</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.lowpan.net</span> <span class="k">import</span> <span class="o">*</span>
+
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Piotr Gawlowicz, Mikolaj Chwalisz, Zubow&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2015, Technische Universitat Berlin&quot;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.1.0&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;{gawlowicz, chwalisz, zubow}@tkn.tu-berlin.de&quot;</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    The WiSHFUL network control interface, UPI_N, for configuration/monitoring of the higher</span>
+<span class="sd">    layers of the network protocol stack (upper MAC and higher).</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c1"># Generic API to control the higher layers, i.e. key-value configuration.</span>
+
+<div class="viewcode-block" id="set_parameters"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.set_parameters">[docs]</a><span class="k">def</span> <span class="nf">set_parameters</span><span class="p">(</span><span class="n">param_key_values_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The UPI_N interface is able to configure the protocol (routing, transport, application) behavior by changing parameters.</span>
+<span class="sd">    Parameters correspond to the  variables used in the protocols.</span>
+<span class="sd">    This function (re)set the value(s) of the parameters specified in the dictionary argument.</span>
+<span class="sd">    The list of available parameters supported by all platforms/OS are defined in this module.</span>
+<span class="sd">    Parameters specific to a subgroup of platforms/OS are defined in the corresponding submodules.</span>
+<span class="sd">    A list of supported parameters can be dynamically obtained using the get_info function on each module.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; param_key_values = {ROUTING_MAX_TTL : 5}</span>
+<span class="sd">            &gt;&gt; result = control_engine.net.set_parameters(param_key_values)</span>
+<span class="sd">            &gt;&gt; print result</span>
+<span class="sd">            {ROUTING_MAX_TTL : 0}</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        param_key_values_dict (dict): dictionary containing the key (string) value (any) pairs for each parameter.</span>
+<span class="sd">            An example is {CSMA_CW : 15, CSMA_CW_MIN : 15, CSMA_CW_MAX : 15}</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary containing key (string name) error (0 = success, 1=fail, +1=error code) pairs for each parameter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="get_parameters"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.get_parameters">[docs]</a><span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="n">param_key_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get the parameter on higher layers of protocol stack (higher MAC and above)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">       param_key: the parameter identified by this key.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">       the parameter value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="get_measurements"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.get_measurements">[docs]</a><span class="k">def</span> <span class="nf">get_measurements</span><span class="p">(</span><span class="n">measurement_key_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; measurement_keys = [NUM_FREEZING_COUNT]</span>
+<span class="sd">            &gt;&gt; result = control_engine.net.iface(&quot;wlan0&quot;).get_measurements(measurement_keys)</span>
+<span class="sd">            &gt;&gt; print result</span>
+<span class="sd">            {UPI_RN.NUM_FREEZING_COUNT : 150}</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        measurement_key_list (list): list of requested measurements, an example of is [NUM_FREEZING_COUNT, TX_ACTIVITY].</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary containing key (string name) and values of the requested measurements.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="get_measurements_periodic"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.get_measurements_periodic">[docs]</a><span class="k">def</span> <span class="nf">get_measurements_periodic</span><span class="p">(</span><span class="n">measurement_key_list</span><span class="p">,</span> <span class="n">collect_period</span><span class="p">,</span> <span class="n">report_period</span><span class="p">,</span> <span class="n">num_iterations</span><span class="p">,</span> <span class="n">report_callback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; def my_cb(report):</span>
+<span class="sd">            &gt;&gt;     for key in report.keys():</span>
+<span class="sd">            &gt;&gt;         for measurement in report[key]:</span>
+<span class="sd">            &gt;&gt;             print measurement</span>
+<span class="sd">            &gt;&gt; measurement_keys = [NUM_FREEZING_COUNT, TX_ACTIVITY]</span>
+<span class="sd">            &gt;&gt; result = control_engine.radio.iface(&quot;wlan0&quot;).get_measurements_periodic(measurement_keys,1000000,5000000,10,my_cb)</span>
+<span class="sd">            &gt;&gt; print result</span>
+<span class="sd">            {UPI_RN.NUM_FREEZING_COUNT : 150}</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        measurement_key_list (list): list of measurement keys. The keys are measurement names defined in this module.</span>
+<span class="sd">        collect_period (int): defines the time between two consecutive measurement readings, in microsecond.</span>
+<span class="sd">        report_period (int): defines the time between two consecutive reports to the control program, in microseconds.</span>
+<span class="sd">        num_iterations (int): defines how many times the measurement collection has to be repeated.</span>
+<span class="sd">        report_callback (function): the local callback that is invoked every report period.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: error code, 0 if success, 1 otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="subscribe_events"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.subscribe_events">[docs]</a><span class="k">def</span> <span class="nf">subscribe_events</span><span class="p">(</span><span class="n">event_key_list</span><span class="p">,</span> <span class="n">event_callback</span><span class="p">,</span> <span class="n">event_duration</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; event_keys = [&quot;MAC_RX_EVENT&quot;,&quot;MAC_COLLISION_EVENT&quot;]</span>
+<span class="sd">            &gt;&gt; result = control_engine.radio.iface(&quot;wlan0&quot;).subscribe_events(event_keys, event_cb, 60)</span>
+<span class="sd">            &gt;&gt; print result</span>
+<span class="sd">            {&quot;MAC_RX_EVENT&quot; : 0, &quot;MAC_COLLISION_EVENT&quot;:0}</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        event_key_list (list): List of events which should be monitored.</span>
+<span class="sd">        event_callback (Callable): Callback called every time an event is posted.</span>
+<span class="sd">        event_duration (int): Duration (in seconds) for which the event listener(s) should be active (0 = infinite)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary containing an error code for each event.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="get_network_info"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.get_network_info">[docs]</a><span class="k">def</span> <span class="nf">get_network_info</span><span class="p">():</span>
+    <span class="k">return</span></div>
+
+<span class="sd">&#39;&#39;&#39; App layer - set-up of packet flows &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="create_packetflow_sink"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.create_packetflow_sink">[docs]</a><span class="k">def</span> <span class="nf">create_packetflow_sink</span><span class="p">(</span><span class="n">port</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Start IPerf server (TCP/IP)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="destroy_packetflow_sink"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.destroy_packetflow_sink">[docs]</a><span class="k">def</span> <span class="nf">destroy_packetflow_sink</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Stop IPerf server.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="start_packetflow"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.start_packetflow">[docs]</a><span class="k">def</span> <span class="nf">start_packetflow</span><span class="p">(</span><span class="n">dest_ip</span><span class="p">,</span> <span class="n">port</span> <span class="o">=</span> <span class="mi">5001</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Start IPerf client.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="stop_packetflow"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.stop_packetflow">[docs]</a><span class="k">def</span> <span class="nf">stop_packetflow</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Stop IPerf client.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<span class="c1"># Net layer</span>
+
+<div class="viewcode-block" id="get_iface_hw_addr"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.get_iface_hw_addr">[docs]</a><span class="k">def</span> <span class="nf">get_iface_hw_addr</span><span class="p">(</span><span class="n">iface</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Returns the hardware address (MAC address) of a given interface.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="set_ip_address"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.set_ip_address">[docs]</a><span class="k">def</span> <span class="nf">set_ip_address</span><span class="p">(</span><span class="n">iface</span><span class="p">,</span> <span class="n">ip_address</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Set ip address of the station</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="get_iface_ip_addr"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.get_iface_ip_addr">[docs]</a><span class="k">def</span> <span class="nf">get_iface_ip_addr</span><span class="p">(</span><span class="n">iface</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Returns the IP address of a given interface.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="set_ARP_entry"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.set_ARP_entry">[docs]</a><span class="k">def</span> <span class="nf">set_ARP_entry</span><span class="p">(</span><span class="n">iface</span><span class="p">,</span> <span class="n">mac_addr</span><span class="p">,</span> <span class="n">ip_addr</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Manipulates the entries in the ARP cache.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="change_routing"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.change_routing">[docs]</a><span class="k">def</span> <span class="nf">change_routing</span><span class="p">(</span><span class="n">current_gw_ip_addr</span><span class="p">,</span> <span class="n">new_gw_ip_addr</span><span class="p">,</span> <span class="n">device_ip_addr</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Controls the routing.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<span class="sd">&#39;&#39;&#39; Upper MAC layer - injection and sniffing of layer2 traffic &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="gen_layer2_traffic"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.gen_layer2_traffic">[docs]</a><span class="k">def</span> <span class="nf">gen_layer2_traffic</span><span class="p">(</span><span class="n">iface</span><span class="p">,</span> <span class="n">num_packets</span><span class="p">,</span> <span class="n">pinter</span><span class="p">,</span> <span class="n">max_phy_broadcast_rate_mbps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Inject layer2 traffic into network device.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="inject_frame"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.inject_frame">[docs]</a><span class="k">def</span> <span class="nf">inject_frame</span><span class="p">(</span><span class="n">iface</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">is_layer_2_packet</span><span class="p">,</span> <span class="n">tx_count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pkt_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Inject L2/L3 frame injection into the protocol stack</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="sniff_layer2_traffic"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.sniff_layer2_traffic">[docs]</a><span class="k">def</span> <span class="nf">sniff_layer2_traffic</span><span class="p">(</span><span class="n">iface</span><span class="p">,</span> <span class="n">sniff_timeout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Layer-2 packet sniffing from network device.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<span class="sd">&#39;&#39;&#39; Controlling network emulation (netem), i.e. emulation of variable delay, loss, duplication and re-ordering. &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="set_netem_profile"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.set_netem_profile">[docs]</a><span class="k">def</span> <span class="nf">set_netem_profile</span><span class="p">(</span><span class="n">iface</span><span class="p">,</span> <span class="n">profile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set emulation profile in given network interface</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="update_netem_profile"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.update_netem_profile">[docs]</a><span class="k">def</span> <span class="nf">update_netem_profile</span><span class="p">(</span><span class="n">iface</span><span class="p">,</span> <span class="n">profile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update emulation profile in given network interface</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="remove_netem_profile"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.remove_netem_profile">[docs]</a><span class="k">def</span> <span class="nf">remove_netem_profile</span><span class="p">(</span><span class="n">iface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove emulation profile from given network interface.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="set_per_link_netem_profile"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.set_per_link_netem_profile">[docs]</a><span class="k">def</span> <span class="nf">set_per_link_netem_profile</span><span class="p">(</span><span class="n">iface</span><span class="p">,</span> <span class="n">dstIpAddr</span><span class="p">,</span> <span class="n">profile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set emulation profile in network interface for</span>
+<span class="sd">    given link identified with destination IP address</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="update_per_link_netem_profile"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.update_per_link_netem_profile">[docs]</a><span class="k">def</span> <span class="nf">update_per_link_netem_profile</span><span class="p">(</span><span class="n">iface</span><span class="p">,</span> <span class="n">dstIpAddr</span><span class="p">,</span> <span class="n">profile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update emulation profile in network interface</span>
+<span class="sd">    for given link identified with MAC addresses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="remove_per_link_netem_profile"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.remove_per_link_netem_profile">[docs]</a><span class="k">def</span> <span class="nf">remove_per_link_netem_profile</span><span class="p">(</span><span class="n">iface</span><span class="p">,</span> <span class="n">dstIpAddr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove emulation profile from network interface</span>
+<span class="sd">    for given link identified with MAC addresses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<span class="sd">&#39;&#39;&#39; Controlling queuing disciplines &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="install_egress_scheduler"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.install_egress_scheduler">[docs]</a><span class="k">def</span> <span class="nf">install_egress_scheduler</span><span class="p">(</span><span class="n">iface</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Install Egress Scheduler in given network interface.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="remove_egress_scheduler"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.remove_egress_scheduler">[docs]</a><span class="k">def</span> <span class="nf">remove_egress_scheduler</span><span class="p">(</span><span class="n">iface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove Egress Scheduler from network interface</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<span class="sd">&#39;&#39;&#39; Network filter tables &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="clear_nf_tables"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.clear_nf_tables">[docs]</a><span class="k">def</span> <span class="nf">clear_nf_tables</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="s2">&quot;ALL&quot;</span><span class="p">,</span> <span class="n">chain</span><span class="o">=</span><span class="s2">&quot;ALL&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clear all entries in given chain of given table in iptables</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="get_nf_table"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.get_nf_table">[docs]</a><span class="k">def</span> <span class="nf">get_nf_table</span><span class="p">(</span><span class="n">tableName</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get specific iptable and its entires</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+<span class="sd">&#39;&#39;&#39; Packet marking - IP ToS &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="set_pkt_marking"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.set_pkt_marking">[docs]</a><span class="k">def</span> <span class="nf">set_pkt_marking</span><span class="p">(</span><span class="n">flowId</span><span class="p">,</span> <span class="n">markId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="s2">&quot;mangle&quot;</span><span class="p">,</span> <span class="n">chain</span><span class="o">=</span><span class="s2">&quot;POSTROUTING&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add iptable rule for marking all packets belonging</span>
+<span class="sd">    to flow identified with given 5-tuple</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="del_pkt_marking"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.del_pkt_marking">[docs]</a><span class="k">def</span> <span class="nf">del_pkt_marking</span><span class="p">(</span><span class="n">flowId</span><span class="p">,</span> <span class="n">markId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="s2">&quot;mangle&quot;</span><span class="p">,</span> <span class="n">chain</span><span class="o">=</span><span class="s2">&quot;POSTROUTING&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove rule used to mark given flow from iptable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+<span class="sd">&#39;&#39;&#39; Packet mangling - IP ToS &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="set_ip_tos"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.set_ip_tos">[docs]</a><span class="k">def</span> <span class="nf">set_ip_tos</span><span class="p">(</span><span class="n">flowId</span><span class="p">,</span> <span class="n">tos</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="s2">&quot;mangle&quot;</span><span class="p">,</span> <span class="n">chain</span><span class="o">=</span><span class="s2">&quot;POSTROUTING&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add iptable rule for setting TOS (Type-of-Service)</span>
+<span class="sd">    field in all packets matching flowID (5-tuple)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="del_ip_tos"><a class="viewcode-back" href="../../wishful_upis.html#wishful_upis.net.del_ip_tos">[docs]</a><span class="k">def</span> <span class="nf">del_ip_tos</span><span class="p">(</span><span class="n">flowId</span><span class="p">,</span> <span class="n">tos</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="s2">&quot;mangle&quot;</span><span class="p">,</span> <span class="n">chain</span><span class="o">=</span><span class="s2">&quot;POSTROUTING&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove rule used to setting TOS field from iptable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">WiSHFUL Framework 2.0 2.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Pierluigi Gallo, Domenico Garlisi, Anatolij Zubow, Mikolaj Chwalisz, Piotr Gawlowicz, Peter Ruckebusch, Bart Jooris, Jan Bauwens, Spilios Giannoulis.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

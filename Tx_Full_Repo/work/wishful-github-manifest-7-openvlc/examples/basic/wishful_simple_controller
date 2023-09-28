@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import datetime
+import logging
+import wishful_controller
+import gevent
+import wishful_upis as upis
+
+__author__ = "Piotr Gawlowicz"
+__copyright__ = "Copyright (c) 2015, Technische Universität Berlin"
+__version__ = "0.1.0"
+__email__ = "gawlowicz@tkn.tu-berlin.de"
+
+
+log = logging.getLogger('wishful_controller')
+log_level = logging.INFO
+logging.basicConfig(level=log_level, format='%(asctime)s - %(name)s.%(funcName)s() - %(levelname)s - %(message)s')
+
+#Create controller
+controller = wishful_controller.Controller(dl="tcp://127.0.0.1:8990", ul="tcp://127.0.0.1:8989")
+
+#Configure controller
+controller.set_controller_info(name="WishfulController", info="WishfulControllerInfo")
+controller.add_module(moduleName="discovery", pyModuleName="wishful_module_discovery_pyre",
+                      className="PyreDiscoveryControllerModule", 
+                      kwargs={"iface":"lo", "groupName":"wishful_1234", "downlink":"tcp://127.0.0.1:8990", "uplink":"tcp://127.0.0.1:8989"})
+
+nodes = []
+
+@controller.new_node_callback()
+def new_node(node):
+    nodes.append(node)
+    print("New node appeared:")
+    print(node)
+
+
+@controller.node_exit_callback()
+def node_exit(node, reason):
+    if node in nodes:
+        nodes.remove(node);
+    print("NodeExit : NodeID : {} Reason : {}".format(node.id, reason))
+
+
+@controller.set_default_callback()
+def default_callback(group, node, cmd, data):
+    print("{} DEFAULT CALLBACK : Group: {}, NodeName: {}, Cmd: {}, Returns: {}".format(datetime.datetime.now(), group, node.name, cmd, data))
+
+
+@controller.add_callback(upis.radio.get_channel)
+def get_channel_reponse(group, node, data):
+    print("{} get_channel_reponse : Group:{}, NodeId:{}, msg:{}".format(datetime.datetime.now(), group, node.id, data))
+
+
+def print_response(group, node, data):
+    print("{} Print response : Group:{}, NodeIP:{}, Result:{}".format(datetime.datetime.now(), group, node.ip, data)) 
+
+
+try:
+    #Start controller
+    controller.start()
+
+    #control loop
+    while True:
+        print("\n")
+        print("Connected nodes", [str(node.name) for node in nodes])
+        if nodes:
+            #execute non-blocking function immediately
+            controller.blocking(False).node(nodes[0]).radio.iface("wlan0").set_power(12)
+
+            #execute non-blocking function immediately, with specific callback
+            controller.callback(print_response).node(nodes[0]).radio.iface("wlan0").get_power()
+
+            #schedule non-blocking function delay
+            controller.delay(3).node(nodes[0]).net.create_packetflow_sink(port=1234)
+
+            #schedule non-blocking function exec time
+            exec_time = datetime.datetime.now() + datetime.timedelta(seconds=3)
+            controller.exec_time(exec_time).node(nodes[0]).radio.iface("wlan1").set_channel(channel=4)
+
+            #execute blocking function immediately
+            result = controller.node(nodes[0]).radio.iface("wlan1").get_channel()
+            print("{} Channel is: {}".format(datetime.datetime.now(), result))
+        gevent.sleep(10)
+
+except KeyboardInterrupt:
+    print("Controller exits")
+finally:
+    controller.stop()

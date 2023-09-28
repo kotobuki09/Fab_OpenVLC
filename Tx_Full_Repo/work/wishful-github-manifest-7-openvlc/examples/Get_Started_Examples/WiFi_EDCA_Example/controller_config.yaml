@@ -1,0 +1,14 @@
+## WiSHFUL Controller's config file
+# Controller structure contains information needed to setup controller:
+#  - name - name of controller. By default name is the same as hostname of node that runs controller
+#  - info - additional information about controller. By default info is empty
+#  - dl - the URL of downlink control channel
+#  - ul - the URL of uplink control channel
+
+controller:
+    name: "Controller"
+    info: "WiSHFUL Controller"
+    dl: "tcp://127.0.0.1:8990"
+    ul: "tcp://127.0.0.1:8989"
+
+modules: {}

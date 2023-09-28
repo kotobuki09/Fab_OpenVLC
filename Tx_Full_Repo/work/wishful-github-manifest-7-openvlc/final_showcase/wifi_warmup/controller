@@ -1,0 +1,498 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+WiSHFUL Final Showcase: Warm-up phase - Overlapping BSS Management
+
+Usage:
+   controller [options] [-q | -v]
+
+Options:
+   --logfile name        Name of the logfile
+   --config configFile   Config file path
+   --ad_address ipAddress IP address of AD controller
+
+Example:
+   ./controller -v --config ./config.yaml 
+
+Other options:
+   -h, --help          show this help message and exit
+   -q, --quiet         print less text
+   -v, --verbose       print more text
+   --version           show version and exit
+"""
+
+import sys
+# get access to lib dir
+sys.path.append('../')
+sys.path.append('../../')
+
+import os
+import time
+import datetime
+import logging
+import wishful_controller
+import gevent
+import yaml
+import wishful_upis as upis
+from lib.global_controller_proxy import GlobalSolutionControllerProxy
+
+__author__ = "Piotr Gawlowicz"
+__copyright__ = "Copyright (c) 2018, Technische Universität Berlin"
+__version__ = "0.1.0"
+__email__ = "gawlowicz@tkn.tu-berlin.de"
+
+
+log = logging.getLogger('wishful_agent.main')
+controller = wishful_controller.Controller()
+enabled = True
+nodes = []
+
+showcaseState = None  # Start, Started, Stop, Stopped
+trafficStarted = False
+
+availableChannels = [1, 6, 11]
+curChanIx = 0
+channelUsage = {}
+
+ap0_iface = "wlp2s0"
+sta0_iface = "wlp2s0"
+
+
+
+def start_network(value):
+    print("Enabling solution")
+    global enabled
+    global showcaseState
+    global controller
+    enabled = True
+    showcaseState = "Start"
+
+
+def stop_network(value):
+    print("Disable solution")
+    global enabled
+    global showcaseState
+    enabled = False
+    showcaseState = "Stop"
+
+
+def switch_channel(value):
+    global controller
+    global curChanIx
+    global availableChannels
+    global channelUsage
+    global ap0_iface
+    global sta0_iface
+
+    print("Switch channel")
+    ap0_node = get_node_by_name(nodes, "ap0")
+
+    newChannel = 0
+
+    if value:
+        newChannel = value.get("channel", None)
+
+    if not ap0_node:
+        return
+
+    controller._clear_call_context()
+
+    print("Channel receved from AD controller: ", newChannel)
+    if newChannel == 0:
+        curChannel = channelUsage["ap0"]
+        curChanIx = availableChannels.index(curChannel)
+
+        curChanIx = curChanIx + 1
+        if curChanIx >= len(availableChannels):
+            curChanIx = 0
+
+        newChannel = availableChannels[curChanIx]
+
+    print("Switch chanel -> {}".format(newChannel))
+    controller.nodes(ap0_node).blocking(False).net.iface(ap0_iface).switch_channel(newChannel)
+    channelUsage["ap0"] = newChannel
+
+
+def start_traffic(value):
+    global controller
+    global trafficStarted
+
+    print("Start Iperf traffic")
+    ap0_node = get_node_by_name(nodes, "ap0")
+    controller._clear_call_context()
+    if ap0_node:
+        controller.nodes(ap0_node).blocking(False).net.start_packetflow(dest_ip="192.168.10.2", port=5051)
+        trafficStarted = True
+
+
+def stop_traffic(value):
+    global controller
+    global trafficStarted
+
+    print("Stop Iperf traffic")
+    ap0_node = get_node_by_name(nodes, "ap0")
+    controller._clear_call_context()
+    if ap0_node:
+        controller.nodes(ap0_node).blocking(False).net.stop_packetflow()
+        trafficStarted = False
+
+
+def set_low_traffic(value):
+    global controller
+    global trafficStarted
+    global ap0_iface
+    global sta0_iface
+
+    print("Set LOW traffic")
+    ap0_node = get_node_by_name(nodes, "ap0")
+    sta0_node = get_node_by_name(nodes, "sta0")
+
+    controller._clear_call_context()
+    if not trafficStarted and ap0_node:
+        controller.nodes(ap0_node).blocking(False).net.start_packetflow(dest_ip="192.168.10.2", port=5051)
+        trafficStarted = True
+
+    if ap0_node:
+        controller.nodes(ap0_node).blocking(False).net.change_traffic_rate(interface=ap0_iface, rate=1)
+    if sta0_node:
+        controller.nodes(sta0_node).blocking(False).net.change_traffic_rate(interface=sta0_iface, rate=1)
+
+
+def set_medium_traffic(value):
+    global controller
+    global trafficStarted
+    global ap0_iface
+    global sta0_iface
+
+    print("Set MEDIUM traffic")
+    ap0_node = get_node_by_name(nodes, "ap0")
+    sta0_node = get_node_by_name(nodes, "sta0")
+
+    controller._clear_call_context()
+    if not trafficStarted and ap0_node:
+        controller.nodes(ap0_node).blocking(False).net.start_packetflow(dest_ip="192.168.10.2", port=5051)
+        trafficStarted = True
+
+    if ap0_node:
+        controller.nodes(ap0_node).blocking(False).net.change_traffic_rate(interface=ap0_iface, rate=20)
+    if sta0_node:
+        controller.nodes(sta0_node).blocking(False).net.change_traffic_rate(interface=sta0_iface, rate=20)
+
+
+def set_high_traffic(value):
+    global controller
+    global trafficStarted
+    global ap0_iface
+    global sta0_iface
+
+    print("Set HIGH traffic")
+    ap0_node = get_node_by_name(nodes, "ap0")
+    sta0_node = get_node_by_name(nodes, "sta0")
+
+    controller._clear_call_context()
+    if not trafficStarted and ap0_node:
+        controller.nodes(ap0_node).blocking(False).net.start_packetflow(dest_ip="192.168.10.2", port=5051)
+        trafficStarted = True
+
+    if ap0_node:
+        controller.nodes(ap0_node).blocking(False).net.change_traffic_rate(interface=ap0_iface, rate=500)
+    if sta0_node:
+        controller.nodes(sta0_node).blocking(False).net.change_traffic_rate(interface=sta0_iface, rate=500)
+
+def set_traffic(trafficValue):
+    global controller
+    global trafficStarted
+    global ap0_iface
+    global sta0_iface
+    
+    ap0_node = get_node_by_name(nodes, "ap0")
+    sta0_node = get_node_by_name(nodes, "sta0")
+
+    myRate = 0
+
+    controller._clear_call_context()
+
+    if trafficValue:
+        trafficValue = trafficValue.get("TYPE", None)
+
+    if trafficValue is None:
+        return
+
+    # 0-OFF, 1-LOW, 2-MEDIUM, 3-HIGH
+    if trafficValue == "OFF" and trafficStarted and ap0_node:
+        print("set_traffic: Switch traffic OFF")
+        controller.nodes(ap0_node).blocking(False).net.stop_packetflow()
+        trafficStarted = False
+        myRate = 100
+
+    elif trafficValue == "LOW":
+        print("set_traffic: Set LOW traffic")
+        myRate = 1
+    elif trafficValue == "MEDIUM":
+        print("set_traffic: Set MEDIUM traffic")
+        myRate = 20
+    else:
+        print("set_traffic: Set HIGH traffic")
+        myRate = 500
+
+    if not trafficStarted and trafficValue != "OFF" and ap0_node:
+        controller.nodes(ap0_node).blocking(False).net.start_packetflow(dest_ip="192.168.10.2", port=5051)
+        trafficStarted = True
+
+    if ap0_node:
+        controller.nodes(ap0_node).blocking(False).net.change_traffic_rate(interface=ap0_iface, rate=myRate)
+    if sta0_node:
+        controller.nodes(sta0_node).blocking(False).net.change_traffic_rate(interface=sta0_iface, rate=myRate)
+
+
+@controller.new_node_callback()
+def new_node(node):
+    nodes.append(node)
+    print("New node appeared:", node.name)
+
+
+@controller.node_exit_callback()
+def node_exit(node, reason):
+    if node in nodes:
+        nodes.remove(node);
+    print("NodeExit : NodeID : {} Reason : {}".format(node.id, reason))
+
+
+def get_node_by_name(nodes, nodeName):
+    for n in nodes:
+        if n.name == nodeName:
+            return n
+    return None
+
+
+def main(args):
+    global controller
+    global showcaseState
+    global trafficStarted
+    global channelUsage
+    global ap0_iface
+    global sta0_iface
+
+    log.debug(args)
+
+    config_file_path = args['--config']
+    config = None
+    with open(config_file_path, 'r') as f:
+        config = yaml.load(f)
+
+
+    # Load controller script parameters
+    parameters = config.get("parameters", None)
+    if parameters:
+        controllerName = parameters.get("controllerName", None)
+        ssid = parameters.get("ssid", None)
+        hostapd_config = parameters.get("hostapd_config", None)
+        wpa_supplicant_config = parameters.get("wpa_supplicant_config", None)
+        ap0_iface = parameters.get("ap0_iface", None)
+        sta0_iface = parameters.get("sta0_iface", None)
+        ad_address = parameters.get("ad_address", "127.0.0.1")
+
+
+    if args['--ad_address']:
+        ad_address = args['--ad_address']
+
+    controller.load_config(config)
+    controller.start()
+
+    solutionCtrProxy = GlobalSolutionControllerProxy(ip_address=ad_address,
+                                                     requestPort=7001,
+                                                     subPort=7000)
+
+    networkName = [controllerName]
+    networkType = 'IEEE_802.11'
+    solutionName = ["WiFi_Channel_Switching"]
+    commands = {"ACTIVATE": start_network,
+                "DEACTIVATE": stop_network,
+                "TRAFFIC_SET_OFF": stop_traffic,
+                "TRAFFIC_SET_LOW": set_low_traffic,
+                "TRAFFIC_SET_MEDIUM": set_medium_traffic,
+                "TRAFFIC_SET_HIGH": set_high_traffic,
+                "TRAFFIC": set_traffic,
+                "SWITCH_CHANNEL": switch_channel,
+                }
+    monitorList = ["THR", "PER"]
+    solutionCtrProxy.set_solution_attributes(controllerName,
+                                             networkType,
+                                             solutionName,
+                                             commands,
+                                             monitorList
+                                             )
+
+    # Register OBSS_Management solution to global solution controller
+    response = solutionCtrProxy.register_solution()
+    if response:
+        print("Solution was correctly registered to GlobalSolutionController")
+        solutionCtrProxy.start_command_listener()
+    else:
+        print("Solution was not registered to Global Solution Controller")
+
+    channelToFreq = {1: 2412,
+                     2: 2417,
+                     3: 2422,
+                     4: 2427,
+                     5: 2432,
+                     6: 2437,
+                     7: 2442,
+                     8: 2447,
+                     9: 2452,
+                     10: 2457,
+                     11: 2462,
+                     12: 2467,
+                     13: 2472,
+                     14: 2484,
+                     }
+
+    ap0_node = None
+    sta0_node = None
+    dirPath = os.path.dirname(config_file_path)
+    hostapd_fn = os.path.join(dirPath, hostapd_config)
+    wpa_supplicant_fn = os.path.join(dirPath, wpa_supplicant_config)
+    print("hostapd path", hostapd_fn)
+    print("wpa_supplicant path", wpa_supplicant_fn)
+
+    cellThroughputDict = {}
+
+    # control loop
+    while True:
+        gevent.sleep(1)
+        print("Connected nodes", [str(node.name) for node in nodes])
+
+        ap0_node = get_node_by_name(nodes, "ap0")
+        sta0_node = get_node_by_name(nodes, "sta0")
+
+        if not ap0_node or not sta0_node:
+            continue
+
+        if showcaseState == "Start":
+            print("Clean state")
+            controller.nodes(sta0_node).net.destroy_packetflow_sink()
+            controller.nodes(ap0_node).net.stop_packetflow()
+            trafficStarted = False
+
+            controller.nodes(ap0_node).net.iface(ap0_iface).stop_hostapd()
+            controller.nodes(ap0_node).net.iface(ap0_iface).disconnect_from_network(ap0_iface)
+            controller.nodes(sta0_node).net.iface(sta0_iface).stop_hostapd()
+            controller.nodes(sta0_node).net.iface(sta0_iface).disconnect_from_network(sta0_iface)
+            channelUsage = {}
+            controller.nodes(ap0_node).net.remove_traffic_shaper(interface=ap0_iface)
+            controller.nodes(sta0_node).net.remove_traffic_shaper(interface=sta0_iface)
+            time.sleep(2)
+
+            print("Setup Access Points")
+            controller.nodes(ap0_node).net.iface(ap0_iface).set_hostapd_conf(ap0_iface, hostapd_fn, 1, ssid)
+            controller.nodes(ap0_node).net.iface(ap0_iface).start_hostapd(hostapd_fn)
+            controller.nodes(ap0_node).net.iface(ap0_iface).set_ip_address(ap0_iface, "192.168.10.1")
+            channelUsage["ap0"] = 1
+            time.sleep(2)
+
+            print("Setup and connect STAs")
+            controller.nodes(sta0_node).net.iface(sta0_iface).connect_to_network(sta0_iface, ssid, wpa_supplicant_fn)
+            controller.nodes(sta0_node).net.iface(sta0_iface).set_ip_address(sta0_iface, "192.168.10.2")
+            showcaseState = "Started"
+
+            print("Install traffic shapers")
+            controller.nodes(ap0_node).net.install_traffic_shaper(interface=ap0_iface)
+            controller.nodes(sta0_node).net.install_traffic_shaper(interface=sta0_iface)
+
+            print("Set TX power")
+            controller.nodes(sta0_node).radio.iface(sta0_iface).set_tx_power(10)
+            controller.nodes(ap0_node).radio.iface(ap0_iface).set_tx_power(10)
+
+            print("Start iperf server")
+            controller.nodes(sta0_node).net.create_packetflow_sink(port=5051)
+
+        if showcaseState == "Stop":
+            print("Stop APs and STAs")
+            controller.nodes(ap0_node).net.iface(ap0_iface).stop_hostapd()
+            controller.nodes(ap0_node).net.iface(ap0_iface).disconnect_from_network(ap0_iface)
+            controller.nodes(sta0_node).net.iface(sta0_iface).stop_hostapd()
+            controller.nodes(sta0_node).net.iface(sta0_iface).disconnect_from_network(sta0_iface)
+            controller.nodes(sta0_node).net.destroy_packetflow_sink()
+            controller.nodes(ap0_node).net.stop_packetflow()
+            trafficStarted = False
+
+            print("Remove traffic shapers")
+            controller.nodes(ap0_node).net.remove_traffic_shaper(interface=ap0_iface)
+            controller.nodes(sta0_node).net.remove_traffic_shaper(interface=sta0_iface)
+            showcaseState = "Stopped"
+            channelUsage = {}
+
+        print("Measure traffic in WiFi cells")
+        curTime = time.time()
+        interval = 1.0
+        [txBytes0, rxBytes0] = controller.nodes(ap0_node).net.get_iface_stats(iface=ap0_iface)
+        gevent.sleep(interval)
+        [txBytes, rxBytes] = controller.nodes(ap0_node).net.get_iface_stats(iface=ap0_iface)
+        txThroughput = (txBytes - txBytes0) * 8 / interval
+        rxThroughput = (rxBytes - rxBytes0) * 8 / interval
+        cellThroughput = txThroughput + rxThroughput
+
+        cellThroughputDict[0] = cellThroughput
+        print("***Throughput Stats:***")
+        for cellId in cellThroughputDict.keys():
+            print("---CellId: {}, Throughput: {}". format(cellId, cellThroughputDict[cellId] / 1e6))
+
+            # send performance report to AD controller
+            maxTHR = 150 * 1e6
+            value = {'timestamp': curTime,
+                     'PER': cellThroughputDict[cellId]/maxTHR,
+                     'THR': cellThroughputDict[cellId],
+                     }
+            solutionCtrProxy.send_monitor_report('performance', networkType, value)
+
+        # Notify channel usage
+        channels = []
+        frequencies = {}
+        channel = channelUsage.get('ap0', None)
+
+        if channel:
+            channels = [channel]
+            frequencies = {channelToFreq[channel] : 20}
+
+        value = {"channels" : channels,
+                 "frequencies": frequencies
+                 }
+        print("Notify AD controller about used channels", channels)
+        solutionCtrProxy.send_monitor_report('channelUsage', networkType, value)
+
+
+if __name__ == "__main__":
+    try:
+        from docopt import docopt
+    except:
+        print("""
+        Please install docopt using:
+            pip install docopt==0.6.1
+        For more refer to:
+        https://github.com/docopt/docopt
+        """)
+        raise
+
+    args = docopt(__doc__, version=__version__)
+
+    log_level = logging.INFO  # default
+    if args['--verbose']:
+        log_level = logging.DEBUG
+    elif args['--quiet']:
+        log_level = logging.ERROR
+
+    logfile = None
+    if args['--logfile']:
+        logfile = args['--logfile']
+
+    logging.basicConfig(filename=logfile, level=log_level,
+        format='%(asctime)s - %(name)s.%(funcName)s() - %(levelname)s - %(message)s')
+
+    try:
+        main(args)
+    except KeyboardInterrupt:
+        log.debug("Controller exits")
+    finally:
+        log.debug("Exit")
+        controller.stop()

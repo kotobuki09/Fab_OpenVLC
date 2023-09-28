@@ -1,0 +1,15 @@
+CHANGELOG.md
+LICENSE.Apache.v2
+LICENSE.GPL.v2
+MANIFEST.in
+README.license.md
+README.rst
+VERSION
+setup.cfg
+setup.py
+pyroute2/__init__.py
+pyroute2.egg-info/PKG-INFO
+pyroute2.egg-info/SOURCES.txt
+pyroute2.egg-info/dependency_links.txt
+pyroute2.egg-info/requires.txt
+pyroute2.egg-info/top_level.txt

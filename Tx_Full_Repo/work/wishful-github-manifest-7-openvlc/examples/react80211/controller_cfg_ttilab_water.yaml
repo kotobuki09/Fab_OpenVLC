@@ -1,0 +1,13 @@
+## WiSHFUL Controller's config file
+
+controller:
+    name: "Controller"
+    info: "WiSHFUL Controller"
+    dl: "tcp://10.8.8.6:8990"
+    ul: "tcp://10.8.8.6:8989"
+
+modules:
+    discovery:
+        module : wishful_module_discovery_pyre
+        class_name : PyreDiscoveryControllerModule
+        kwargs: {"iface":"eth0", "groupName":"react80211_example", "downlink":"tcp://10.8.8.6:8990", "uplink":"tcp://10.8.8.6:8989"}

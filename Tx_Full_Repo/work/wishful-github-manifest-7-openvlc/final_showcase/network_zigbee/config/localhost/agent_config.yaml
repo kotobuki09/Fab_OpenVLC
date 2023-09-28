@@ -1,0 +1,47 @@
+## WiSHFUL Agent config file
+
+agent_info:
+    name: 'contiki_control_agent'
+    info: 'WiSHFUL example Contiki control agent'
+    iface: 'lo'
+
+modules:
+    discovery:
+        module : wishful_module_discovery_pyre
+        class_name : PyreDiscoveryAgentModule
+        kwargs: {"iface":lo, "groupName":"wishful_contiki"}
+    gitar_engine:
+        module : wishful_module_gitar
+        class_name : GitarEngine
+        interfaces : ['lowpan0','lowpan1']
+        kwargs :
+            GitarConfig : '../../examples/contiki/config/wilab2/gitar.ini'
+            SupportedInterfaces : ['lowpan0','lowpan1']
+    generic_connector:
+        module : wishful_module_generic
+        class_name : GenericConnector
+        interfaces : ['lowpan0','lowpan1']
+        kwargs :
+            SupportedInterfaces : ['lowpan0','lowpan1']
+            ControlAttributes : {"generic_connector": '../../examples/contiki/config/protocol_connectors/generic_ctrl_attributes.csv'}
+            ControlFunctions : {"generic_connector": '../../examples/contiki/config/protocol_connectors/generic_ctrl_functions.csv'}
+            ProtocolConnectors: {"generic_connector": 0}
+    taisc_connector:
+        module : wishful_module_taisc
+        class_name : TAISCConnector
+        interfaces : ['lowpan0','lowpan1']
+        kwargs :
+            RadioPrograms : {"CSMA":0,"TDMA":1,"TSCH":2}
+            SupportedInterfaces : ['lowpan0','lowpan1']
+            ControlAttributes : {'taisc_connector': '../../examples/contiki/config/protocol_connectors/taisc_ctrl_attributes.csv'}
+            ControlFunctions : {'taisc_connector': '../../examples/contiki/config/protocol_connectors/taisc_ctrl_functions.csv'}
+            ProtocolConnectors: {'taisc_connector': 3}
+    ipv6_connector:
+        module : wishful_module_ipv6
+        class_name : IPv6Connector
+        interfaces : ['lowpan0','lowpan1']
+        kwargs :
+            SupportedInterfaces : ['lowpan0','lowpan1']
+            ControlAttributes : {'ipv6_connector': '../../examples/contiki/config/protocol_connectors/ipv6_ctrl_attributes.csv', 'rpl_connector': '../../examples/contiki/config/protocol_connectors/rpl_ctrl_attributes.csv'} 
+            ControlFunctions : {'ipv6_connector': '../../examples/contiki/config/protocol_connectors/ipv6_ctrl_functions.csv', 'rpl_connector': '../../examples/contiki/config/protocol_connectors/rpl_ctrl_functions.csv'}
+            ProtocolConnectors: {'ipv6_connector': 1, 'rpl_connector': 2}

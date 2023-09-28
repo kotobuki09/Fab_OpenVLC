@@ -1,0 +1,449 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>wishful_upis.lte.net &#8212; WiSHFUL Framework 2.0 2.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">WiSHFUL Framework 2.0 2.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/wishful.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for wishful_upis.lte.net</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Francesco Giannone, Domenico Garlisi&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2017, Sant&#39;Anna, CNIT&quot;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.1.0&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;{francesco.giannone@santannapisa.it, domenico.garlisi@cnit.it}&quot;</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">The protocol-specific definition of the WiSHFUL network control interface, UPI_N, for configuration/monitoring of the higher</span>
+<span class="sd">layers of the network protocol stack (upper MAC and higher).</span>
+<span class="sd">LTE protocol family</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">wishful_upis.meta_models</span> <span class="k">import</span> <span class="n">Attribute</span><span class="p">,</span> <span class="n">Measurement</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Action</span><span class="p">,</span> <span class="n">ValueDoc</span>
+
+
+<span class="c1">#********</span>
+<span class="c1">#EPC Attribute</span>
+<span class="c1">#********</span>
+<span class="n">LTE_EPC_MCC</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_MCC&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: MME Mobile Country Code</span>
+<span class="n">LTE_EPC_MNC</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_MNC&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: MME Mobile Network Code</span>
+<span class="n">LTE_EPC_OP</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_OP&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: Configures global configuration parameters Global OP</span>
+<span class="n">LTE_EPC_AMF</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_AMF&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: Configures global configuration parameters Global AMF</span>
+<span class="n">LTE_EPC_ENB_ADD</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_ENB_ADD&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: adds a eNB to be served by the EPC (required: IP address)</span>
+<span class="n">LTE_EPC_ENB_DEL</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_ENB_DEL&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: deletes an eNB</span>
+<span class="n">LTE_EPC_ENB_LIST</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_ENB_LIST&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: get eNB list</span>
+<span class="n">LTE_EPC_SUBSCRIBER_ADD</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_SUBSCRIBER_ADD&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: Add a single UE (required input: IMSI, Subscriber Group)</span>
+<span class="n">LTE_EPC_SUBSCRIBER_DEL</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_SUBSCRIBER_DEL&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: deletes connection data for a single subscriber</span>
+<span class="n">LTE_EPC_SUBSCRIBER_LIST</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_SUBSCRIBER_LIST&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: get UE list</span>
+<span class="n">LTE_EPC_SUBSCRIBER_GROUP_ADD</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_SUBSCRIBER_GROUP_ADD&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: Adds a new subscriber profile (required input: Name, APN, , UL/DL AMBR)</span>
+<span class="n">LTE_EPC_SUBSCRIBER_GROUP_DEL</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_SUBSCRIBER_GROUP_DEL&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: deletes a subscriber profile</span>
+<span class="n">LTE_EPC_SUBSCRIBER_GROUP_LIST</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_SUBSCRIBER_GROUP_LIST&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: get subscriber profile list</span>
+<span class="n">LTE_EPC_APN_ADD</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_APN_ADD&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: adds a new APN (required: Name, PGW address, DHCP pool, DNS server, UL/DL AMBR)</span>
+<span class="n">LTE_EPC_APN_DEL</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_MNC&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: deletes an APN</span>
+<span class="n">LTE_EPC_APN_LIST</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_APN_LIST&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: get APN list</span>
+<span class="n">LTE_EPC_RNTI</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_RNTI&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#:</span>
+<span class="n">LTE_EPC_HSS_ADDRESS</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_EPC_HSS_ADDRESS&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: HSS address</span>
+
+<span class="c1">#********</span>
+<span class="c1">#ENB Attribute</span>
+<span class="c1">#********</span>
+
+<span class="n">LTE_ENB_NM</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_NM&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB name</span>
+<span class="n">LTE_ENB_ID</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_ID&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB identifier</span>
+<span class="n">LTE_ENB_CT</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_CT&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB cell type (macro, pico, femto)</span>
+<span class="n">LTE_ENB_PLMN</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_PLMN&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB PLMN Code</span>
+<span class="n">LTE_ENB_TAC</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_TAC&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB Tracking Area Code</span>
+<span class="n">LTE_ENB_MME</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_MME&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: MME address in the eNB config file</span>
+<span class="n">LTE_ENB_PGW</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_PGW&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: PGW address in the eNB config file</span>
+<span class="n">LTE_ENB_SGW</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_SGW&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: SGW address in the eNB config file</span>
+<span class="n">LTE_ENB_PHY_CELL_ID</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_PHY_CELL_ID&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1">#: Cell identity</span>
+<span class="n">LTE_ENB_MCC</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_MCC&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB Mobile Country Code</span>
+<span class="n">LTE_ENB_MNC</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_MNC&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB Mobile Network Code</span>
+
+<span class="n">LTE_RCC_FRONTHAUL_IF_NAME_LOCAL</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_RCC_FRONTHAUL_IF_NAME_LOCAL&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: Interface of the local fronthaul</span>
+<span class="n">LTE_RCC_FRONTHAUL_IP_ADDRESS_LOCAL</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_RCC_FRONTHAUL_IP_ADDRESS_LOCAL&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: IP of the local fronthaul</span>
+<span class="n">LTE_RCC_FRONTHAUL_PORT_LOCAL</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_RCC_FRONTHAUL_PORT_LOCAL&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: port of the local fronthaul</span>
+<span class="n">LTE_RCC_FRONTHAUL_IP_ADDRESS_REMOTE</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_RCC_FRONTHAUL_IP_ADDRESS_REMOTE&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: IP of the remote fronthaul</span>
+<span class="n">LTE_RCC_FRONTHAUL_PORT_REMOTE</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_RCC_FRONTHAUL_PORT_REMOTE&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: port of the remote fronthaul</span>
+
+<span class="n">LTE_RRU_FRONTHAUL_IF_NAME_LOCAL</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_RRU_FRONTHAUL_IF_NAME_LOCAL&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: Interface of the local fronthaul</span>
+<span class="n">LTE_RRU_FRONTHAUL_IP_ADDRESS_LOCAL</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_RRU_FRONTHAUL_IP_ADDRESS_LOCAL&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: IP of the local fronthaul</span>
+<span class="n">LTE_RRU_FRONTHAUL_PORT_LOCAL</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_RRU_FRONTHAUL_PORT_LOCAL&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: port of the local fronthaul</span>
+<span class="n">LTE_RRU_FRONTHAUL_IP_ADDRESS_REMOTE</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_RRU_FRONTHAUL_IP_ADDRESS_REMOTE&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: IP of the remote fronthaul</span>
+<span class="n">LTE_RRU_FRONTHAUL_PORT_REMOTE</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_RRU_FRONTHAUL_PORT_REMOTE&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: port of the remote fronthaul</span>
+
+<span class="c1">#********</span>
+<span class="c1">#UE net Attribute</span>
+<span class="c1">#********</span>
+
+<span class="n">LTE_UE_APN</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_UE_APN&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: APN</span>
+<span class="n">LTE_UE_PLMN</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_UE_PLMN&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: PLMNID</span>
+
+
+<span class="c1">#********</span>
+<span class="c1">#LTE UPI</span>
+<span class="c1">#********</span>
+
+<div class="viewcode-block" id="MME_activation"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.MME_activation">[docs]</a><span class="k">def</span> <span class="nf">MME_activation</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Once set the MME parameters using the set_parameters(param_key_values_dict), MME_activation is to be used for running the MME</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.MME_activation()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the MME run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="MME_deactivation"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.MME_deactivation">[docs]</a><span class="k">def</span> <span class="nf">MME_deactivation</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;MME_deactivation is to be used for stopping the MME</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.MME_deactivation()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the MME run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="HSS_activation"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.HSS_activation">[docs]</a><span class="k">def</span> <span class="nf">HSS_activation</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Once set the HSS parameters using the set_parameters(param_key_values_dict), HSS_activation is to be used for running the HSS</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.HSS_activation()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the HSS run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="HSS_deactivation"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.HSS_deactivation">[docs]</a><span class="k">def</span> <span class="nf">HSS_deactivation</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;HSS_deactivation is to be used for stopping the HSS</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.HSS_deactivation()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the HSS run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="SPGW_activation"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.SPGW_activation">[docs]</a><span class="k">def</span> <span class="nf">SPGW_activation</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Once set the SPGW parameters using the set_parameters(param_key_values_dict), SPGW_activation is to be used for running the SPGW</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.SPGW_activation()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the SPGW run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="SPGW_deactivation"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.SPGW_deactivation">[docs]</a><span class="k">def</span> <span class="nf">SPGW_deactivation</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;SPGW_deactivation is to be used for stopping the SPGW</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.SPGW_deactivation()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the SPGW run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="eNB_activation"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.eNB_activation">[docs]</a><span class="k">def</span> <span class="nf">eNB_activation</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Once set the eNB parameters using the set_parameters(param_key_values_dict), eNB_activation is to be used for running the eNB</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.eNB_activation()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the eNB run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code&#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="eNB_deactivation"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.eNB_deactivation">[docs]</a><span class="k">def</span> <span class="nf">eNB_deactivation</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;eNB_deactivation is to be used for stopping the eNB</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.eNB_deactivation()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the eNB run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="RRU_activation"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.RRU_activation">[docs]</a><span class="k">def</span> <span class="nf">RRU_activation</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Once set the RRU parameters using the set_parameters(param_key_values_dict), RRU_activation is to be used for running the RRU</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.RRU_activation()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the RRU run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code&#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="RRU_deactivation"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.RRU_deactivation">[docs]</a><span class="k">def</span> <span class="nf">RRU_deactivation</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;RRU_deactivation is to be used for stopping the RRU</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.RRU_deactivation()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the RRU run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="RCC_activation"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.RCC_activation">[docs]</a><span class="k">def</span> <span class="nf">RCC_activation</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Once set the RCC parameters using the set_parameters(param_key_values_dict), RCC_activation is to be used for running the RCC</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.RCC_activation()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the RCC run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code&#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="RCC_deactivation"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.RCC_deactivation">[docs]</a><span class="k">def</span> <span class="nf">RCC_deactivation</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;RCC_deactivation is to be used for stopping the RCC</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.RCC_deactivation()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the RCC run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code&#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="UE_activation"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.UE_activation">[docs]</a><span class="k">def</span> <span class="nf">UE_activation</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;UE_activation is to be used for running the UE</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.UE_activation()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the UE run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code&#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="UE_deactivation"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.UE_deactivation">[docs]</a><span class="k">def</span> <span class="nf">UE_deactivation</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;UE_deactivation is to be used for stopping the UE</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.UE_deactivation()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the UE run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code&#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="UE_attach"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.UE_attach">[docs]</a><span class="k">def</span> <span class="nf">UE_attach</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;UE_attach is to be used for attaching the UE to the MME</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.UE_attach()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the UE run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code&#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="UE_detach"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.net.UE_detach">[docs]</a><span class="k">def</span> <span class="nf">UE_detach</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;UE_detach is to be used for detaching the UE without stopping it</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; controller.blocking(False).node(node).net.UE_detach()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        controller:</span>
+<span class="sd">        node: physical machine where the UE run</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        0 = success, 1=fail, +1=error code&#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">WiSHFUL Framework 2.0 2.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Pierluigi Gallo, Domenico Garlisi, Anatolij Zubow, Mikolaj Chwalisz, Piotr Gawlowicz, Peter Ruckebusch, Bart Jooris, Jan Bauwens, Spilios Giannoulis.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

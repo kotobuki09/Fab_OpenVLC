@@ -1,0 +1,253 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+WiSHFUL Final Showcase: Warm-up phase - Overlapping BSS Management
+
+Usage:
+   controller [options] [-q | -v]
+
+Options:
+   --logfile name        Name of the logfile
+   --config configFile   Config file path
+   --ad_address ipAddress IP address of AD controller
+
+Example:
+   ./controller -v --config ./config.yaml 
+
+Other options:
+   -h, --help          show this help message and exit
+   -q, --quiet         print less text
+   -v, --verbose       print more text
+   --version           show version and exit
+"""
+
+import sys
+# get access to lib dir
+sys.path.append('../')
+sys.path.append('../../')
+
+import os
+import sh
+import time
+import datetime
+import logging
+import wishful_controller
+import gevent
+import yaml
+import wishful_upis as upis
+from lib.global_controller_proxy import GlobalSolutionControllerProxy
+from lte_u_synch.regmon_reader import RegMonReader
+from lte_u_synch.regmon_data_receiver import RegMonDataReceiver
+from lte_u_synch.lteu_synchronization import LteuDetector
+
+__author__ = "Piotr Gawlowicz"
+__copyright__ = "Copyright (c) 2018, Technische Universität Berlin"
+__version__ = "0.1.0"
+__email__ = "gawlowicz@tkn.tu-berlin.de"
+
+
+log = logging.getLogger('wishful_agent.main')
+controller = wishful_controller.Controller()
+wiplusEnabled = True
+nodes = []
+
+def start_detector(value):
+    print("Start WiPLUS")
+    global wiplusEnabled
+    wiplusEnabled = True
+
+def stop_detector(value):
+    print("Stop WiPLUS")
+    global wiplusEnabled
+    wiplusEnabled = False
+
+def main(args):
+    global controller
+    global wiplusEnabled
+
+    log.debug(args)
+
+    config_file_path = args['--config']
+    config = None
+    with open(config_file_path, 'r') as f:
+        config = yaml.load(f)
+
+    # Load controller script parameters
+    parameters = config.get("parameters", None)
+    if parameters:
+        controllerName = parameters.get("controllerName", None)
+        ad_address = parameters.get("ad_address", "127.0.0.1")
+
+    if args['--ad_address']:
+        ad_address = args['--ad_address']
+
+    controller.load_config(config)
+    controller.start()
+
+    solutionCtrProxy = GlobalSolutionControllerProxy(ip_address=ad_address,
+                                                     requestPort=7001,
+                                                     subPort=7000)
+
+    networkName = [controllerName]
+    networkType = 'DETECTOR'
+    solutionName = ["WiPLUS_DETECTOR"]
+    commands = {"ACTIVATE": start_detector,
+                "DEACTIVATE": stop_detector,
+                }
+    monitorList = []
+    solutionCtrProxy.set_solution_attributes(controllerName,
+                                             networkType,
+                                             solutionName,
+                                             commands,
+                                             monitorList
+                                             )
+
+    # Register OBSS_Management solution to global solution controller
+    response = solutionCtrProxy.register_solution()
+    if response:
+        print("Solution was correctly registered to GlobalSolutionController")
+        solutionCtrProxy.start_command_listener()
+    else:
+        print("Solution was not registered to Global Solution Controller")
+
+    channelToFreq = {1: 2412,
+                     2: 2417,
+                     3: 2422,
+                     4: 2427,
+                     5: 2432,
+                     6: 2437,
+                     7: 2442,
+                     8: 2447,
+                     9: 2452,
+                     10: 2457,
+                     11: 2462,
+                     12: 2467,
+                     13: 2472,
+                     14: 2484,
+                     }
+
+    channels = list(channelToFreq.keys())
+    channels = [1, 6, 11]
+
+    winterface = "wlan0"
+    mode = "monitor"
+    channel = "1"
+    samplingInt = 0.25  # ms
+    readInt = 1  # s
+
+    # configure interface
+    sh.ifconfig(winterface, "down")
+    sh.iw(winterface, "set", "type", mode)
+    sh.ifconfig(winterface, "up")
+    sh.iw(winterface, "set", "channel", channel)
+
+    detector = LteuDetector(samplingInt=samplingInt)
+    detector.daemon = True
+    detector.start()
+
+    rawDataReceiver = RegMonDataReceiver()
+    rawDataReceiver.add_signal_receiver_queue(detector.get_signal_queue())
+    rawDataReceiver.daemon = True
+    rawDataReceiver.start()
+
+    logging.info("Read MAC states for interface: {}".format(winterface))
+    regmon = RegMonReader(iface=winterface,
+                          sampling_interval=samplingInt,
+                          read_interval=readInt)
+    regmon.set_signal_receiver_queue(rawDataReceiver.get_signal_queue())
+    regmon.daemon = True
+    regmon.start()
+
+    # control loop
+    while True:
+        gevent.sleep(1)
+
+        detectorStats = detector.get_detection_stats()
+        # {2412: {'LTE-U': False, 'DC': 0, 'cycleTime': 0, 'idle': 0.89, 'busy': 0.11, 'onTime': 0},
+        # 2437: {'LTE-U': True, 'DC': 0.25, 'cycleTime': 40, 'idle': 0.74, 'busy': 0.26, 'onTime': 10},
+        # 2462: {'LTE-U': False, 'DC': 0, 'cycleTime': 0, 'idle': 0.95, 'busy': 0.05, 'onTime': 0}}
+
+        # detect LTE
+        bandwidth = 20
+        if wiplusEnabled:
+            # send interference report to AD controller
+            value = {}
+            lte = {}
+            wifi = {}
+            busy = {}
+            for chan in channels:
+                freq = channelToFreq[chan]
+                freqStats = detectorStats.get(freq, None)
+                if freqStats:
+                    lteDetected = freqStats.get('LTE-U')
+                    if lteDetected:
+                        lteuDC = freqStats.get('DC')
+                        lte[freq] = [bandwidth, lteuDC]
+
+                    wifiRatio = freqStats.get('wifi', 0.0)
+                    if wifiRatio > 0.0:
+                        wifi[freq] = [bandwidth, wifiRatio]
+
+                    busyRatio = freqStats.get('busy')
+                    busy[freq] = [bandwidth, busyRatio]
+
+
+            if lte:
+                value['LTE'] = lte
+            if wifi:
+                value['WIFI'] = wifi
+            if busy:
+                value['Busy'] = busy
+
+            if value:
+                solutionCtrProxy.send_monitor_report('interference', networkType, value)
+
+        # Notify channel usage
+        value = {"channels" : [],
+                 "frequencies": []
+                 }
+
+        if wiplusEnabled:
+            value = {"channels" : [1,6,11],
+                     "frequencies": [2412, 2437, 2462]
+                     }
+
+        # print("Notify AD controller about used channels", channels)
+        solutionCtrProxy.send_monitor_report('channelUsage', networkType, value)
+
+
+if __name__ == "__main__":
+    try:
+        from docopt import docopt
+    except Exception:
+        print("""
+        Please install docopt using:
+            pip install docopt==0.6.1
+        For more refer to:
+        https://github.com/docopt/docopt
+        """)
+        raise
+
+    args = docopt(__doc__, version=__version__)
+
+    log_level = logging.INFO  # default
+    if args['--verbose']:
+        log_level = logging.DEBUG
+    elif args['--quiet']:
+        log_level = logging.ERROR
+
+    logfile = None
+    if args['--logfile']:
+        logfile = args['--logfile']
+
+    logging.basicConfig(filename=logfile, level=log_level,
+        format='%(asctime)s - %(name)s.%(funcName)s() - %(levelname)s - %(message)s')
+
+    try:
+        main(args)
+    except KeyboardInterrupt:
+        log.debug("Controller exits")
+    finally:
+        log.debug("Exit")
+        controller.stop()

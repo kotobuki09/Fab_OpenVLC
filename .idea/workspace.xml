@@ -5,17 +5,115 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3d38635b-a971-4295-971e-fcf715c4b557" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Doppler062023.png" beforeDir="false" afterPath="$PROJECT_DIR$/Doppler062023.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Doppler062023v2.png" beforeDir="false" afterPath="$PROJECT_DIR$/Doppler062023v2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plot1806.py" beforeDir="false" afterPath="$PROJECT_DIR$/plot1806.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/fabfile.py" beforeDir="false" afterPath="$PROJECT_DIR$/ControlUnit/fabfile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Doppler062023.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Doppler062023_alternate_style.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Doppler062023_improved.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Doppler062023_scientific_style.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Doppler062023v2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Doppler062023v3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Doppler062023v4.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Doppler062023v5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Doppler1806_individual_bars.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Doppler2908.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DopplerV.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DopplerV1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DopplerV2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Doppler_movement_speed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Doppler_velocity_colors.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI 05m.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI 05m.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI 3103.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI 3103.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST maxdis.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST maxdis.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST test var.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST test var.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST test.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST test.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST2.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handover.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handover.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv2.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3 deactlight.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3 deactlight.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3d.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3d.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3e deactlight ave png.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3e deactlight ave.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3e deactlight.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3e deactlight.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3e-traffic .pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3e.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.openvlc.o.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.openvlc.o.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.reed_solomon.o.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.reed_solomon.o.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.tmp_versions/vlc.mod" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.tmp_versions/vlc.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.vlc.ko.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.vlc.ko.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.vlc.mod.o.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.vlc.mod.o.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.vlc.o.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.vlc.o.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/Module.symvers" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/Module.symvers" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/modules.order" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/modules.order" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/openvlc.o" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/openvlc.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/reed_solomon.o" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/reed_solomon.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/vlc.ko" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/vlc.ko" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/vlc.mod.o" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/vlc.mod.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/vlc.o" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/vlc.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/PRU/TX/gen/main_pru1.object" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/PRU/TX/gen/main_pru1.object" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/PRU/TX/gen/main_pru1_fw.out" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/PRU/TX/gen/main_pru1_fw.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/PRU/TX/gen/pru1_rx.object" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/PRU/TX/gen/pru1_rx.object" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/rtl8188eus/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/rtl8188eus/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/rtl8188eus/dkms-install.sh" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/rtl8188eus/dkms-install.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/rtl8188eus/dkms-remove.sh" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/rtl8188eus/dkms-remove.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/.openvlc.o.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/.openvlc.o.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/.reed_solomon.o.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/.reed_solomon.o.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/.tmp_versions/vlc.mod" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/.tmp_versions/vlc.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/.vlc.ko.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/.vlc.ko.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/.vlc.mod.o.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/.vlc.mod.o.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/.vlc.o.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/.vlc.o.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/Module.symvers" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/Module.symvers" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/load_test.sh" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/load_test.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/modules.order" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/modules.order" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/openvlc.o" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/openvlc.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/reed_solomon.o" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/reed_solomon.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/vlc.ko" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/vlc.ko" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/vlc.mod.o" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/vlc.mod.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/vlc.o" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/Driver/vlc.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/PRU/TX/gen/main_pru1.object" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/PRU/TX/gen/main_pru1.object" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/PRU/TX/gen/main_pru1_fw.out" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/PRU/TX/gen/main_pru1_fw.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/PRU/TX/gen/pru1_rx.object" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC/Latest_Version/PRU/TX/gen/pru1_rx.object" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/work/create_ap/create_ap" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/work/create_ap/create_ap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eu/control_ap" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eu/control_ap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eu/debian/rules" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eu/debian/rules" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eu/hostapd-2.9/hostapd/hostapd" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eu/hostapd-2.9/hostapd/hostapd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eu/hostapd-2.9/hostapd/hostapd_cli" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eu/hostapd-2.9/hostapd/hostapd_cli" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eu/hostapd-2.9/hostapd/logwatch/hostapd" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eu/hostapd-2.9/hostapd/logwatch/hostapd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eu/hostapd-2.9/hostapd/wps-ap-nfc.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eu/hostapd-2.9/hostapd/wps-ap-nfc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eus/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eus/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eus/dkms-install.sh" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eus/dkms-install.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eus/dkms-remove.sh" beforeDir="false" afterPath="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eus/dkms-remove.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -29,23 +127,29 @@
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="26q0rFcl7091N6okffRQbQnQEYp" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/Fab_OpenVLC&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "E:/Fab_OpenVLC",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\Fab_OpenVLC" />
@@ -78,6 +182,9 @@
       <module name="Fab_OpenVLC" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -93,11 +200,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Python.main" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -128,11 +230,21 @@
       <workItem from="1678884371141" duration="70000" />
       <workItem from="1687079583565" duration="4830000" />
       <workItem from="1693301677940" duration="2657000" />
+      <workItem from="1695304094683" duration="731000" />
+      <workItem from="1695307295298" duration="44000" />
+      <workItem from="1695307374988" duration="49000" />
+      <workItem from="1695307541171" duration="30000" />
+      <workItem from="1695307582945" duration="1712000" />
+      <workItem from="1695635375884" duration="2621000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="dependencySupport" implementationName="executable:docker" />
+    <option featureType="dependencySupport" implementationName="executable:kubectl" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">

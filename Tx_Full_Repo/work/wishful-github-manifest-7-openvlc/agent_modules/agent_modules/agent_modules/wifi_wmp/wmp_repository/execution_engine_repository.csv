@@ -1,0 +1,11 @@
+execution_engine_id,execution_engine_name,supported_platform,execution_engine_pointer
+1,WMPengine,WMP,../../../agent_modules/wifi_wmp/execution_engine/wmp
+2,FACTORYengine,WMP,../../../agent_modules/wifi_wmp/execution_engine/factory
+3,METAMACengine,WMP,../../../agent_modules/wifi_wmp/execution_engine/metamac
+4,SYNCZIGBEEengine,WMP,../../../agent_modules/wifi_wmp/execution_engine/wmp-sinc-zigbee
+5,TDMAMASKengine,WMP,../../../agent_modules/wifi_wmp/execution_engine/wmp-tdma-mask
+6,ERRORSENSEengine,WMP,../../../agent_modules/wifi_wmp/execution_engine/error-sense
+7,SYNCLTEengine,WMP,../../../agent_modules/wifi_wmp/execution_engine/wmp-sinc-lte
+8,DETengine,WMP,../../../agent_modules/wifi_wmp/execution_engine/detfwwf
+9,TSFDRIFTengine,WMP,../../../agent_modules/wifi_wmp/execution_engine/tsf-drift
+

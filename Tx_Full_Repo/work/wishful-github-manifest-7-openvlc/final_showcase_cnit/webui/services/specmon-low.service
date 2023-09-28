@@ -1,0 +1,17 @@
+[Unit]
+Description=GNU Radio based spectrum monitor 2.425GHz
+
+[Service]
+PrivateTmp=true
+Type=simple
+Environment=PYTHONUNBUFFERED=true
+ExecStart=/home/tub/final_showcase/webui/usrp-ss/gr-specmon/usrp_pwr_fft.py -u "serial=3143091" -c 2425e6 -b 50e6 -a "tcp://localhost:5507"
+# ExecStart=/usr/bin/stress -c 2
+User=tub
+CPUAccounting=true
+#CPUQuota=200%
+#MemoryMax=200M
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

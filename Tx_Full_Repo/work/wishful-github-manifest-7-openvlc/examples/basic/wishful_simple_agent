@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import logging
+import wishful_agent
+
+__author__ = "Piotr Gawlowicz"
+__copyright__ = "Copyright (c) 2015, Technische Universität Berlin"
+__version__ = "0.1.0"
+__email__ = "gawlowicz@tkn.tu-berlin.de"
+
+
+log = logging.getLogger('wishful_agent')
+logLevel = logging.INFO
+logging.basicConfig(level=logLevel, format='%(asctime)s - %(name)s.%(funcName)s() - %(levelname)s - %(message)s')
+
+#Create and configure
+agent = wishful_agent.Agent()
+
+agent.set_agent_info(name="BasicAgent", info="BasicAgentInfo", iface="lo")
+
+agent.add_module(moduleName="discovery", pyModule="wishful_module_discovery_pyre", 
+                 className="PyreDiscoveryAgentModule", kwargs={"iface":"lo", "groupName":"wishful_1234"})
+
+agent.add_module(moduleName="simple", pyModule="wishful_module_simple", 
+                 className="SimpleModule2", interfaces=['wlan0', 'wlan1'])
+
+agent.add_module(moduleName="iperf", pyModule="wishful_module_iperf", 
+                 className="IperfModule")
+
+try:
+    #Start agent
+    agent.run()
+except KeyboardInterrupt:
+    print("Agent exits")
+finally:
+    #Stop agent
+    agent.stop()

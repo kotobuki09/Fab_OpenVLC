@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>WiSHFUL</title>
+
+    {{ bokeh_css }}
+    {{ bokeh_js }}
+
+    <style>{% include 'pure-min.css' %}</style>
+    <style>{% include 'side-menu.css' %}</style>
+
+  </head>
+  <body>
+    <div id="main">
+      <div class="header">
+        <img src='wishful/static/logo_cnit3.png' height="60%">
+        <img src='wishful/static/logo_wishful.png' height="60%">
+        <img src='wishful/static/European_Commission.svg.png' height="60%">
+        <!-- <h1> -->
+        <!-- </h1> -->
+        <!-- <h2>A subtitle for your page goes here</h2> -->
+      </div>
+
+      <div class="content">
+        <!-- <div class="pure-g"> -->
+        {{ plot_div|indent(8) }}
+        <!-- </div> -->
+      </div>
+
+    </div>
+
+    <!-- Optional JavaScript -->
+    {{ plot_script|indent(8) }}
+    <script>{% include 'ui.js' %}</script>
+
+  </body>
+</html>

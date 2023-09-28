@@ -1,0 +1,5 @@
+radio_prg_id,radio_prg_name,supported_platform,radio_prg_pointer
+1,CSMA,WMP,agent_modules/wifi_wmp/radio_program/CSMA_radio_program_WMP.txt
+2,TDMA,WMP,agent_modules/wifi_wmp/radio_program/TDMA_radio_program_WMP.txt
+3,ALOHA,WMP,agent_modules/wifi_wmp/radio_program/ALOHA_radio_program_WMP.txt
+4,TDMAMASK,WMP,agent_modules/wifi_wmp/radio_program/TDMA_LTE_3.txt

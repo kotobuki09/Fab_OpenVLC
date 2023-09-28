@@ -1,0 +1,14 @@
+#hostname,driver,eth0_ip,freq,txpower,wlan0_ip,mac_address,label
+nodezotacb3,ath9k,10.11.16.22,5180,3,192.168.0.1,00:0e:8e:30:9d:2d,A
+nodezotacb4,ath9k,10.11.16.33,5180,3,192.168.0.2,00:0e:8e:30:9e:53,B
+#nodezotacd3,ath9k,10.11.16.24,5180,4,192.168.0.3,mac_address,C
+#nodezotace3,ath9k,10.11.16.25,5180,4,192.168.0.3,00:0e:8e:30:9e:68,C
+#nodezotacd6,ath9k,10.11.16.54,5180,10,192.168.0.3,00:0e:8e:30:9c:ba,C
+nodezotace1,ath9k,10.11.16.4,5180,3,192.168.0.3,00:0e:8e:30:9c:f2,C
+#nodezotaci3,ath9k,10.11.16.29,5180,4,192.168.0.4,mac_address,D
+#nodezotach3,ath9k,10.11.16.28,5180,4,192.168.0.4,00:0e:8e:30:9d:ee,D
+#nodezotach3,ath9k,10.11.16.28,5180,4,192.168.0.4,00:0e:8e:30:9d:ee,D
+#nodezotaci6,ath9k,10.11.16.58,5180,10,192.168.0.4,00:0e:8e:30:9c:b0,D
+nodezotach1,ath9k,10.11.16.7,5180,3,192.168.0.4,00:0e:8e:30:9e:ce,D
+nodezotack3,ath9k,10.11.16.31,5180,3,192.168.0.5,00:0e:8e:30:9e:d8,E
+nodezotack4,ath9k,10.11.16.42,5180,3,192.168.0.6,00:0e:8e:30:9d:ed,F

@@ -1,0 +1,19 @@
+[Unit]
+Description=WiSHFUL UI
+
+[Service]
+PrivateTmp=true
+Type=simple
+Environment=PYTHONUNBUFFERED=true
+ExecStart=/home/tub/.local/share/virtualenvs/webui-3Hgw5X2N/bin/python3.6m /home/tub/.local/share/virtualenvs/webui-3Hgw5X2N/bin/bokeh serve --allow-websocket-origin=*:5006 wishful
+WorkingDirectory=/home/tub/final_showcase/webui/
+# ExecStart=/usr/bin/stress -c 2
+User=tub
+CPUAccounting=true
+MemoryAccounting=true
+#CPUQuota=200%
+MemoryMax=2G
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

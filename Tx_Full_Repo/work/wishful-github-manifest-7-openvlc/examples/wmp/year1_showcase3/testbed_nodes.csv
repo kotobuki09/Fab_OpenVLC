@@ -1,0 +1,14 @@
+ip,hostname,role,platform,traffic
+10.8.8.102,alix2,AP,wmp,0
+10.8.8.104,alix4,STA,wmp,0
+10.8.8.105,alix5,STA,wmp,0
+<<<<<<< HEAD
+10.8.8.110,alix10,STA,wmp,0
+10.8.8.113,alix13,STA,wmp,0
+10.8.8.114,alix14,STA,wmp,0
+=======
+10.8.8.110,alix10,STA,legacy,0
+10.8.8.113,alix13,STA,legacy,0
+10.8.8.114,alix14,STA,legacy,0
+>>>>>>> origin/master
+

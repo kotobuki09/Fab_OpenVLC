@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+basedir=`dirname $0`"/.."
+
+nosetests -v --with-doctest $basedir/stream.py || exit 1
+
+for test in $basedir/test/*.py; do
+	nosetests -v $test || exit 1
+done

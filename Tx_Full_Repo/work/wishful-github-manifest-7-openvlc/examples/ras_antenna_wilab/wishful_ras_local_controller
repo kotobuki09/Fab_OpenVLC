@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import datetime
+import logging
+import time
+import sys
+
+sys.path.append('../../')
+sys.path.append("../../agent_modules/wifi_ath")
+sys.path.append("../../agent_modules/wifi_wmp")
+sys.path.append("../../agent_modules/wifi")
+sys.path.append("../../agent_modules/ras_antenna")
+sys.path.append('../../upis')
+sys.path.append('../../framework')
+sys.path.append('../../agent')
+
+import wishful_agent
+import wishful_upis as upis
+
+
+__author__ = "Piotr Gawlowicz"
+__copyright__ = "Copyright (c) 2015, Technische Universität Berlin"
+__version__ = "0.1.0"
+__email__ = "gawlowicz@tkn.tu-berlin.de"
+
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s.%(funcName)s() - %(levelname)s - %(message)s')
+log = logging.getLogger('BasicLocalController')
+
+#Create agent
+agent = wishful_agent.Agent(local=True)
+
+#Configure agent
+# agent.add_module(moduleName="simple", pyModule="wishful_module_simple",
+#                  className="SimpleModule2", interfaces=['wlan0', 'wlan1'])
+
+# agent.add_module(moduleName="iperf", pyModule="wishful_module_iperf",
+#                  className="IperfModule")
+
+agent.add_module(moduleName="ras_antenna", pyModule="wishful_module_ras_antenna",
+                 className="RasAntennaModule")
+
+#Get local controller
+controller = agent.get_local_controller()
+
+# @controller.add_callback(upis.radio.get_power)
+# def get_power_reponse(data):
+#     print("{} get_power_reponse : {}".format(datetime.datetime.now(),data))
+#
+# @controller.set_default_callback()
+# def default_callback(cmd, data):
+#     print("{} DEFAULT CALLBACK : Cmd: {}, Returns: {}".format(datetime.datetime.now(), cmd, data))
+#
+# def print_response(data):
+#     print("{} Specific callback for function call; Print response : {}".format(datetime.datetime.now(),data))
+
+
+try:
+    #Start agent
+    agent.run()
+
+    #set default antenna configuration
+    ant1_configuration = 0
+    ant2_configuration = 0
+
+
+    #control loop
+    for ii in range(0,9):
+        print("\nNext iteration:")
+
+        #change antenna configuration
+        log.info('Set configuration %d - %d ' % (ant1_configuration, ant2_configuration) )
+        #execute blocking function immediately
+        controller.blocking(True).radio.set_sas_conf(5, ant1_configuration, ant2_configuration, 0, 0)
+
+        time.sleep(2)
+
+        ant1_configuration += 1
+        ant2_configuration += 1
+
+
+except KeyboardInterrupt:
+    print("Local Controller exits")
+
+finally:
+    agent.stop()

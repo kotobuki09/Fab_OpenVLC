@@ -1,0 +1,186 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>wishful_upis.lte.radio &#8212; WiSHFUL Framework 2.0 2.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">WiSHFUL Framework 2.0 2.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/wishful.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for wishful_upis.lte.radio</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Francesco Giannone, Domenico Garlisi&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2017, Sant&#39;Anna, CNIT&quot;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.1.0&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;{francesco.giannone@santannapisa.it, domenico.garlisi@cnit.it}&quot;</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">The protocol-specific definition of the WiSHFUL network control interface, UPI_N, for configuration/monitoring of the higher</span>
+<span class="sd">layers of the network protocol stack (upper MAC and higher).</span>
+<span class="sd">LTE protocol family</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">wishful_upis.meta_models</span> <span class="k">import</span> <span class="n">Attribute</span><span class="p">,</span> <span class="n">Measurement</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Action</span><span class="p">,</span> <span class="n">ValueDoc</span>
+
+<span class="c1"># ATTRIBUTES</span>
+
+<span class="c1">#********</span>
+<span class="c1">#ENB Attribute</span>
+<span class="c1">#********</span>
+<span class="n">LTE_ENB_DL_BW</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_DL_BW&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB Bandwidth DL</span>
+<span class="n">LTE_ENB_UL_BW</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_UL_BW&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB bandwidth UL</span>
+<span class="n">LTE_ENB_DL_FREQ</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_DL_FREQ&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB DL center frequency</span>
+<span class="n">LTE_ENB_UL_FREQ</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_UL_FREQ&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB UL center frequency</span>
+<span class="n">LTE_ENB_FREQ_BAND</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_FREQ_BAND&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: 3GPP eNB Frequency band indicator</span>
+<span class="n">LTE_ENB_N_TX_ANT</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_N_TX_ANT&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB Number of TX antennas</span>
+<span class="n">LTE_ENB_N_RX_ANT</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_N_RX_ANT&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB Number of RX antennas</span>
+<span class="n">LTE_ENB_REF_SIG_POWER</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_REF_SIG_POWER&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB Reference signal power</span>
+<span class="n">LTE_ENB_TX_GAIN</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_TX_GAIN&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB TX gain</span>
+<span class="n">LTE_ENB_RX_GAIN</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_RX_GAIN&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB RX gain</span>
+<span class="n">LTE_ENB_DUPLEX_MODE</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_DUPLEX_MODE&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: eNB Duplex Mode (TDD/FDD)</span>
+<span class="n">LTE_ENB_TDD_CONFIGURATION</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_ENB_TDD_CONFIGURATION&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: 3GPP eNB TDD configuration mode</span>
+
+<span class="c1">#********</span>
+<span class="c1">#UE net Attribute</span>
+<span class="c1">#********</span>
+
+<span class="n">LTE_UE_DL_FREQ</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_UE_DL_FREQ&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: DL center frequency</span>
+<span class="n">LTE_UE_DL_BW</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_UE_DL_BW&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: UL center frequency</span>
+<span class="n">LTE_UE_UL_BW</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_UE_UL_BW&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: Bandwidth DL</span>
+<span class="n">LTE_UE_TX_GAIN</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_UE_TX_GAIN&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: Bandwidth UL</span>
+<span class="n">LTE_UE_RX_GAIN</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_UE_RX_GAIN&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: RRU RX gain</span>
+<span class="n">LTE_UE_N_TX_ANT</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_UE_N_TX_ANT&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: Number of TX antennas</span>
+<span class="n">LTE_UE_N_RX_ANT</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_UE_N_RX_ANT&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: Number of RX antennas</span>
+<span class="n">LTE_UE_RADIO_STATE</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;LTE_UE_RADIO_STATE&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#: UE State</span>
+
+
+
+<span class="c1"># Generic API to control the lower layers, i.e. key-value configuration.</span>
+<div class="viewcode-block" id="set_parameters"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.radio.set_parameters">[docs]</a><span class="k">def</span> <span class="nf">set_parameters</span><span class="p">(</span><span class="n">param_key_values_dict</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function (re)set the value(s) of the parameters specified in the dictionary argument.</span>
+<span class="sd">    The list of available parameters supported by all platforms/OS are defined in this module.</span>
+<span class="sd">    Parameters specific to a subgroup of platforms/OS are defined in the corresponding submodules.</span>
+<span class="sd">    A list of supported parameters can be dynamically obtained using the get_info function on each module.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; UPIargs_eNB = {radio.TX_GAIN_enb.key: 90}</span>
+<span class="sd">            &gt;&gt; result = controller.node(enb_node).radio.set_parameters(UPIargs_eNB)</span>
+<span class="sd">            &gt;&gt; print result</span>
+<span class="sd">                    {TX_GAIN_enb.key: 90}</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        param_key_values_dict (dict): dictionary containing the key (string) value (any) pairs for each parameter.</span>
+<span class="sd">        An example is {PUCCH_ENB : -96, MME_REALM : wishful_lte, TX_BANDWIDTH_enb : 25}</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary containing key (string name) error (0 = success, 1=fail, +1=error code) pairs for each parameter.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="get_parameters"><a class="viewcode-back" href="../../../wishful_upis.lte.html#wishful_upis.lte.radio.get_parameters">[docs]</a><span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="n">param_key_list</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function get(s) the value(s) of the parameters specified in the list argument.</span>
+<span class="sd">    The list of available parameters supported by all platforms are defined in this module.</span>
+<span class="sd">    Parameters specific to a subgroup of platforms are defined in the corresponding submodules.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt; UPIargs_eNB = [TX_GAIN_enb]</span>
+<span class="sd">            &gt;&gt; result = controller.node(enb_node).radio.get_parameters(UPIargs_eNB)</span>
+<span class="sd">            &gt;&gt; print result</span>
+<span class="sd">                {TX_GAIN_enb.key: 90}</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        param_key_list (list): list of parameter names, an example is [UPI_RN.CSMA_CW, UPI_RN.CSMA_CW_MIN, UPI_RN.CSMA_CW_MAX].</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary containing key (string name) and values of the requested parameters.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">WiSHFUL Framework 2.0 2.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Pierluigi Gallo, Domenico Garlisi, Anatolij Zubow, Mikolaj Chwalisz, Piotr Gawlowicz, Peter Ruckebusch, Bart Jooris, Jan Bauwens, Spilios Giannoulis.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

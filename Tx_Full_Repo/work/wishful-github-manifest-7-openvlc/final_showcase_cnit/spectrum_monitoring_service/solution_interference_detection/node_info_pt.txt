@@ -1,0 +1,6 @@
+#hostname,driver,eth0_ip,freq,txpower,wlan0_ip,mac_address,label,role,iface
+#alix12,b43,10.8.8.112,2437,20,192.168.0.12,00:14:a4:62:c8:25,A,MON,wlan0
+#alixb4,b43,172.16.16.33,2437,20,192.168.0.4,00:19:7e:b3:d0:29,A,MON,wlan0
+#alix04,b43,172.16.16.31,2437,20,192.168.0.4,00:14:a5:e9:0c:74,A,AP,wlan0
+#alix05,b43,172.16.16.32,2437,20,192.168.0.5,00:14:a4:62:c8:21,A,MON,wlan0
+alix10,b43,172.16.16.36,2437,20,192.168.0.9,00:16:cf:3f:f6:3f,A,MON,wlan0

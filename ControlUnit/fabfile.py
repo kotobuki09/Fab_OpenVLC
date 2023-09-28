@@ -6,6 +6,7 @@ import time
 import numbers
 from datetime import date
 import pandas as pd
+import art
 
 
 #env.hosts={'debian@10.8.10.5'}
@@ -442,7 +443,7 @@ def getRSSI_infi():
 #Intelligent Control test
 @fab.task
 def icontrol_demo(capture=True):
-    T=1
+    T=3
     Twatchdog=1
     execute(vlc1)
     execute(vlc_link)
@@ -455,22 +456,25 @@ def icontrol_demo(capture=True):
             execute(vlc1)
             execute(dumpUDP)
             execute(vlc_link)
-            current_state="VLC"
             #time.sleep(Twatchdog)
         #RX
         execute(vlc2)
         output = execute(getRSSI)
         output=output[list(env.hosts)[0]].split(" ")
         output = [int(i) for i in output]
-        print("Checking the RSSI value in VLC channel 1: "+str(output))
-        time.sleep(2)
+        #print("Checking the RSSI value in VLC channel 1: "+str(output))
+        text_ascii = art.text2art("Checking the RSSI value in VLC channel 1: ")
+        output_ascii = art.text2art(str(output))
+        print("Checking the RSSI value in VLC channel 1: ")
+        print(output_ascii)
         #print("CURRENT STATE={}".format(current_state))
 
         #execute(vlc1)
-        if output[2]<50 and current_state=="VLC": #and output[1]>935 and output[2] <20 and output[0]<1089: # and current_state=="VLC":
+        if output[2]<30 and current_state=="VLC": #and output[1]>935 and output[2] <20 and output[0]<1089: # and current_state=="VLC":
             execute(vlc1)
             execute(kill_dumpUDP)
-            print("Switching to WiFi channel \n")
+            text_ascii_1 = art.text2art("Switch to WiFi channel")
+            print(text_ascii_1)
             
             v2w_time=execute(wifi_link)
             #v2w_time=[num for num in v2w_time if isinstance(num, numbers.Number)]
@@ -478,10 +482,11 @@ def icontrol_demo(capture=True):
             print("HANDOVER TIME VLC to WiFi : " + str(v2w_time)+" ms")
             current_state="WIFI"
             
-        elif output[2]>50 and current_state=="WIFI":
+        elif output[2]>30 and current_state=="WIFI":
             execute(vlc1)
             
-            print("Switching to VLC channel \n")
+            text_ascii_2 = art.text2art("Switch to VLC channel")
+            print(text_ascii_2)
             
             w2v_time=execute(vlc_link)
             #w2v_time=[num for num in w2v_time if isinstance(num, numbers.Number)]

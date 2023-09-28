@@ -1,0 +1,7 @@
+#hostname,driver,eth0_ip,freq,txpower,wlan0_ip
+nodezotacb3.react80211.cognitiveradio.wilab2.ilabt.iminds.be,ath9k,10.11.16.22,5180,1,192.168.0.1
+nodezotacb4.react80211.cognitiveradio.wilab2.ilabt.iminds.be,ath9k,10.11.16.33,5180,1,192.168.0.2
+nodezotacd3.react80211.cognitiveradio.wilab2.ilabt.iminds.be,ath9k,10.11.16.24,5180,3,192.168.0.3
+nodezotaci3.react80211.cognitiveradio.wilab2.ilabt.iminds.be,ath9k,10.11.16.29,5180,3,192.168.0.4
+nodezotack3.react80211.cognitiveradio.wilab2.ilabt.iminds.be,ath9k,10.11.16.31,5180,1,192.168.0.5
+nodezotack4.react80211.cognitiveradio.wilab2.ilabt.iminds.be,ath9k,10.11.16.42,5180,1,192.168.0.6

@@ -1,0 +1,24 @@
+#node1
+ip netns add h1
+ip link add h1-veth0 type veth peer name veth1
+ip link set veth1 netns h1
+ip netns exec h1 ifconfig veth1 101.0.0.1/24 up
+ip netns exec h1 /usr/sbin/sshd -o PidFile=/run/sshd-oob.pid 
+ifconfig h1-veth0 101.0.0.2/24 up
+ip netns exec h1 route add default gw 101.0.0.2
+ip netns exec h1 ifconfig lo 127.0.0.2
+
+#node2
+ip netns add h2
+ip link add h2-veth0 type veth peer name veth1
+ip link set veth1 netns h2
+ip netns exec h2 ifconfig veth1 102.0.0.1/24 up
+ip netns exec h2 /usr/sbin/sshd -o PidFile=/run/sshd-oob.pid 
+ifconfig h2-veth0 102.0.0.2/24 up
+ip netns exec h2 route add default gw 102.0.0.2
+ip netns exec h1 ifconfig lo 127.0.0.3
+
+
+#delete
+ip netns del h1
+ip netns del h2

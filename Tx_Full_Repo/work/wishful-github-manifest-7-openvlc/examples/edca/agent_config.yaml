@@ -1,0 +1,17 @@
+## WiSHFUL Agent config file
+
+agent_info:
+  name: 'wishful_simple_agent_123'
+  info: 'wishful_simple_agent_info'
+  iface: 'lo'
+
+modules:
+  discovery:
+      module : wishful_module_static_discovery
+      class_name : StaticDiscoveryModule
+      kwargs: {"downlink":"tcp://127.0.0.1:8990", "uplink":"tcp://127.0.0.1:8989"}
+
+  simple:
+      module : wishful_module_simple
+      class_name : SimpleModule2
+      interfaces : ['wlan0']

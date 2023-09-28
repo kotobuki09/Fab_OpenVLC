@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+
+import getopt
+import sys
+import os
+import re
+import time
+from datetime import datetime
+from sys import stdout
+from tempfile import *
+import csv
+import StringIO
+import json
+import inspect
+import zmq
+import numpy as np
+from b43_library.libb43 import *
+
+B43_SHM_SHARED		= 1
+
+class B43Exception(Exception):
+	pass
+
+def usage():
+	print "b43 firmware state dumper"
+	print ""
+	print "Usage: b43-fwdump [OPTIONS]"
+	print ""
+	print "-h|--help            Print this help text"
+	print "-p|--pause TIME      Time in seconds for pausing."
+	return
+
+def parseArgs():
+	global pause
+
+	try:
+		(opts, args) = getopt.getopt(sys.argv[1:],
+			"hp:",
+			[ "help", "pause="])
+	except getopt.GetoptError:
+		usage()
+		sys.exit(1)
+
+	for (o, v) in opts:
+		if o in ("-h", "--help"):
+			usage()
+			sys.exit(0)
+		if o in ("-p", "--pause"):
+			if v != "":
+				pause = float(v)
+	return
+
+
+def main():
+	#parseArgs()
+	b43_phy = None
+	b43 = B43(b43_phy)
+	TSF_DRIFT_ENABLE	= 63
+
+	cycle = 1
+	while True:
+		print(cycle, " : correct drift")
+		b43.shmWrite16(b43.B43_SHM_REGS, TSF_DRIFT_ENABLE, 1)
+		time.sleep(50)
+		cycle += 1
+
+	return
+
+
+try:
+	main()
+except B43Exception:
+	sys.exit(1)

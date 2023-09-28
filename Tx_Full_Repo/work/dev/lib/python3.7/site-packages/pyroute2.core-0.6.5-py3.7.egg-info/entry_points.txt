@@ -1,0 +1,35 @@
+[console_scripts]
+ss2 = pr2modules.netlink.diag.ss2:run [psutil]
+
+[pr2modules]
+AcpiEventSocket = pr2modules.netlink.event.acpi_event:AcpiEventSocket
+DQuotSocket = pr2modules.netlink.event.dquot:DQuotSocket
+DevlinkSocket = pr2modules.netlink.devlink:DevlinkSocket
+DiagSocket = pr2modules.netlink.diag:DiagSocket
+GenericNetlinkSocket = pr2modules.netlink.generic:GenericNetlinkSocket
+IPLinkRequest = pr2modules.netlink.rtnl.req:IPLinkRequest
+IPQSocket = pr2modules.netlink.ipq:IPQSocket
+IPRSocket = pr2modules.netlink.rtnl.iprsocket:IPRSocket
+IPRoute = pr2modules.iproute.linux:IPRoute
+IPRouteRequest = pr2modules.netlink.rtnl.req:IPRouteRequest
+IW = pr2modules.iwutil:IW
+L2tp = pr2modules.netlink.generic.l2tp:L2tp
+MPTCP = pr2modules.netlink.generic.mptcp:MPTCP
+NFCTSocket = pr2modules.netlink.nfnetlink.nfctsocket:NFCTSocket
+NFTSocket = pr2modules.netlink.nfnetlink.nftsocket:NFTSocket
+NL80211 = pr2modules.netlink.nl80211:NL80211
+NetlinkDecodeError = pr2modules.netlink.exceptions:NetlinkDecodeError
+NetlinkError = pr2modules.netlink.exceptions:NetlinkError
+RawIPRoute = pr2modules.iproute.linux:RawIPRoute
+TaskStats = pr2modules.netlink.taskstats:TaskStats
+UeventSocket = pr2modules.netlink.uevent:UeventSocket
+WireGuard = pr2modules.netlink.generic.wireguard:WireGuard
+bsd = pr2modules.bsd
+common = pr2modules.common
+config = pr2modules.config
+iproute = pr2modules.iproute
+iwutil = pr2modules.iwutil
+netlink = pr2modules.netlink
+netns = pr2modules.netns
+protocols = pr2modules.protocols
+

@@ -1,0 +1,8 @@
+ip,hostname,role,platform,traffic
+192.168.2.114,alix14,AP,wmp,0
+192.168.2.10,extensa,STA,wmp,0
+#192.168.2.7,nova,STA,wmp,0
+192.168.2.107,alix7,STA,wmp,0
+
+192.168.2.112,alix12,AP1,wmp,0
+192.168.2.1,nautilus,STA1,wmp,0

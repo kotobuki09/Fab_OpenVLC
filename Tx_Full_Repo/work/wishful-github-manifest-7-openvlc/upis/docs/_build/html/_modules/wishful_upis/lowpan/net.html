@@ -1,0 +1,266 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>wishful_upis.lowpan.net &#8212; WiSHFUL Framework 2.0 2.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">WiSHFUL Framework 2.0 2.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/wishful.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for wishful_upis.lowpan.net</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">wishful_upis.meta_models</span> <span class="k">import</span> <span class="n">Attribute</span><span class="p">,</span> <span class="n">Measurement</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">Action</span>
+<span class="kn">from</span> <span class="nn">ipaddress</span> <span class="k">import</span> <span class="n">IPv6Address</span>
+
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Peter Ruckebusch&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2016, Ghent University, IMEC, IDLab&quot;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.1.0&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;peter.ruckebusch@intec.ugent.be&quot;</span>
+
+<span class="sd">&#39;&#39;&#39;IEEE 802.15.4 protocol family</span>
+
+<span class="sd">The protocol-specific definition of the WiSHFUL network control interface,</span>
+<span class="sd">UPI_N, for configuration/monitoring of the higher layers of the network</span>
+<span class="sd">protocol stack (upper MAC and higher).</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<div class="viewcode-block" id="LowPanRouteTableEntry"><a class="viewcode-back" href="../../../wishful_upis.lowpan.html#wishful_upis.lowpan.net.LowPanRouteTableEntry">[docs]</a><span class="k">class</span> <span class="nc">LowPanRouteTableEntry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest_ipv6_addr</span><span class="p">,</span> <span class="n">num_hops</span><span class="p">,</span> <span class="n">nexthop_ipv6_addr</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dest_ipv6_addr</span> <span class="o">=</span> <span class="n">dest_ipv6_addr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_hops</span> <span class="o">=</span> <span class="n">num_hops</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nexthop_ipv6_addr</span> <span class="o">=</span> <span class="n">nexthop_ipv6_addr</span></div>
+
+
+<span class="c1"># Attributes</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The value used to configure lmin for the DIO Trickle timer.</span>
+<span class="sd">The default value is 3.</span>
+<span class="sd">This configuration results in Imin of 8 ms.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">LOWPAN_NET_RPL_DIO_INTERVAL_MIN</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;rpl_dio_interval_min&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The value used to configure Imax for the DIO Trickle timer.</span>
+<span class="sd">The default value is 20.</span>
+<span class="sd">This configuration results in a maximum interval of 2.33 hours.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">LOWPAN_NET_RPL_DIO_INTERVAL_DOUBLINGS</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;rpl_dio_interval_doublings&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#:</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The value used to configure k for the DIO Trickle timer.</span>
+<span class="sd">The default value is 10.</span>
+<span class="sd">This configuration is a conservative value for Trickle suppression mechanism.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">LOWPAN_NET_RPL_DIO_REDUNDANCY</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;rpl_dio_redundancy&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#:</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Default route lifetime as a multiple of the lifetime unit.</span>
+<span class="sd">The lifetime unit is the granularity of time used in RPL lifetime values, in seconds.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">LOWPAN_NET_RPL_DEFAULT_LIFETIME</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;rpl_default_lifetime&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#:</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Updates the objective function used to for link estimation and path cost calculation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">LOWPAN_NET_RPL_OBJECTIVE_FUNCTION</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="s2">&quot;rpl_objective_function&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">isReadOnly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1">#:</span>
+
+<span class="c1"># MEASUREMENTS</span>
+<span class="n">LOWPAN_NET_RPL_STATISTICS</span> <span class="o">=</span> <span class="n">Measurement</span><span class="p">(</span><span class="s2">&quot;rpl_stats&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>  <span class="c1">#: Cumulative statics gathered during RPL operation.</span>
+
+<span class="c1"># ACTION</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This function configures a node as RPL border router.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">LOWPAN_NET_RPL_SET_BORDER_ROUTER</span> <span class="o">=</span> <span class="n">Action</span><span class="p">(</span><span class="s2">&quot;rpl_set_border_router&quot;</span><span class="p">,</span> <span class="n">args_types</span><span class="o">=</span><span class="p">(</span><span class="nb">list</span><span class="p">,),</span> <span class="n">return_type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This function returns all route entries in the route table.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">LOWPAN_NET_IPV6_GET_ROUTE_TABLE</span> <span class="o">=</span> <span class="n">Action</span><span class="p">(</span><span class="s2">&quot;get_route_table&quot;</span><span class="p">,</span> <span class="n">args_types</span><span class="o">=</span><span class="p">(),</span> <span class="n">return_type</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Clears all route entries from the route table.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">LOWPAN_NET_IPV6_CLEAR_ROUTE_TABLE</span> <span class="o">=</span> <span class="n">Action</span><span class="p">(</span><span class="s2">&quot;clear_route_table&quot;</span><span class="p">,</span> <span class="n">args_types</span><span class="o">=</span><span class="p">(),</span> <span class="n">return_type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Adds a route entry towards the destination IPv6 address given as argument.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">LOWPAN_NET_IPV6_ADD_ROUTE</span> <span class="o">=</span> <span class="n">Action</span><span class="p">(</span><span class="s2">&quot;add_route&quot;</span><span class="p">,</span> <span class="n">args_types</span><span class="o">=</span><span class="p">(</span><span class="n">IPv6Address</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">IPv6Address</span><span class="p">,),</span> <span class="n">return_type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Removes the route entry towards the destination IPv6 address given as argument.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">LOWPAN_NET_IPV6_REMOVE_ROUTE</span> <span class="o">=</span> <span class="n">Action</span><span class="p">(</span><span class="s2">&quot;remove_route&quot;</span><span class="p">,</span> <span class="n">args_types</span><span class="o">=</span><span class="p">(</span><span class="nb">list</span><span class="p">,),</span> <span class="n">return_type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This function retuns a list with the IPv6 addresses of all connected neighbors.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">LOWPAN_NET_ND6_GET_NEIGHBOR_TABLE</span> <span class="o">=</span> <span class="n">Action</span><span class="p">(</span><span class="s2">&quot;get_neighbor_table&quot;</span><span class="p">,</span> <span class="n">args_types</span><span class="o">=</span><span class="p">(),</span> <span class="n">return_type</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Add a neigbor to the ND6 neighbor table.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">LOWPAN_NET_ND6_ADD_NEIGHBOR</span> <span class="o">=</span> <span class="n">Action</span><span class="p">(</span><span class="s2">&quot;add_neighbor&quot;</span><span class="p">,</span> <span class="n">args_types</span><span class="o">=</span><span class="p">(</span><span class="n">IPv6Address</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">),</span> <span class="n">return_type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="rpl_set_border_router"><a class="viewcode-back" href="../../../wishful_upis.lowpan.html#wishful_upis.lowpan.net.rpl_set_border_router">[docs]</a><span class="k">def</span> <span class="nf">rpl_set_border_router</span><span class="p">(</span><span class="n">rpl_prefix</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function configures a node as RPL border router.</span>
+<span class="sd">    The function requires an IPv6 rpl prefix as argument.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        rpl_prefix (list): array with 8 bytes used as the IPv6 RPL prefix in the DODAG.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: Error value 0 = SUCCESS; -1 = FAIL</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="ipv6_get_route_table"><a class="viewcode-back" href="../../../wishful_upis.lowpan.html#wishful_upis.lowpan.net.ipv6_get_route_table">[docs]</a><span class="k">def</span> <span class="nf">ipv6_get_route_table</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;This function returns all route entries in the route table.</span>
+<span class="sd">    Each route entry contains the destination IPv6 address,</span>
+<span class="sd">    the number of hops towards the destination and</span>
+<span class="sd">    the IPv6 address of the nexthop.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: list of LowPanRouteTableEntry objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="ipv6_clear_route_table"><a class="viewcode-back" href="../../../wishful_upis.lowpan.html#wishful_upis.lowpan.net.ipv6_clear_route_table">[docs]</a><span class="k">def</span> <span class="nf">ipv6_clear_route_table</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Clears all route entries from the route table.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: Error value 0 = SUCCESS; -1 = FAIL</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="ipv6_route_add"><a class="viewcode-back" href="../../../wishful_upis.lowpan.html#wishful_upis.lowpan.net.ipv6_route_add">[docs]</a><span class="k">def</span> <span class="nf">ipv6_route_add</span><span class="p">(</span><span class="n">dest_ipv6_addr</span><span class="p">,</span> <span class="n">num_hops</span><span class="p">,</span> <span class="n">nexthop_ipv6_addr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds a route entry towards the destination IPv6 address given as argument.</span>
+<span class="sd">    The number of hops and nexthop IPv6 address are also required.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dest_ipv6_addr (IPv6Address): IPv6 address of the destination.</span>
+<span class="sd">        num_hops (int): Number of hops between source and destination.</span>
+<span class="sd">        nexthop_ipv6_addr (IPv6Address): Next hop towards destination.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: Error value 0 = SUCCESS; -1 = FAIL</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="ipv6_route_remove"><a class="viewcode-back" href="../../../wishful_upis.lowpan.html#wishful_upis.lowpan.net.ipv6_route_remove">[docs]</a><span class="k">def</span> <span class="nf">ipv6_route_remove</span><span class="p">(</span><span class="n">dest_ipv6_addr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Removes the route entry towards the destination IPv6 address given as argument.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dest_ipv6_addr (IPv6Address): IPv6 address of the destination.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: Error value 0 = SUCCESS; -1 = FAIL</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="nd6_get_neighbor_table"><a class="viewcode-back" href="../../../wishful_upis.lowpan.html#wishful_upis.lowpan.net.nd6_get_neighbor_table">[docs]</a><span class="k">def</span> <span class="nf">nd6_get_neighbor_table</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;This function retuns a list with the IPv6 addresses of all connected neighbors.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: the IPv6 addresses of all connected neighbors.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="nd6_add_neighbor"><a class="viewcode-back" href="../../../wishful_upis.lowpan.html#wishful_upis.lowpan.net.nd6_add_neighbor">[docs]</a><span class="k">def</span> <span class="nf">nd6_add_neighbor</span><span class="p">(</span><span class="n">neighbor_ipv6_addr</span><span class="p">,</span> <span class="n">neighbor_mac_addr</span><span class="p">,</span> <span class="n">is_router</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add a neigbor to the ND6 neighbor table.</span>
+<span class="sd">    This function takes the IPv6 address, the extended MAC address and the role of the neighbor as arguments.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        neighbor_ipv6_addr (IPv6Address): Neighbor IPv6 address.</span>
+<span class="sd">        neighbor_mac_addr (list): Neighbor extended MAC address (64-bit).</span>
+<span class="sd">        is_router (bool): Indicates if the neighbor has routing capabilities enabled.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: Error value 0 = SUCCESS; -1 = FAIL</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">WiSHFUL Framework 2.0 2.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Pierluigi Gallo, Domenico Garlisi, Anatolij Zubow, Mikolaj Chwalisz, Piotr Gawlowicz, Peter Ruckebusch, Bart Jooris, Jan Bauwens, Spilios Giannoulis.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

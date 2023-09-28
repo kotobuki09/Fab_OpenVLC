@@ -1,0 +1,9 @@
+## WiSHFUL Controller's config file
+
+controller:
+    name: "Controller"
+    info: "WiSHFUL Controller"
+    dl: "tcp://127.0.0.1:8990"
+    ul: "tcp://127.0.0.1:8989"
+
+modules: {}

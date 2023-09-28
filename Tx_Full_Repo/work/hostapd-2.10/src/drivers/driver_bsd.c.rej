@@ -1,0 +1,18 @@
+--- src/drivers/driver_bsd.c
++++ src/drivers/driver_bsd.c
+@@ -1632,6 +1934,15 @@ wpa_driver_bsd_event_receive(int sock, void *ctx, void *sock_ctx)
+ 					     EVENT_MICHAEL_MIC_FAILURE, &event);
+ 			break;
+ 		}
++		else{
++			os_strlcpy(event.interface_status.ifname, drv->ifname,
++				   sizeof(event.interface_status.ifname));
++			event.interface_status.ievent = EVENT_INTERFACE_ADDED;
++			wpa_printf(MSG_DEBUG, "RTM_IFINFO: Interface '%s' UP",
++				   event.interface_status.ifname);
++			wpa_supplicant_event(ctx, EVENT_INTERFACE_STATUS, &event);
++		}
++
+ 		break;
+ 	case RTM_IFINFO:
+ 		ifm = (struct if_msghdr *) rtm;

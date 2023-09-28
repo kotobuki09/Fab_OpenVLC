@@ -1,5 +1,5 @@
-# Fab_OpenVLC
- Simple Control Unit for OpenVLC
+# Fab OpenVLC
+## Intelligent Management System for OpenVLC
  
  ![Fab_032022](https://user-images.githubusercontent.com/34347264/157910137-6f7f791e-4902-4057-868a-5b31315243ff.png)
 
@@ -10,12 +10,19 @@ https://glowing-hardcover-41b.notion.site/OpenVLC-PRU-f7f70c9ccc974c2abeacf5913e
 #Intruction:
 
 Go to the controller directory:
-    
+
+Create WiFi network
+
+BB1
+
     fab vlc1 setup_wifi_ap
+BB2
 
 	fab vlc2 setup_wifi_sta
+BB1
 
     fab vlc1 setup_vlc_tx
+BB2
 
     fab vlc2 setup_vlc_rx
 
@@ -39,14 +46,26 @@ Fab somehow doensn't work when related to changing interface: You need to create
 
 #Start Iperf (wifi, vlc, vitual link)
 
+Create WiFi network
+
     fab vlc1 start_iperf_client:wifi
     fab vlc2 start_iperf_server:wifi
+
+Create VLC network 
 
     fab vlc1 start_iperf_client:vlc
     fab vlc2 start_iperf_server:vlc
 
+Create iperf automatic
+
     fab vlc1 start_iperf_client
     fab vlc2 start_iperf_server
+Tx
+
+    iperf -c 192.168.10.2 -u -b 1000M -l 800 -p 10001 -t 100000
+Rx
+
+    iperf -u -l 800 -s -i3 -B 192.168.10.2 -p 10001
 
 #Activate wifi link
     

@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Usage:
+   metamac_testbed_controller [options] [-q | -v]
+
+Options:
+   --logfile name      Name of the logfile
+   --config configFile Config file path
+
+Example:
+   ./metamac_testbed_controller -v --config ./controller_config.yaml
+
+Other options:
+   -h, --help          show this help message and exit
+   -q, --quiet         print less text
+   -v, --verbose       print more text
+   --version           show version and exit
+"""
+__author__ = "Domenico Garlisi"
+__copyright__ = "Copyright (c) 2016, CNIT"
+__version__ = "0.1.0"
+__email__ = "domenico.garlisi@cnit.it"
+
+import sys
+import datetime
+import logging
+import csv
+
+import gevent
+import yaml
+
+sys.path.append('../../../')
+sys.path.append("../../../agent_modules/wifi_ath")
+sys.path.append("../../../agent_modules/wifi_wmp")
+sys.path.append("../../../agent_modules/wifi")
+sys.path.append("../../../agent_modules/net_linux")
+sys.path.append('../../../upis')
+sys.path.append('../../../framework')
+sys.path.append('../../../agent')
+sys.path.append('../../../controller')
+import wishful_controller
+from examples.Get_Started_Examples.Advanced_WMP_Example.wmp_helper.controller_utils import *
+from examples.Get_Started_Examples.Advanced_WMP_Example.wmp_helper.TestbedTopology import TestbedTopology
+
+#set controller logging
+log = logging.getLogger('wishful_agent.main')
+
+#run WiSHFUL controller module
+controller = wishful_controller.Controller()
+nodes = []
+
+#create testbed topology object, to keep information about WiFiNode in terms of:
+# list of nodes, measurement and acapabilities
+mytestbed = TestbedTopology("wishful-metamac", log, controller)
+
+#calling when a new node is discovered on network
+@controller.new_node_callback()
+def new_node(node):
+    print("New node appeared:")
+    print(node)
+    nodes.append(node)
+    mytestbed.add_discovered_node(node)
+
+#calling when a experiment node leave the netwrok
+@controller.node_exit_callback()
+def node_exit(node, reason):
+    if node in nodes:
+        nodes.remove(node);
+    print("NodeExit : NodeID : {} Reason : {}".format(node.id, reason))
+
+
+#UPI default callback, calling when a no blocking UPI call without defined callback has been completed
+@controller.set_default_callback()
+def default_callback(group, node, cmd, data):
+    print("DEFAULT CALLBACK : Group: {}, NodeId: {}, Cmd: {}, Returns: {}".format(group, node.id, cmd, data))
+
+
+def main(args):
+    log.debug(args)
+
+    config_file_path = args['--config']
+    config = None
+    #open controller module file configuration
+    with open(config_file_path, 'r') as f:
+        config = yaml.load(f)
+
+    #load controller module configuration
+    controller.load_config(config)
+
+    #start WiSHFUL controller
+    controller.start()
+
+    #get experiment node number
+    num_testbed_nodes = mytestbed.getExperimentNodesNumber()
+
+    #controller loop
+    while True:
+        gevent.sleep(10)
+        print("\n")
+        print("Connected nodes ", [str(node.name) for node in nodes])
+        print("(we wait for %d nodes)" % num_testbed_nodes)
+
+        if len(nodes) == num_testbed_nodes:
+
+            #find node rules
+            mytestbed.initializeTestbedTopology()
+
+            #setup nodes topology
+            mytestbed.initializeTestbedFunctions(controller) # setup testbed nodes
+
+            break
+
+
+if __name__ == "__main__":
+    try:
+        from docopt import docopt
+    except:
+        print("""
+        Please install docopt using:
+            pip install docopt==0.6.1
+        For more refer to:
+        https://github.com/docopt/docopt
+        """)
+        raise
+
+    #loading agent option command
+    args = docopt(__doc__, version=__version__)
+    log_level = logging.INFO  # default
+    if args['--verbose']:
+        log_level = logging.DEBUG
+    elif args['--quiet']:
+        log_level = logging.ERROR
+
+    #read agent file configuration
+    logfile = None
+    if args['--logfile']:
+        logfile = args['--logfile']
+
+    #load controller file configuration
+    logging.basicConfig(filename=logfile, level=log_level,
+        format='%(asctime)s - %(name)s.%(funcName)s() - %(levelname)s - %(message)s')
+
+    try:
+        main(args)
+    except KeyboardInterrupt:
+        log.debug("Controller exits")
+    finally:
+        log.debug("Exit")
+        controller.stop()

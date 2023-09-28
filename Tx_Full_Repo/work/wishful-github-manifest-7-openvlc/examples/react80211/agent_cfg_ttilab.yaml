@@ -1,0 +1,24 @@
+## WiSHFUL agent config file
+
+agent_info:
+  name: 'react80211'
+  info: 'REACT80211 agent info'
+  iface: 'eth1'
+
+modules:
+  network:
+      module : wishful_module_net_linux
+      class_name : NetworkModule
+
+  discovery:
+      module : wishful_module_discovery_pyre
+      class_name : PyreDiscoveryAgentModule
+      kwargs: {"iface":"eth1", "groupName":"react80211_example"}
+
+  wlan:
+      module : wishful_module_wifi
+      class_name : WifiModule
+
+  iperf:
+      module : wishful_module_iperf
+      class_name : IperfModule

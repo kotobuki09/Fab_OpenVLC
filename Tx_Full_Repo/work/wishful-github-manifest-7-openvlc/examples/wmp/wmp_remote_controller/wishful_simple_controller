@@ -1,0 +1,192 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+wishful_controller_simple.py: First implementation of WiSHFUL controller
+
+Usage:
+   wishful_controller_simple.py [options] [-q | -v]
+
+Options:
+   --logfile name      Name of the logfile
+   --config configFile Config file path
+
+Example:
+   ./wishful_simple_local_controller -v --config ./config.yaml 
+
+Other options:
+   -h, --help          show this help message and exit
+   -q, --quiet         print less text
+   -v, --verbose       print more text
+   --version           show version and exit
+"""
+
+import sys
+import datetime
+import logging
+import gevent
+import yaml
+import time
+import random
+
+sys.path.append('../../../')
+sys.path.append("../../../agent_modules/wifi_ath")
+sys.path.append("../../../agent_modules/wifi_wmp")
+sys.path.append("../../../agent_modules/wifi")
+sys.path.append('../../../upis')
+sys.path.append('../../../framework')
+sys.path.append('../../../agent')
+sys.path.append('../../../controller')
+
+import wishful_upis as upis
+import wishful_controller
+
+from examples.wmp.wmp_radio_program.wmp_helper.controller_utils import *
+from examples.wmp.wmp_radio_program.wmp_helper.TestbedTopology import TestbedTopology
+from agent_modules.wifi_wmp.wmp_structure import UPI_R
+from local_control_program import my_local_control_program
+
+__author__ = "Domenico Garlisi"
+__copyright__ = "Copyright (c) 2015, Technische Universität Berlin"
+__version__ = "0.1.0"
+__email__ = "{domenico.garlisi@cnit.it"
+
+
+log = logging.getLogger('wishful_agent.main')
+controller = wishful_controller.Controller()
+mytestbed = TestbedTopology("wmp_radio_program", log)
+nodes = []
+
+@controller.new_node_callback()
+def new_node(node):
+    print("New node appeared:")
+    print(node)
+    nodes.append(node)
+    mytestbed.add_wmp_node(node, 'STA')
+
+@controller.node_exit_callback()
+def node_exit(node, reason):
+    if node in nodes:
+        nodes.remove(node);
+    print("NodeExit : NodeID : {} Reason : {}".format(node.id, reason))
+
+
+@controller.set_default_callback()
+def default_callback(group, node, cmd, data):
+    print("DEFAULT CALLBACK : Group: {}, NodeId: {}, Cmd: {}, Returns: {}".format(group, node.id, cmd, data))
+
+@controller.add_callback(upis.radio.set_parameters)
+def set_parameters_reponse(node, cmd, data):
+    print("set_parameters CALLBACK : {} set_channel_reponse : {}".format(datetime.datetime.now(),data))
+
+def print_response(par_1, par_2, data):
+    print("{} Specific callback for function call; Print response : {}".format(datetime.datetime.now(),data))
+
+def main(args):
+    log.debug(args)
+
+    config_file_path = args['--config']
+    config = None
+    with open(config_file_path, 'r') as f:
+        config = yaml.load(f)
+
+    controller.load_config(config)
+    controller.start()
+
+    nodes_platform_info = []
+    #control loop
+    while True:
+        gevent.sleep(10)
+        print("\n")
+        print("Connected nodes", [str(node.name) for node in nodes])
+        if len(nodes) > 0:
+
+            UPIargs_1 = { 'interface' : 'wlan0', 'parameters' : [UPI_R.CSMA_CW, UPI_R.CSMA_CW_MIN, UPI_R.CSMA_CW_MAX] }
+            # node_parameters = controller.nodes(nodes[0]).radio.get_parameters(UPIargs_1)
+            # print("node_parameters : %s" % str(node_parameters) )
+            UPIargs_2 = { 'interface' : 'wlan0', UPI_R.CSMA_CW: 127, UPI_R.CSMA_CW_MIN : 127, UPI_R.CSMA_CW_MAX : 511 }
+            # node_result = controller.nodes(nodes[0]).radio.set_parameters(UPIargs)
+            # print("node_result : %s" % str(node_result) )
+
+
+            print("Start upi remote call")
+            #execute non-blocking function immediately
+            controller.blocking(False).nodes(nodes[0]).radio.set_parameters(UPIargs_2)
+
+            #execute non-blocking function immediately, with specific callback
+            controller.callback(print_response).nodes(nodes[0]).radio.get_parameters(UPIargs_1)
+
+            #schedule non-blocking function delay
+            controller.delay(3).nodes(nodes[0]).radio.get_parameters(UPIargs_1)
+
+            #schedule non-blocking function exec time
+            exec_time = datetime.datetime.now() + datetime.timedelta(seconds=6)
+            controller.exec_time(exec_time).nodes(nodes[0]).radio.get_parameters(UPIargs_1)
+
+            #execute blocking function immediately
+            result = controller.nodes(nodes[0]).radio.set_parameters(UPIargs_2)
+            print("{} setting (0 for SUCCESS) : {}".format(datetime.datetime.now(), result))
+
+
+            print("Deploy local control program on a remote node")
+            lcpDescriptor = controller.node(nodes[0]).hc.start_local_control_program(program=my_local_control_program)
+            msgNum = 5
+            while msgNum:
+                newCh = random.randint(1, 30)
+                print("Send ctrl message to remote control program")
+                lcpDescriptor.send({"new_channel": newCh})
+
+                while True:
+                    msg = lcpDescriptor.recv(timeout=1)
+                    if msg:
+                        print("Recv ctrl message from remote local control program")
+                        msgNum = msgNum - 1
+                        break
+
+                gevent.sleep(10)
+
+            print("Terminate remote local control program")
+            lcpDescriptor.close()
+
+            while True:
+                gevent.sleep(10)
+                print('WAIT')
+
+            #break
+
+
+
+if __name__ == "__main__":
+    try:
+        from docopt import docopt
+    except:
+        print("""
+        Please install docopt using:
+            pip install docopt==0.6.1
+        For more refer to:
+        https://github.com/docopt/docopt
+        """)
+        raise
+
+    args = docopt(__doc__, version=__version__)
+
+    log_level = logging.INFO  # default
+    if args['--verbose']:
+        log_level = logging.DEBUG
+    elif args['--quiet']:
+        log_level = logging.ERROR
+
+    logfile = None
+    if args['--logfile']:
+        logfile = args['--logfile']
+
+    logging.basicConfig(filename=logfile, level=log_level,
+        format='%(asctime)s - %(name)s.%(funcName)s() - %(levelname)s - %(message)s')
+
+    try:
+        main(args)
+    except KeyboardInterrupt:
+        log.debug("Controller exits")
+    finally:
+        log.debug("Exit")
+        controller.stop()

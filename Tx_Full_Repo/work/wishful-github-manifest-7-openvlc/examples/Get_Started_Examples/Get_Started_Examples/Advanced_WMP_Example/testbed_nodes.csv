@@ -1,0 +1,6 @@
+ip,hostname,role,platform,traffic
+10.8.8.102,alix02,AP,wmp,0
+10.8.8.103,alix03,STA,wmp,0
+10.8.8.111,alix11,STA1,wmp,0
+10.8.8.112,alix12,AP1,wmp,0
+#10.8.8.118,alix18,STA,wmp,0

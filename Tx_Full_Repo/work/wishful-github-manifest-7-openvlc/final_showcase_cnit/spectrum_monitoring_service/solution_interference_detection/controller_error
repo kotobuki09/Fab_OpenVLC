@@ -1,0 +1,1006 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Usage:
+   controller [options] [-q | -v]
+
+Options:
+   --logfile name	   Name of the logfile
+   --config configFile Config file path
+   --nodes name for nodes setup 
+   --experiment_info name experiment setup
+
+Example:
+   ./
+
+Other options:
+   -h, --help		   show this help message and exit
+   -q, --quiet		   print less text
+   -v, --verbose	   print more text
+   --version		   show version and exit
+"""
+
+import threading
+import datetime
+import logging
+import sys
+import time
+import gevent
+import signal
+import os
+import yaml
+import zmq
+import json
+import zmq
+import _thread
+from _thread import start_new_thread
+
+from sklearn.externals import joblib
+from sklearn.neural_network import MLPClassifier
+from sklearn.preprocessing import StandardScaler
+
+import numpy as np
+from operator import itemgetter
+import random
+
+sys.path.append('../')
+sys.path.append('../../')
+sys.path.append('../../../')
+sys.path.append("../../../agent_modules/wifi_ath")
+sys.path.append("../../../agent_modules/wifi_wmp")
+sys.path.append("../../../agent_modules/wifi")
+sys.path.append("../../../agent_modules/iperf/")
+sys.path.append('../../../upis')
+sys.path.append('../../../framework')
+sys.path.append('../../../agent')
+sys.path.append('../../../controller')
+sys.path.append('../../../controller_modules')
+sys.path.append('../../../controller_modules/wireless_topology')
+
+import wishful_controller
+import wishful_upis as upis
+from helper.MeasurementManager import MeasurementCollector
+from lib.kvsimple import KVMsg
+from lib.global_controller_proxy import GlobalSolutionControllerProxy
+from local_control_program import remote_control_program
+from spectral_acquire import spectral_recorder
+
+
+__author__ = "Domenico Garlisi, ...."
+__copyright__ = "Copyright (c) ..., "
+__version__ = "0.1.0"
+__email__ = "domenico.garlisi@cnit.it; ..."
+
+
+class WiFiNode():
+	"""
+	This class defines an WiFi node in order to :
+		Set wireless lan interface ip address and network role (Station/AccessPoint)
+		Stores/Removes low level measurements
+		Store the low level measurements type
+	"""
+	def __init__(self, node, mac_address):
+		""" Creates a new WiFiNode object
+		"""
+		self.node = node
+		self.wlan_ipAddress = '192.168.0.' + node.ip.split('.')[3]
+		self.mac_address = mac_address
+		self.measurements = []
+		self.measurements_types = []
+		self.role = None
+		self.platform = None
+		self.interface = None
+		self.interference_class = []
+
+	def add_measure(self, measure):
+		""" Adds a measure or a list of measurable in the list of node measurement
+		:param measure: list of measure to add at measurements object attribute
+		"""
+		self.measurements.append(measure)
+
+	def add_inferference_class(self, interf_class):
+		""" Adds the predicted interference class 
+		:param class: the predicted interference class according to the classifier
+		"""
+		self.interference_class.append(interf_class)
+
+	def get_available_measures(self):
+		""" Gets the available measure of the node
+		:return measure_list: the list of measure stored until now
+		"""
+		return self.measurements
+
+
+log = logging.getLogger('wishful_agent.main')
+controller = wishful_controller.Controller()
+
+"""
+Create MeasurementCollector object, to keep information about WiFiNode measurements and perform plotting result
+"""
+meas_collector = MeasurementCollector(log)
+
+nodes = [] # list of WiSHFUL nodes
+wifinodes = [] # list of WiSHFUL WiFI nodes
+do_run = None # used to keep alive all the controller threads
+
+@controller.new_node_callback()
+def new_node(node):
+	nodes.append(node)
+	print("\nNew node appeared:")
+	print(node)
+
+
+@controller.node_exit_callback()
+def node_exit(node, reason):
+	if node in nodes:
+		nodes.remove(node);
+	print("NodeExit : NodeID : {} Reason : {}".format(node.id, reason))
+
+
+@controller.set_default_callback()
+def default_callback(group, node, cmd, data):
+	print("{} DEFAULT CALLBACK : Group: {}, NodeName: {}, Cmd: {}, Returns: {}".format(datetime.datetime.now(), group, node.name, cmd, data))
+
+
+def csResultCollector1(group, node, data):
+	messagedata = data
+	log.info('1 - receives data msg at %s - %s' % (str(node.ip), str(messagedata) ))
+
+
+
+def listener_subscriber(arg,subscriber):
+	sequence = 0
+	kvmap = {}
+	while True:
+		try:
+			kvmsg = KVMsg.recv(subscriber)
+		except KeyboardInterrupt:
+			return
+		except:
+			break  # Interrupted
+		if kvmsg.sequence > sequence:
+			sequence = kvmsg.sequence
+			print("*********")
+			print("received update information with sequence %d" % sequence)
+			print(kvmsg.body)
+			print("*********")
+			kvmsg.store(kvmap)
+
+# socket iperf pointer
+iperf_socket = None
+
+
+def start_command_connection():
+	"""
+					****	SETUP COMMAND RECEIVER	****
+	This function is used to setup the connection with the experiment GUI,
+	a ZMQ socket server is created on port 8500, able to receive command from GUI
+	"""
+	print(controller.name)
+	socket_command_port = "8500"
+	context = zmq.Context()
+	socket_command = context.socket(zmq.PAIR)
+	socket_command.bind("tcp://*:%s" % socket_command_port)
+	print("Create server on port %s ... ready to receive command from experiment GUI" % socket_command_port)
+	return socket_command
+
+
+def collect_remote_messages(lcpDescriptor_node, mac_address, label, solutionCtrProxy):
+	"""
+	****	SETUP Collect results funciton	****
+	This functions is used to collect information from remote local control program,
+	the statistics are sent to the experiment GUI, and stored in the node.measurements list
+	"""
+	bad_plcp_old = 0
+	good_plcp_old = 0
+	bad_fcs_old = 0
+	good_fcs_old = 0
+	busy_time_old = 0
+
+	interference_state = "NO interference"
+	receive_thread = threading.currentThread()
+
+	#SETUP ANN
+	file_scaler = 'helper/SCALER-mix.pkl'
+	file_ann = 'helper/ANN-mix.pkl'
+	# data = np.genfromtxt(fname='path_Dataset', delimiter=' ')
+	scaler = joblib.load(file_scaler)
+	ann = joblib.load(file_ann)
+
+	while getattr(receive_thread, "do_run", True):
+		msg = lcpDescriptor_node.recv(timeout=0.1)
+		if msg:
+			# log.info("Recv: %s" % str(msg))
+			if "mac_address" in msg:
+				for ii in range(0, len(mac_address)):
+					if msg['mac_address'] == mac_address[ii]:
+						# print('len %d - message = %s - mac = %s' % (len(msg['measure'][0]), msg['measure'], msg['mac_address']))
+						msg['label'] = label[ii]
+						msg['type'] = u'statistics'
+
+						if label[ii] == 'A' and len(msg['measure'][0][0]) == 19:  # len(errorMeasure)==6: #check error only for labl A
+							errorMeasureAll = msg['measure'][0]
+							# print("%s %s" % (str(label), errorMeasureAll))
+							# bad_plcp = errorMeasure[7]
+							# good_plcp = errorMeasure[9]
+							# bad_fcs = errorMeasure[6]
+							# good_fcs = errorMeasure[16]
+							# busy_time = errorMeasure[1]
+							#errorMeasure = np.mean(errorMeasureAll, axis=0)
+							#column = 1
+							#errorMeasure = sum(row[column] for row in errorMeasureAll)
+							errorMeasure = [sum(x) for x in zip(*errorMeasureAll)]
+							errorMeasure[1] = errorMeasure[1] / 10
+							#print("%s %s" % (str(label), errorMeasure))
+							# fieldnames = ['tsfStart' '100' '102' '104' '106' '108' '10A' '10C' '10E' '110' '112' '114' '116' '118' '11A' '11C' '11E' 'tsfDeltaSec' 'tsfDeltaus']
+							# too - long --> 104 --> 3
+							# Invalid - MAC - Header --> 108 --> 5
+							# Bad - FCS --> 10A --> 6
+							# Bad - PLCP --> 10C --> 7
+							# Good - PLCP --> 9
+							# Good - FCS, not -matching - RA --> 16
+							# reg = {'104' '106' '108' '10A' '10C' '110' '112' '11E' '100'}; % '102'};
+							# leg = {'Too Long' 'Too Short' 'Invalid MAC Header' 'Bad FCS' 'Bad PLCP'...
+							#		 % 'Preamble OK, bad Header' 'Good PLCP' 'Good FCS, matching RA' 'Good FCS, not matching RA' 'Busy Time'};
+							monitorValue = {}
+							monitorValue["error"] = {"badplcp": errorMeasure[7], "goodplcp": errorMeasure[9], "badfcs": errorMeasure[6], "goodfcs": errorMeasure[16]}
+
+							#ececute ANN
+							print("execute ANN")
+							ann_input = [ errorMeasure[3],  errorMeasure[4],  errorMeasure[5],  errorMeasure[6],  errorMeasure[7],  errorMeasure[8],  errorMeasure[9],  errorMeasure[10],  errorMeasure[16]]
+							print(ann_input)
+							ann_imput_array = np.array(ann_input).reshape(1,9)
+							# print(ann_imput_array.shape)
+							predicted_value = ann.predict(scaler.transform(ann_imput_array))
+							#y_classes = predicted_value.argmax(axis=-1)
+							#predicted_array = list(predicted_value)
+							#print(predicted_array)
+							#predicted_string = np.array_str(predicted_array[0])
+							#predicted_string = predicted_value[0][0]
+							print(predicted_value[0][0], predicted_value[0][1], predicted_value[0][2], predicted_value[0][3])
+							#np.mean(
+							# 1000 --> WiFi
+							# 0100 --> LTE
+							# 0010 --> zigbee
+							# 0001 --> idle
+							# 1100 --> wifi + lte
+							# 1010 --> wifi + zigbee
+							# 0110 --> lte + zigbee
+
+
+							print("take decision")
+							# LTE_U_DETECTED	WiFi_DETECTED	ZigBee_DETECTED	NO_interference
+							# print("%d - %d - %d - %d - %d" % (busy_time, bad_plcp, good_plcp, bad_fcs, good_fcs))
+							if predicted_value[0][0] == 1 :
+								# WiFi detection
+								print("detected WiFi")
+								#monitorValue["WiFi"] = {"2462": [20, errorMeasure[1]]}
+
+							if predicted_value[0][1] == 1  or predicted_value[0][2] == 1 :
+								# LTE detection
+								print("detected LTE")
+								#monitorValue["LTE"] = {"2462": [5, errorMeasure[1]]}
+
+							if predicted_value[0][2] == 1 :
+								# zigbee detection
+								print("detected zigbee")
+								#monitorValue["ZigBee"] = {"2462": [2, errorMeasure[1]]}
+								#monitorValue["ZigBee"] = {"2462": [2, random.randint(0, 15) / 100]}
+
+
+							if predicted_value[0][3] == 1 :
+								# idle detection
+								print("detected channel idle")
+
+							# #LTE_U_DETECTED	WiFi_DETECTED	ZigBee_DETECTED	NO_interference
+							# # print("%d - %d - %d - %d - %d" % (busy_time, bad_plcp, good_plcp, bad_fcs, good_fcs))
+							# if busy_time > 350:
+							# 	if bad_plcp > good_plcp and bad_fcs > good_fcs:
+							# 		# LTE detection
+							# 		print("detected LTE")
+							# 		#send message to solution global controller
+							# 		if interference_state !=  "LTE_U_DETECTED":
+							# 			interference_state = "LTE_U_DETECTED"
+							# 			solutionCtrProxy.send_event(interference_state)
+							#
+							# 	elif bad_plcp < good_plcp and bad_fcs < good_fcs:
+							# 		# WiFi detection
+							# 		print("detected WiFi")
+							# 		if interference_state !=  "WiFi_DETECTED":
+							# 			interference_state = "WiFi_DETECTED"
+							# 			solutionCtrProxy.send_event(interference_state)
+							# 	else:
+							# 		# no interference detected
+							# 		print("no interference detected")
+							#
+							# else:
+							# 	print("detected channel idle")
+							# 	if interference_state != "NO_interference":
+							# 		interference_state = "NO_interference"
+							# 		solutionCtrProxy.send_event(interference_state)
+
+							solutionCtrProxy.send_monitor_report("interference", "ErrorMonitoring", monitorValue)
+
+						# print(msg)
+
+			# add measurement on nodes element
+			# for node in wifinodes:
+			# 	if node.mac_address == msg['mac_address'] and msg['measure']:
+			# 		node.measurements.append(msg['measure'])
+		gevent.sleep(1)
+
+#*****************
+#reveive data spectral from spectral node
+#*****************
+def receive_data_spectral(solutionCtrProxy):
+
+	# zigbee detection
+	# == == == == == == == == == == == == == == == == == ==
+	# 2.1875
+	# 2435.125
+	bbMedianThMinZigbee = np.float32(1.0)
+	bbMedianThMaxZigbee = np.float32(3.0)
+	ff2MedianThMinZigbee = np.float32(2430)
+	ff2MedianThMaxZigbee = np.float32(2536)
+	# LTE detection
+	# == == == == == == == == == == == == == == == == == ==
+	# 5.0
+	# 2437.15625
+	# 2462
+	bbMedianThMinLte = np.float32(3)
+	bbMedianThMaxLte = np.float32(7)
+	# bbMedianThMinLte = np.float32(10)
+	# bbMedianThMaxLte = np.float32(14)
+	ff2MedianThMinLte = np.float32(2462)
+	ff2MedianThMaxLte = np.float32(2467)
+	# WiFi detection
+	# == == == == == == == == == == == == == == == == == ==
+	# 16.875
+	# 2436.84375
+	bbMedianThMinWiFi = np.float32(10)
+	bbMedianThMaxWiFi = np.float32(20)
+	ff2MedianThMinWiFi = np.float32(2459)
+	ff2MedianThMaxWiFi = np.float32(2464)
+
+	predicted_value = "0000"
+	prediction_zigbee_count = 0
+	prediction_zigbee_freq = 0
+	prediction_zigbee_bw = 0
+	prediction_zigbee_duration = 0
+
+	prediction_wifi_count = 0
+	prediction_wifi_freq = 0
+	prediction_wifi_bw = 0
+	prediction_wifi_duration = 0
+
+	prediction_lte_count = 0
+	prediction_lte_freq = 0
+	prediction_lte_bw = 0
+	prediction_lte_duration = 0
+
+	interference_state = "NO interference"
+
+	#sr = spectral_recorder.SpectralRecorder(load=False)
+	reading_time = 1000
+	reading_time_sec = 1
+	filename = "/tmp/demo.tlv"
+	reading_interval = 0.5
+	local_starttime = time.time()
+
+	# phy = "phy0"
+	# dev = "wlan0"
+	# drv = "ath10k"
+
+	# phy = "phy1"
+	# dev = "wlan1"
+	# drv = "ath9k"
+
+	# phy = "phy4"
+	# dev = "wlan0"
+	# drv = "ath9k"
+
+	phy = "phy2"
+	dev = "wlxec086b0837f1"
+	drv = "ath9k_htc"
+	spectrum_center_freq = 2462e6 #2437e6
+
+	print("start spectral acquire")
+	sr = spectral_recorder.SpectralRecorder(phy=phy, dev=dev, drv=drv, load=True, offline=False, freq=spectrum_center_freq)
+	sr.acquire(filename, T_acquire=0.4)
+	print("started")
+	dt = 0
+	EXPERIMENT_DURATION = 6000
+
+	while True:
+		try:
+			num_element_in_freq_range = [0 for i in range(0, 7)]
+			center_in_freq_range = [0 for i in range(0, 7)]
+			bandwidth_in_freq_range = [0 for i in range(0, 7)]
+
+			# print("1")
+			sr = spectral_recorder.SpectralRecorder(phy=phy, dev=dev, drv=drv, load=True, offline=False, freq=spectrum_center_freq)
+			sr.acquire(filename, T_acquire=0.4)
+			[measurements, spectrum_features, duration_energy_det_features, duration_features, freq, power_features] = sr.get_spectrum_scan_features( filename, T=500e3)
+
+			# print("2")
+			# print(duration_energy_det_features)
+			# ed = np.array(list(map(itemgetter('duration'), duration_energy_det_features)))  # duration via energy detection
+			# ed_t_start = np.array(list(map(itemgetter('tsf'), duration_energy_det_features)))  # duration via energy detection
+			# ed_t_stop = np.array(list(map(itemgetter('tsf_stop'), duration_energy_det_features)))  # duration via energy detection
+			# ed = [j for i in ed for j in i]
+			# print(ed)
+			# print(len(ed))
+
+			# print("2.0")
+			# print(duration_features)
+			ed_features = np.array(list(map(itemgetter('duration'), duration_features)))  # duration via energy detection
+			ed_num_features = np.array(list(map(itemgetter('duration_num'), duration_features)))  # duration via energy detection
+
+			if len(ed_features) == 0:
+				ed_features = []
+				ed_features.append(0)
+			ed_features_mean = round(np.mean(ed_features),2)
+			if ed_features_mean < 0:
+				ed_features_mean = 0
+			# print(ed_features)
+			# print(len(ed_features))
+			# print(np.mean(ed_features))
+
+			# print(ed_num_features)
+			# print(len(ed_num_features))
+
+			# dd_s = np.sort(ed)
+			# yvals = np.arange(len(dd_s)) / float(len(dd_s) - 1)
+			# ax_energy_detection.plot(dd_s, yvals)
+			# # ax_energy_detection.set_xlim([-130,-90])
+			# ax_energy_detection.set_title('energy detection CDF size={}'.format(len(dd_s)));
+			# ax_energy_detection.set_xlabel('Duration [us]')
+			# ax_energy_detection.set_ylabel('CDF')
+			# ax_energy_detection.set_xlim([0, max(ed)])
+
+
+			# print("2.1")
+			# print([measurements, spectrum_features, duration_energy_det_features, duration_features, freq, power_features])
+			bb = np.array(list(map(itemgetter('bw'), spectrum_features)))  # bandwidth
+			bb = [j for i in bb for j in i]
+			# print(bb)
+			# print(len(bb))
+
+			"""
+			dd_s = np.sort(bb)
+			yvals = np.arange(len(dd_s)) / float(len(dd_s) - 1)
+			# max_bw,k_bw,v_bw = get_occurrences(bb)
+			ax_cdf_bw.plot(dd_s, yvals)
+			# ax_cdf_bw.plot(k_bw, np.cumsum(v_bw)/sum(v_bw),'b.')
+			# ax_cdf_bw.stem(k_bw, v_bw/max(v_bw), 'b.--')
+			# ax_cdf_bw.set_title('Expected bw CDF size={}'.format(len(dd_s)));
+			ax_cdf_bw.set_title('Expected bw CDF');
+			ax_cdf_bw.set_xlabel('BW [MHz]')
+			ax_cdf_bw.set_ylabel('CDF')
+			ax_cdf_bw.set_xlim([0, 20])
+			"""
+
+			# print("2.2")
+			ff2 = np.array(list(map(itemgetter('freq'), spectrum_features)))  # frequency
+			# print(ff2)
+			ff2 = [j for i in ff2 for j in i]
+			# print(ff2)
+			# print(len(ff2))
+
+			f_spec = sr.get_freq_list(freq)  #--> len == 56
+			# print("3")
+			# print(f_spec)
+			# print(len(f_spec))
+			fmin = min(f_spec)
+			fmax = max(f_spec)
+			# print(fmin," : ",fmax, " : ", (fmax-fmin))
+
+			for ii in range(0,7):
+				# print("--> " , ii)
+				center_in_freq_range[ii] = f_spec[ (ii * 8) + 3]
+				element_in_freq_range = [f_spec[ii * 8] < i < f_spec[((ii + 1) * 8) - 1] for i in ff2]
+				num_element_in_freq_range[ii] = sum(element_in_freq_range)
+				# print(num_element_in_freq_range[ii])
+				index_bandwidth =  [i for i, x in enumerate(element_in_freq_range) if x]
+				if len(index_bandwidth)>0:
+					bandwidth_in_freq_range[ii] = np.median( itemgetter(*index_bandwidth)(bb) )
+				else:
+					bandwidth_in_freq_range[ii] = 0
+
+			# print("3.2")
+			# for ii in range(7):
+			# 	print(round(center_in_freq_range[ii]), "\t\t", end='')
+			# print("")
+			# for ii in range(7):
+			# 	print(num_element_in_freq_range[ii], "\t\t", end='')
+			# print("")
+			# # print("3.3")
+			# for ii in range(7):
+			# 	print(round(bandwidth_in_freq_range[ii]), "\t\t", end='')
+			# print("")
+
+
+			"""
+			dd_s = np.sort(ff2)
+			yvals = np.arange(len(dd_s)) / float(len(dd_s) - 1)
+			ax_cdf_ff.plot(dd_s, yvals)
+			ax_cdf_ff.set_title('Expected freq CDF');
+			ax_cdf_ff.set_xlabel('freq [MHz]')
+			ax_cdf_ff.set_ylabel('CDF')
+			f_spec = sr.get_freq_list(freq)
+			fmin = min(f_spec)
+			fmax = max(f_spec)
+			ax_cdf_ff.set_xlim([fmin, fmax])
+			"""
+
+			# bbMedian = np.median(bb)
+			# ff2Median = np.median(ff2)
+			# if np.isnan(bbMedian):
+			# 	bbMedian = 0
+			# if np.isnan(ff2Median):
+			# 	ff2Median = 0
+			# print("4")
+			# print(bbMedian)
+			# print(ff2Median)
+
+			for ii in range(0,7):
+				print(num_element_in_freq_range[ii])
+				print(bandwidth_in_freq_range[ii])
+				if num_element_in_freq_range[ii] > 4:
+					if  bandwidth_in_freq_range[ii] < bbMedianThMaxZigbee and bandwidth_in_freq_range[ii] > bbMedianThMinZigbee:
+						# print("test")
+						prediction_zigbee_count += 1
+						prediction_zigbee_freq = center_in_freq_range[ii]
+						prediction_zigbee_bw = bandwidth_in_freq_range[ii]
+						prediction_zigbee_duration = ed_features_mean
+					elif bandwidth_in_freq_range[ii] < bbMedianThMaxLte and bandwidth_in_freq_range[ii] > bbMedianThMinLte:
+						prediction_lte_count += 1
+						prediction_lte_freq = center_in_freq_range[ii]
+						prediction_lte_bw = bandwidth_in_freq_range[ii]
+						prediction_lte_duration = ed_features_mean
+					elif bandwidth_in_freq_range[ii] < bbMedianThMaxWiFi and bandwidth_in_freq_range[ii] > bbMedianThMinWiFi:
+						prediction_wifi_count += 1
+						prediction_wifi_freq = center_in_freq_range[ii]
+						prediction_wifi_bw = bandwidth_in_freq_range[ii]
+						prediction_wifi_duration = ed_features_mean
+					else:
+						pass
+
+		except Exception as e:
+			print(e)
+
+		# if not (dt % 3):
+		if True:
+			print("Frequencies :", "\t\t", end='')
+			for ii in range(7):
+				print(round(center_in_freq_range[ii]), "\t\t", end='')
+			print("")
+			print("Occurances :", "\t\t", end='')
+			for ii in range(7):
+				print(num_element_in_freq_range[ii], "\t\t", end='')
+			print("")
+			print("Bandwidth :", "\t\t", end='')
+			for ii in range(7):
+				print(round(bandwidth_in_freq_range[ii]), "\t\t", end='')
+			print("")
+			print("global dutycycle :  ", ed_features_mean)
+
+			print("take decision")
+			monitorValue = {}
+			# print(prediction_zigbee_count)
+			# print(prediction_lte_count)
+			# print(prediction_wifi_count)
+
+			if prediction_zigbee_count>0:
+				# zigbee detection
+				print("detected zigbee")
+				# if interference_state != "ZigBee_U_DETECTED":
+				# 	interference_state = "ZigBee_U_DETECTED"
+				monitorValue["ZigBee"] = {str(round(prediction_zigbee_freq)): [str(round(prediction_zigbee_bw)), prediction_zigbee_duration]}
+
+			if prediction_lte_count>0:
+				# LTE detection
+				print("detected LTE")
+				# send message to solution global controller
+				# if interference_state != "LTE_U_DETECTED":
+				# 	interference_state = "LTE_U_DETECTED"
+				monitorValue["LTE"] = { str(round(prediction_lte_freq)) : [str(round(prediction_lte_bw)), prediction_lte_duration]}
+
+			if prediction_wifi_count>0:
+				# WiFi detection
+				print("detected WiFi")
+				# if interference_state != "WiFi_DETECTED":
+				# 	interference_state = "WiFi_DETECTED"
+				monitorValue["WiFi"] = {str(round(prediction_wifi_freq)): [str(round(prediction_wifi_bw)), 0]}
+
+			"""
+			msg = {'type': 'monitorReport',    ‘networkController
+			': controllerName,	'
+			monitorType
+			': ‘interference’,
+			'monitorValue': {
+			            “LTE”: { “2467”: [BW, duty]}
+			                 “ZigBee”: { “2484”: [BW, duty]}
+			                 “Busy”: { “2484”: [BW, duty]}
+			    },
+			}
+			2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 2467 2472 2484 (WIFI)
+			2405 2410 2415 2420 2425 2430 2435 2440 2445 2450 2455 2460 2465 2470 	2475 2480 (ZigBee)
+			
+							value = {"timestamp": msg["measure"][0], "THR": msg["measure"][1], "PER": msg["measure"][2]}
+							solutionCtrProxy.send_monitor_report("performance", "U-LTE", value)
+
+			"""
+			value = {"monitorValue": monitorValue}
+			solutionCtrProxy.send_monitor_report("interference", "SpectrumMonitoring", value["monitorValue"])
+			# log.warning('Report monitor interference message')
+			prediction_zigbee_count = 0
+			prediction_wifi_count = 0
+			prediction_lte_count = 0
+
+		dt += 1
+		print(time.time())
+		# time.sleep(reading_interval - ((time.time() - local_starttime) % reading_interval))
+
+
+def setAP(controller, node, iface, wlan_ip, essid):
+		""" Creates infrastructure BSS, uses node such as Access Point
+		:param node: elected Access Point Node
+		:param essid: the SSID
+		"""
+		#stop hostpad
+		rvalue = controller.nodes(node).net.stop_hostapd()
+		#set ip address
+		rvalue = controller.nodes(node).net.set_ip_address(iface, wlan_ip)
+		#set hostapd configuration
+		rvalue = controller.nodes(node).net.set_hostapd_conf(iface, './helper/hostapd.conf', 6, essid)
+		#start hostapd
+		rvalue = controller.nodes(node).net.start_hostapd('./helper/hostapd.conf')
+		#set power
+		rvalue = controller.nodes(node).radio.set_tx_power(15)
+		#set modulation rate
+		rvalue = controller.nodes(node).radio.set_modulation_rate(6)
+
+
+def setSTA(controller, node, iface, wlan_ip, essid):
+		""" Associate node to infrastructure BSS
+		:param node: elected station node by associate
+		:param essid: the SSID
+		"""
+		#stop hostpad
+		rvalue = controller.nodes(node).net.stop_hostapd()
+		#set ip address
+		rvalue = controller.nodes(node).net.set_ip_address(iface, wlan_ip)
+		#set power
+		rvalue = controller.nodes(node).radio.set_tx_power(15)
+		#set modulation rate
+		rvalue = controller.nodes(node).radio.set_modulation_rate(6)
+		connected = False
+		for ii in range(10):
+			#associate station
+			rvalue = controller.nodes(node).net.connect_to_network(iface, essid)
+			time.sleep(2)
+			#dump connection
+			rvalue = controller.nodes(node).net.network_dump(iface)
+			#self.log.debug('dump connection :\n%s\n'  % (str(rvalue) ))
+			flow_info_lines = rvalue.rstrip().split('\n')
+			if flow_info_lines[0][0:9] == "Connected" :
+				connected = True
+				break
+
+		return connected
+
+
+def set_hosts(host_file):
+	hosts_info_file = open(host_file, 'r').readlines()
+	hosts_info=[]
+	for i in hosts_info_file:
+		if not i.startswith("#"):
+			hosts_info.append(i)
+	j=0
+	hosts = [i.split(',')[j] for i in hosts_info]
+	j=j+1
+	driver= [i.split(',')[j].replace("\n", "") for i in hosts_info]
+	j=j+1
+	eth_ip= [i.split(',')[j].replace("\n", "") for i in hosts_info]
+	j=j+1
+	freq= [i.split(',')[j].replace("\n", "") for i in hosts_info]
+	j=j+1
+	tx_power= [i.split(',')[j].replace("\n", "") for i in hosts_info]
+	j=j+1
+	wlan_ip= [i.split(',')[j].replace("\n", "") for i in hosts_info]
+	j=j+1
+	mac_address = [i.split(',')[j].replace("\n", "") for i in hosts_info]
+	j=j+1
+	label = [i.split(',')[j].replace("\n", "") for i in hosts_info]
+	j=j+1
+	role = [i.split(',')[j].replace("\n", "") for i in hosts_info]
+	j=j+1
+	iface = [i.split(',')[j].replace("\n", "") for i in hosts_info]
+
+	return hosts,driver,eth_ip,freq,tx_power,wlan_ip,mac_address,label,role,iface
+
+
+# def signal_handler(signal, frame):
+# 	global do_run
+# 	do_run = False
+#
+# signal.signal(signal.SIGINT, signal_handler)
+
+
+def enable_solution():
+	print("Enabling solution")
+	global enabled
+	enabled = True
+
+
+def disable_solution():
+	print("Disable solution")
+	global enabled
+	enabled = False
+
+
+
+def main(args):
+	global nodes
+	global do_run
+
+	#Init variables
+	do_run = True
+
+	#Init logging
+	log.debug(args)
+
+	log.info('****** 	WISHFUL  *****')
+	log.info('****** Starting solution InterferenceDetection ******')
+
+	"""
+	****** setup the communication with the solution global controller ******
+	"""
+	#solutionCtrProxy = GlobalSolutionControllerProxy(ip_address="10.8.9.14", requestPort=7001, subPort=7000)
+	solutionCtrProxy = GlobalSolutionControllerProxy(ip_address="172.16.17.2", requestPort=7001, subPort=7000)
+	networkName = "MONITOR_SERVICE_ERROR"
+	networkType = "MONITOR_SERVICE"
+	solutionName = ["INTERFERENCE_DETECTION"]
+	commands = {}
+	# commands = {"ON": enable_solution, "OFF": disable_solution}
+	monitorList = ["centerFreq"]
+	solutionCtrProxy.set_solution_attributes(networkName, networkType, solutionName, commands, monitorList)
+	# Register SpectrumSensing solution to global solution controller
+	response = solutionCtrProxy.register_solution()
+	if response:
+		print("Solution was correctly registered to GlobalSolutionController")
+		solutionCtrProxy.start_command_listener()
+	else:
+		print("Solution was not registered to Global Solution Controller")
+
+	"""
+	****** Solution experiment controller ******
+	"""
+	wlan_inject_iface = 'mon0'
+	if 	args['--config']:
+		config_file_path = args['--config']
+		config = None
+		with open(config_file_path, 'r') as f:
+			config = yaml.load(f)
+		controller.load_config(config)
+
+	nodes_info_path=args['--nodes']
+	if nodes_info_path:
+		[hosts, driver, eth_ip, freq,tx_power, wlan_ip, mac_address, label, role, iface]=set_hosts(nodes_info_path)
+		print([hosts, driver, eth_ip, freq, tx_power, wlan_ip, mac_address, label, role, iface])
+	# controller.add_module(moduleName="wireless_topology", pyModuleName="wishful_module_wireless_topology", className="WirelessTopologyModule", importAs="wireless_topology")
+
+	#Start controller
+	controller.start()
+
+	#control loop
+	while do_run:
+		gevent.sleep(1)
+		print("\nConnected nodes", [str(node.id) for node in nodes])
+		if len(nodes) >= len(hosts):
+			if len(nodes) > 0:
+				time.sleep(1)
+				lcpDescriptor_nodes = []
+				reading_thread = []
+
+				# print("find node")
+				# for ii in range(0, len(nodes)):
+				# 	print("\t %s - index %d" % (nodes[ii].ip, ii) )
+
+				nodes_sort = []
+				for ii in range(0, len(hosts)):
+					for jj in range(0, len(nodes)):
+						if nodes[jj].ip == eth_ip[ii]:
+							nodes_sort.append(nodes[jj])
+
+				print('sort nodes')
+				for ii in range(0, len(nodes_sort)):
+					print("\t %s - index %d" % (nodes_sort[ii].ip, ii) )
+
+				if len(nodes_sort) != len(hosts):
+					print('Error in build node list')
+					print('len(nodes_sort) != len(hosts) [%d != %d]' %(len(nodes_sort), len(hosts)))
+					break
+				else:
+					print('len(nodes_sort) == len(hosts) [%d == %d]' %(len(nodes_sort), len(hosts)))
+
+				nodes = nodes_sort
+
+				time_update = 1 #seconds
+				nodes_source_rate = []
+				nodes_temp = []
+
+				for ii in range(0, len(nodes)):
+					nodes_source_rate.append(0)
+					if not nodes[ii] in nodes_temp:
+						# print("node %s - index %d" % (nodes[ii].ip, ii) )
+						nodes_temp.append(nodes[ii])
+				nodes = nodes_temp
+
+				for ii in range(0, len(nodes)):
+					wifinodes.append(WiFiNode(nodes[ii], mac_address[ii] ))
+
+				"""
+				****** setup network ******
+				"""
+				try:
+					print("START nodes setup")
+					all_nodes = ['A']
+
+					#SETUP AP NODES
+					for ii in range(0, len(hosts)):
+						# print("search node %s - index %d" % (eth_ip[ii], ii) )
+						for jj in range(0, len(nodes)):
+							if nodes[jj].ip == eth_ip[ii]:
+								pos = eth_ip.index(nodes[jj].ip)
+								if role[pos] == "AP":
+									print("setup topology node %s - index %d" % (nodes[jj].ip, jj))
+									setAP(controller, nodes[jj], iface[pos], wlan_ip[pos], "wishful-interference")
+								elif role[pos] == "MON":
+									pass
+								elif role[pos] == "STA":
+									pass
+								else:
+									print("no station role found ")
+									break
+
+					# SETUP STATIONS NODES
+					for ii in range(0, len(hosts)):
+						print("search node %s - index %d" % (eth_ip[ii], ii) )
+						for jj in range(0, len(nodes)):
+							if nodes[jj].ip == eth_ip[ii]:
+								pos = eth_ip.index(nodes[jj].ip)
+
+								#set up network nodes (ad-hoc)
+								# rvalue = controller.nodes(nodes[jj]).net.start_adhoc(driver[pos], "wlan0", "wishful-interference", freq[pos], tx_power[pos], "6", wlan_ip[pos], "250", "aa:bb:cc:dd:ee:ff", True)
+								# rvalue = controller.nodes(nodes[jj]).net.start_adhoc(driver[pos], "wlan0", "wishful-interference", freq[pos], tx_power[pos], "6", wlan_ip[pos], "off", "aa:bb:cc:dd:ee:ff", True)
+
+								#setup infrastructured network (put interface in managed mode and disable network manager)
+								#set up network nodes (infrastructured)
+								if role[pos] == "AP":
+									pass
+								elif role[pos] == "MON":
+									rvalue = controller.nodes(nodes[jj]).net.start_monitor(driver[pos], iface[pos])
+									rvalue = controller.nodes(nodes[jj]).radio.set_channel(iface[pos], "11")
+								elif role[pos] == "STA":
+									print("setup topology node %s - index %d" % (nodes[jj].ip, jj))
+									connection_result = setSTA(controller, nodes[jj], iface[pos], wlan_ip[pos], "wishful-interference")
+									print(connection_result)
+									if connection_result == False:
+										raise SystemExit('Unable to connect')
+								else:
+									print("no station role found ")
+									break
+
+								#set up nodes monitor interface
+								# gevent.sleep(1)
+								# rvalue = controller.nodes(nodes[jj]).net.start_monitor(driver[pos], iface[pos])
+
+					print("END node setup")
+				except (Exception) as err:
+					print("exception", err)
+					print("Error in node setup procedure")
+					do_run = False
+
+
+				"""
+				****** START LOCAL CONTROL PROGRAM ******
+				"""
+				if do_run:
+					try:
+						print("START local control program")
+						lcpDescriptor = None
+						for ii in range(0, len(hosts)):
+							for jj in range(0, len(nodes)):
+								print("search node %s - index %d" % (eth_ip[ii], ii))
+								if nodes[jj].ip == eth_ip[ii]:
+									pos = eth_ip.index(nodes[jj].ip)
+									# RUN local control program
+									print("start local control program on nodes")
+									lcpDescriptor_nodes.append(controller.node(nodes[jj]).hc.start_local_control_program(program=remote_control_program))
+									msg = {"iface":  iface[pos], "i_time": time_update}
+									lcpDescriptor_nodes[ii].send(msg)
+									print("start thread for collect measurements from nodes")
+									reading_thread.append(threading.Thread(target=collect_remote_messages, args=(lcpDescriptor_nodes[ii], mac_address, label, solutionCtrProxy)))
+									reading_thread[ii].start()
+									break
+
+						print("END local control program setup")
+					except (Exception) as err:
+						print("exception", err)
+						print("Error in node control program setup procedure")
+						do_run = False
+
+
+			# receive_data_spectral(solutionCtrProxy)
+			# start_new_thread(receive_data_spectral, (99, solutionCtrProxy))
+
+			EXPERIMENT_DURATION = 30000
+			dt = 0
+			while do_run:
+				if not (dt % 10):
+					log.warning('waiting for ... (%d sec / %d)' % (dt, EXPERIMENT_DURATION))
+				dt += 1
+				gevent.sleep(1)
+				if dt > EXPERIMENT_DURATION:
+					break
+
+
+
+			do_run = False
+			for ii in range(0,len(nodes)):
+				try:
+					controller.nodes(nodes[ii]).net.destroy_packetflow_sink()
+
+					if lcpDescriptor_nodes[ii]:
+						print("Terminate remote local control program")
+						lcpDescriptor_nodes[ii].close()
+
+					time.sleep(2)
+
+					print("Terminate receive thread")
+					reading_thread[ii].do_run = False
+					reading_thread[ii].join()
+				except:
+					print('Error in %s local control program shutdown' % str(nodes[ii].ip))
+			#
+			# meas_collector.save_measurements(nodes=wifinodes, directory="experiment_data")
+
+
+
+if __name__ == "__main__":
+	try:
+		from docopt import docopt
+	except:
+		print("""
+		Please install docopt using:
+			pip install docopt==0.6.1
+		For more refer to:
+		https://github.com/docopt/docopt
+		""")
+		raise
+
+	args = docopt(__doc__, version=__version__)
+	log_level = logging.INFO  # default
+	if args['--verbose']:
+		log_level = logging.DEBUG
+	elif args['--quiet']:
+		log_level = logging.ERROR
+
+	logfile = None
+	if args['--logfile']:
+		logfile = args['--logfile']
+
+	logging.basicConfig(filename=logfile, level=log_level,
+		format='%(asctime)s - %(name)s.%(funcName)s() - %(levelname)s - %(message)s')
+
+	try:
+		main(args)
+		print('end main')
+	except KeyboardInterrupt:
+		log.debug("Controller exits")
+	finally:
+		log.debug("Exit")
+		controller.stop()

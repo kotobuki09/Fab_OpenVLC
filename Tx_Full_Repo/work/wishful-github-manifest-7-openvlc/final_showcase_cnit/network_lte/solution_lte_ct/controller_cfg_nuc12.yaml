@@ -1,0 +1,13 @@
+## WiSHFUL Controller's config file
+
+controller:
+    name: "Controller"
+    info: "WiSHFUL Controller"
+    dl: "tcp://172.16.16.12:8994"
+    ul: "tcp://172.16.16.12:8993"
+
+modules:
+    discovery:
+        module : wishful_module_discovery_pyre
+        class_name : PyreDiscoveryControllerModule
+        kwargs: {"iface":"eth0", "groupName":"network_lte_cnit", "downlink":"tcp://172.16.16.12:8994", "uplink":"tcp://172.16.16.12:8993"}

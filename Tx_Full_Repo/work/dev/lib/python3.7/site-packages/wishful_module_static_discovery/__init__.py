@@ -1,0 +1,1 @@
+from .static_discovery_module import *

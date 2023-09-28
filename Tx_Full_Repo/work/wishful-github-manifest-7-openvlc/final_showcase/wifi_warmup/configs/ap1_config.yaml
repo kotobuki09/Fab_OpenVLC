@@ -1,0 +1,29 @@
+## WiSHFUL Agent config file
+
+agent_info:
+  name: 'ap0'
+  info: 'Access Point 0'
+  iface: 'eth0'
+
+modules:
+  discovery:
+      module : wishful_module_discovery_pyre
+      class_name : PyreDiscoveryAgentModule
+      kwargs: {"iface":"eth0", "groupName":"wifi_warmup_wifi_1"}
+
+  iperf:
+      module : wishful_module_iperf
+      class_name : IperfModule
+
+  wifi:
+      module : wishful_module_wifi
+      class_name : WifiModule
+      interfaces : ['wlan1']
+
+  net:
+      module : wishful_module_net_linux
+      class_name : NetworkModule
+
+
+
+

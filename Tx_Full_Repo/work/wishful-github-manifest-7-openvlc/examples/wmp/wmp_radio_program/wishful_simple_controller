@@ -1,0 +1,169 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+wishful_controller_simple.py: First implementation of WiSHFUL controller
+
+Usage:
+   wishful_controller_simple.py [options] [-q | -v]
+
+Options:
+   --logfile name      Name of the logfile
+   --config configFile Config file path
+
+Example:
+   ./wishful_simple_local_controller -v --config ./config.yaml 
+
+Other options:
+   -h, --help          show this help message and exit
+   -q, --quiet         print less text
+   -v, --verbose       print more text
+   --version           show version and exit
+"""
+
+import sys
+import datetime
+import logging
+import gevent
+import yaml
+
+sys.path.append('../../../')
+sys.path.append("../../../agent_modules/wifi_ath")
+sys.path.append("../../../agent_modules/wifi_wmp")
+sys.path.append("../../../agent_modules/wifi")
+sys.path.append('../../../upis')
+sys.path.append('../../../framework')
+sys.path.append('../../../agent')
+
+import wishful_upis as upis
+import wishful_controller
+
+from examples.wmp_radio_program.wmp_helper.controller_utils import *
+from examples.wmp_radio_program.wmp_helper.TestbedTopology import TestbedTopology
+#from examples.wmp_edca.wmp_helper.MeasurementManager import *
+#from examples.wmp_edca.wmp_helper.TestbedTopology import *
+from agent_modules.wifi_wmp.wmp_structure import UPI_R
+
+
+# from wishful_upis.radio import radio_info_t
+# from wishful_upis.radio import radio_program_t
+
+import wishful_framework.upi_arg_classes.edca as edca
+
+
+__author__ = "Domenico Garlisi"
+__copyright__ = "Copyright (c) 2015, Technische Universität Berlin"
+__version__ = "0.1.0"
+__email__ = "{domenico.garlisi@cnit.it"
+
+
+log = logging.getLogger('wishful_agent.main')
+controller = wishful_controller.Controller()
+mytestbed = TestbedTopology("wmp_radio_program", log)
+nodes = []
+
+@controller.new_node_callback()
+def new_node(node):
+    print("New node appeared:")
+    print(node)
+    nodes.append(node)
+    mytestbed.add_wmp_node(node, 'STA')
+
+@controller.node_exit_callback()
+def node_exit(node, reason):
+    if node in nodes:
+        nodes.remove(node);
+    print("NodeExit : NodeID : {} Reason : {}".format(node.id, reason))
+
+
+@controller.set_default_callback()
+def default_callback(group, node, cmd, data):
+    print("DEFAULT CALLBACK : Group: {}, NodeId: {}, Cmd: {}, Returns: {}".format(group, node.id, cmd, data))
+
+
+def main(args):
+    log.debug(args)
+
+    config_file_path = args['--config']
+    config = None
+    with open(config_file_path, 'r') as f:
+        config = yaml.load(f)
+
+    controller.load_config(config)
+    controller.start()
+
+    nodes_platform_info = []
+    #control loop
+    while True:
+        gevent.sleep(10)
+        print("\n")
+        print("Connected nodes", [str(node.name) for node in nodes])
+        if len(nodes) > 0:
+
+            #get node capabilities
+            nodes_platform_info.append(get_platform_information( nodes[0], log, controller))
+
+            #run execution engine
+            mytestbed.initializeTestbedFunctions(controller)
+
+            UPIargs = { 'interface' : 'wlan0' }
+            active_radio_program = controller.nodes(nodes[0]).radio.iface("wlan0").get_running_radio_program(UPIargs)
+            print("radio program activated : %s" % str(active_radio_program) )
+
+            node_index = 0
+            slot_index = 0
+            slot_size = 1600 #superframesize in ms
+            num_stations_tdma = len(nodes)
+            superframe_size_len = slot_size *  num_stations_tdma #at modulation rate 6Mbps and 400 byte frame size
+            for node in nodes:
+                active_TDMA_radio_program(node, log, controller, nodes_platform_info[0])
+                tdma_params={'TDMA_SUPER_FRAME_SIZE' : superframe_size_len, 'TDMA_NUMBER_OF_SYNC_SLOT' : num_stations_tdma, 'TDMA_ALLOCATED_SLOT': slot_index}
+                set_TDMA_parameters(node, log, controller, tdma_params)
+                slot_index += 1
+                node_index += 1
+
+            #active_CSMA_radio_program_slot_1(node, log, controller, nodes_platform_info[0])
+            #active_TDMA_radio_program_slot_2(node, log, controller, nodes_platform_info[0])
+
+            UPIargs = { 'interface' : 'wlan0' }
+            active_radio_program = controller.nodes(nodes[0]).radio.iface("wlan0").get_running_radio_program(UPIargs)
+            print("radio program after switching : %s" % str(active_radio_program) )
+
+            break
+
+
+
+if __name__ == "__main__":
+    try:
+        from docopt import docopt
+    except:
+        print("""
+        Please install docopt using:
+            pip install docopt==0.6.1
+        For more refer to:
+        https://github.com/docopt/docopt
+        """)
+        raise
+
+    args = docopt(__doc__, version=__version__)
+
+    log_level = logging.INFO  # default
+    if args['--verbose']:
+        log_level = logging.DEBUG
+    elif args['--quiet']:
+        log_level = logging.ERROR
+
+    logfile = None
+    if args['--logfile']:
+        logfile = args['--logfile']
+
+    logging.basicConfig(filename=logfile, level=log_level,
+        format='%(asctime)s - %(name)s.%(funcName)s() - %(levelname)s - %(message)s')
+
+    try:
+        main(args)
+    except KeyboardInterrupt:
+        log.debug("Controller exits")
+    finally:
+        log.debug("Exit")
+        controller.stop()

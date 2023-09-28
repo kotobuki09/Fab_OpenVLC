@@ -1,0 +1,277 @@
+#!/usr/bin/env python
+"""
+#  b43 firmware state dumper
+#
+#  Copyright (C) 2008 Michael Buesch <mb@bu3sch.de>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License version 3
+#  as published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
+import getopt
+import sys
+import os
+import re
+import time
+from datetime import datetime
+from sys import stdout
+from tempfile import *
+import csv
+import StringIO
+import json
+import inspect
+import zmq
+import numpy as np
+from b43_library.libb43 import *
+
+B43_SHM_SHARED		= 1
+
+class B43Exception(Exception):
+	pass
+
+def usage():
+	print "b43 firmware state dumper"
+	print ""
+	print "Usage: b43-fwdump [OPTIONS]"
+	print ""
+	print "-h|--help            Print this help text"
+	print "-p|--pause TIME      Time in seconds for pausing."
+	return
+
+def parseArgs():
+	global pause
+
+	pause=0.0;
+
+	try:
+		(opts, args) = getopt.getopt(sys.argv[1:],
+			"hp:",
+			[ "help", "pause="])
+	except getopt.GetoptError:
+		usage()
+		sys.exit(1)
+
+	for (o, v) in opts:
+		if o in ("-h", "--help"):
+			usage()
+			sys.exit(0)
+		if o in ("-p", "--pause"):
+			if v != "":
+				pause = float(v)
+	return
+
+"""
+/* 3.1.1 ********************* */
+/* *********************** */
+/* SAVE PARAM VALUE    */
+/* 0x00D8  : 0x00FE	   */	
+    
+    
+		#define 	SLOT_PARAM_AREA_POINT_OFFSET_LO	 SHM(0x00D8) 
+		#define 	SLOT_PARAM_AREA_POINT_OFFSET_HI  SHM(0x00EC) 
+		
+		#define 	TX_DATA_FRAME_COUNTER_SLOT_0 	SHM_OFFSET(0x00)
+		#define 	TX_DATA_FRAME_COUNTER_SLOT_1	SHM_OFFSET(0x02)
+		#define 	TX_DATA_FRAME_COUNTER_SLOT_2	SHM_OFFSET(0x04)
+		#define 	TX_DATA_FRAME_COUNTER_SLOT_3	SHM_OFFSET(0x06)
+		#define 	TX_DATA_FRAME_COUNTER_SLOT_4	SHM_OFFSET(0x08)
+		#define 	TX_DATA_FRAME_COUNTER_SLOT_5	SHM_OFFSET(0x0A)
+		#define 	TX_DATA_FRAME_COUNTER_SLOT_6	SHM_OFFSET(0x0C)
+		#define 	TX_DATA_FRAME_COUNTER_SLOT_7	SHM_OFFSET(0x0E)
+		#define 	TX_DATA_FRAME_COUNTER_SLOT_8	SHM_OFFSET(0x10)
+		#define 	TX_DATA_FRAME_COUNTER_SLOT_9	SHM_OFFSET(0x12)
+		#define 	TX_DATA_FRAME_COUNTER_SLOT_10	SHM_OFFSET(0x14)
+		
+		#define 	RX_ACK_COUNTER_RAMATCH_SLOT_0 	SHM_OFFSET(0x00)
+		#define 	RX_ACK_COUNTER_RAMATCH_SLOT_1	SHM_OFFSET(0x02)
+		#define 	RX_ACK_COUNTER_RAMATCH_SLOT_2	SHM_OFFSET(0x04)
+		#define 	RX_ACK_COUNTER_RAMATCH_SLOT_3	SHM_OFFSET(0x06)
+		#define 	RX_ACK_COUNTER_RAMATCH_SLOT_4	SHM_OFFSET(0x08)
+		#define 	RX_ACK_COUNTER_RAMATCH_SLOT_5	SHM_OFFSET(0x0A)
+		#define 	RX_ACK_COUNTER_RAMATCH_SLOT_6	SHM_OFFSET(0x0C)
+		#define 	RX_ACK_COUNTER_RAMATCH_SLOT_7	SHM_OFFSET(0x0E)
+		#define 	RX_ACK_COUNTER_RAMATCH_SLOT_8	SHM_OFFSET(0x10)
+		#define 	RX_ACK_COUNTER_RAMATCH_SLOT_9	SHM_OFFSET(0x12)
+		#define 	RX_ACK_COUNTER_RAMATCH_SLOT_10	SHM_OFFSET(0x14)
+"""
+
+def main():
+	
+	parseArgs()
+	b43_phy = None
+	b43 = B43(b43_phy)
+	reading_port = "8901"
+	context = zmq.Context()
+	socket_zmq = context.socket(zmq.PUB)
+	socket_zmq.bind("tcp://*:%s" % reading_port)
+
+	writeFile = False
+	outDebug = False
+
+	# out = StringIO.StringIO()
+	# err = StringIO.StringIO()
+
+	#reg = {'104' '106' '108' '10A' '10C' '10E' '110' '112' '11E' '100'}; % '102'};
+	#reg = {'104' '106' '108' '10A' '10C' '110' '112' '11E' '100'}; % '102'};
+	#leg = {'Too Long' 'Too Short' 'Invalid MAC Header' 'Bad FCS' 'Bad PLCP'...
+	#		 % 'Preamble OK, bad Header' 'Good PLCP' 'Good FCS, matching RA' 'Good FCS, not matching RA' 'Busy Time'};
+	#leg = {'Too Long' 'Too Short' 'Invalid MAC Header' 'Bad FCS' 'Bad PLCP'...
+	#'bad Header' 'Good PLCP' 'Good FCS, matching RA' 'Good FCS, not matching RA' 'Busy Time'};
+
+	# define BUSY_TIME				SHM(0x0100)
+	# define ERROR_SANSE_STATE		SHM(0x0102)
+	# define RX_TOO_LONG_COUNTER 		SHM(0x0104)		// RX Too Long (Limit is 2346 bytes)
+	# define RX_TOO_SHORT_COUNTER 		SHM(0x0106)		// RX Too Short (Not enough bytes for frame type)
+	# define INVALID_MACHEADER_COUNTER 	SHM(0x0108)   		// RX Invalid MAC Header (Either Protocol Version is not 0, or the frame type isn't Data, Control or Management)
+	# define BAD_FCS_COUNTER 		SHM(0x010A)		// RX Bad FCS (Frames where CRC Failed)
+	# define BAD_PLCP_COUNTER		SHM(0x010C)		// RX Bad PLCP (Parity Check of PLCP Header Failed)
+	# define GOOD_PLCP_COUNTER		SHM(0x0110)		// RX Frames with good PLCP
+	# define GOOD_FCS_MATCH_RA_COUNTER	SHM(0x0112)		// RX Data "Frames" with Good FCS and Matching RA //non sono solo data frame ma tutti i frame
+	# define GOOD_FCS_NO_MATCH_RA_COUNTER	SHM(0x011E)		// RX Data "Frames" with Good FCS and not matching RA //non sono solo data frame ma tutti i frame
+
+	fieldnames = ['tsfStart' '100' '102' '104' '106' '108' '10A' '10C' '10E' '110' '112' '114' '116' '118' '11A' '11C' '11E' 'tsfDeltaSec' 'tsfDeltaus']
+	# [1513332326460587.2, 1591.32, 0.0,  0.0, 0.0,  0.0,  1.03,  0.0, 0.0,  -36.07, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  1753.52, 0.0, 1888.88]
+
+	# if writeFile:
+	# 	file_name = "log"
+	# 	out_file = open(file_name + '.csv', "wb")
+
+	print("Starting psuc reading...")
+	# tsStart = datetime.now()
+	# tsStop = tsStart
+	# tsLastProcess = tsStart
+
+	sending_number  = 0
+	reading_time = time.time()
+	local_starttime = reading_time
+	reading_interval = 1
+	column_old = []
+	val_incremental_old = 0
+	tx_count_ = 0
+	rx_ack_count_ = 0
+	count_round = 0
+
+	while True:
+		# column = []
+		# tsStart=datetime.now()
+		# # stdout.write("\n%s," % tsStart.strftime('%s%f'))
+		# outString = tsStart.strftime('%s%f') + ","
+		# column.append(int(tsStart.strftime('%s%f')))
+		# for i in range(256, 286, 4):
+		# 	if i == 256:
+		# 		# read busy from physical register
+		# 		val_incremental = b43.read16(b43.B43_MMIO_IFSMEDBUSYCTL)
+		# 		val = val_incremental - val_incremental_old
+		# 		if val<0:
+		# 			val = (65535 - val_incremental_old) + val_incremental
+		# 		val_incremental_old = val_incremental
+		# 		# val = 0
+		# 		outString = outString + str(val) + ",0,"
+		# 		column.append(val)
+		# 		column.append(0)
+		#
+		# 	# print(column[1])
+		# 	elif i == 276 or i == 280:
+		# 		outString = outString + "0,0,"
+		# 		column.append(0)
+		# 		column.append(0)
+		# 	else:
+		# 		val = b43.shmRead32(b43.B43_SHM_SHARED, i)
+		# 		outString = outString + str((val & 0x00FF) + ((val & 0xFF00))) + "," + str(((val >> 16) & 0x00FF) + ((val >> 16) & 0xFF00)) + ","
+		# 		column.append((val & 0x00FF) + ((val & 0xFF00)))
+		# 		column.append(((val >> 16) & 0x00FF) + ((val >> 16) & 0xFF00))
+
+		tx_count = []
+		rx_ack_count = []
+		for i in [216, 220, 224, 228, 232]:
+			val = b43.shmRead32(b43.B43_SHM_SHARED, i)
+			# outString = outString + str((val & 0x00FF) + ((val & 0xFF00))) + "," + str(((val >> 16) & 0x00FF) + ((val >> 16) & 0xFF00)) + ","
+			tx_count.append((val & 0x00FF) + ((val & 0xFF00)))
+			tx_count.append(((val >> 16) & 0x00FF) + ((val >> 16) & 0xFF00))
+
+			val = b43.shmRead32(b43.B43_SHM_SHARED, i+20)
+			rx_ack_count.append((val & 0x00FF) + ((val & 0xFF00)))
+			rx_ack_count.append(((val >> 16) & 0x00FF) + ((val >> 16) & 0xFF00))
+
+		tx_count = [float(i) for i in tx_count]
+		rx_ack_count = [float(i) for i in rx_ack_count]
+		tx_count = np.array(tx_count)
+		rx_ack_count = np.array(rx_ack_count)
+
+		print(tx_count)
+		print(rx_ack_count)
+
+		count_round = count_round + 1
+		dtx = np.mod(tx_count - tx_count_, 0xFFFF)
+		dack = np.mod(rx_ack_count - rx_ack_count_, 0xFFFF)
+		tx_count_ = tx_count
+		rx_ack_count_ = rx_ack_count
+		psucc = np.divide(dack, dtx)
+
+		for i in range(0, len(psucc)):
+			if np.isinf(psucc[i]):
+				psucc[i] = 0
+				continue
+			if np.isnan(psucc[i]):
+				psucc[i] = 0
+				continue
+		psucc_tot = np.divide(np.sum(dack), np.sum(dtx))
+
+		# print("rx_ack = {}".format(dack))
+		# print("tx     = {}".format(dtx))
+		np.set_printoptions(precision=1)
+		print("psucc  = {}".format(psucc))
+		print("psucc_tot={}".format(psucc_tot))
+		# print("count_round={}".format(count_round))
+
+		# json_msg = {'time': time.time(), 'psucc': psucc_tot, 'mask': mask, 'enable_controller': enable_controller, 'mask_sum': mask_sum, 'psucc_list': list(psucc)}
+		# print(json_msg)
+		# fp.write(json.dumps(json_msg))
+		# fp.write("\n")
+		# fp.flush()
+		# time.sleep(1)
+		# close(fp)
+
+		# # tsStop=datetime.now();
+		# diff = tsStart - tsStop
+		# tsStop = tsStart
+		# # stdout.write("%s,%d,%d" %(tsStop.strftime('%s%f'), diff.seconds,  diff.microseconds ) )
+		# # outString = outString + str(tsStop.strftime('%s%f')) + "," + str(diff.seconds) + "," + str(diff.microseconds) + "\n"
+		# outString = outString + str(diff.seconds) + "," + str(diff.microseconds) + "\n"
+		#
+		# if writeFile:
+		# 	out_file.write(outString)
+		# if outDebug:
+		# 	stdout.write(outString)
+		#
+		# column.append(diff.seconds)
+		# column.append(diff.microseconds)
+		# errors.append(column)
+
+		# diff = tsStop - tsLastProcess
+		# if diff.seconds > 1:
+		if True:
+			message = {"measure": psucc.tolist()}
+			print("%d - %s" % (sending_number, str(message)))
+			socket_zmq.send_json(message)
+			sending_number += 1
+			tsLastProcess = datetime.now()
+
+		time.sleep(reading_interval - ((time.time() - local_starttime) % reading_interval))
+
+	return
+
+
+try:
+	main()
+except B43Exception:
+	sys.exit(1)

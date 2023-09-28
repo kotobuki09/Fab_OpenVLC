@@ -1,0 +1,505 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+RAS implementation in WiSHFUL Project
+
+Usage:
+   showcase3_controller_power.py [options] [-q | -v]
+
+Options:
+   --logfile name      Name of the logfile
+   --config configFile Config file path
+
+Example:
+   ./showcase3_controller_power -v --config ./controller_config.yaml
+
+Other options:
+   -h, --help          show this help message and exit
+   -q, --quiet         print less text
+   -v, --verbose       print more text
+   --version           show version and exit
+"""
+
+"""
+DEMO visualizer START
+
+    #to get configuration
+    ssh -L 8300:"pc controlle node":8300 dgarlisi@ops.wilab2.ilabt.iminds.be -v
+    eg. ssh -L 8300:apuN4:8300 dgarlisi@ops.wilab2.ilabt.iminds.be -v
+
+    #to get thr
+    ssh -L 8301:"ap node":8301 dgarlisi@ops.wilab2.ilabt.iminds.be -v
+    eg. ssh -L 8301:apuT1:8301 dgarlisi@ops.wilab2.ilabt.iminds.be -v
+
+    #to get power
+    ssh -L 8302:"ap node":8302 dgarlisi@ops.wilab2.ilabt.iminds.be -v
+    eg. ssh -L 8302:apuT1:8302 dgarlisi@ops.wilab2.ilabt.iminds.be -v
+
+    on local pc
+        python demo_visualizer.py
+"""
+
+
+"""
+DEMO START
+
+ on not RAS station nodes
+    sudo ./wishful_ras_agent --config agent_cfg.yaml
+
+ on RAS station node
+    sudo ./wishful_ras_agent --config  agent_ras_cfg.yaml
+
+ on PC node
+    ./wishful_ras_controller --config controller_cfg.yaml
+"""
+
+"""
+RAS commands
+
+
+
+cd wishful-github-manifest-3/examples/ras_antenna_wilab/
+
+
+cd apu-conf/
+cd ath10k-firmware/
+sudo sh install_firmware.sh
+cd ../athmodules/
+sudo sh install_module.sh
+sudo ifconfig wlan0 up
+cd ../scapy/
+sudo sh install_scapy.sh
+sudo ifconfig wlan0 up
+
+cd ../../
+
+
+per settare i nodi in monitor
+sudo su
+ifconfig wlan0 down
+iwconfig wlan0 mode monitor
+ifconfig wlan0 up
+iwconfig wlan0 channel 40
+
+
+sudo iw dev wlan0 interface add fish0 type monitor
+sudo ifconfig fish0 up
+
+
+Nodo con antenna
+sudo ./wishful_ras_agent --config  agent_ras_cfg.yaml
+
+Nodo senza antenna
+sudo ./wishful_ras_agent --config  agent_cfg.yaml
+
+Nodo controllore
+./wishful_ras_controller --config controller_cfg.yaml
+
+
+sudo iwconfig wlan0 txpower 10dbm fixed
+
+
+per avviare il visualizzatore
+
+ #to get configuration
+    ssh -L 8300:"pc controlle node":8300 dgarlisi@ops.wilab2.ilabt.iminds.be -v
+    eg. ssh -L 8300:apuN4:8300 dgarlisi@ops.wilab2.ilabt.iminds.be -v
+
+    #to get thr
+    ssh -L 8301:"ap node":8301 dgarlisi@ops.wilab2.ilabt.iminds.be -v
+    eg. ssh -L 8301:apuT1:8301 dgarlisi@ops.wilab2.ilabt.iminds.be -v
+
+    #to get power
+    ssh -L 8302:"ap node":8302 dgarlisi@ops.wilab2.ilabt.iminds.be -v
+    eg. ssh -L 8302:apuT1:8302 dgarlisi@ops.wilab2.ilabt.iminds.be -v
+
+    on local pc
+        python demo_visualizer.py
+
+"""
+
+
+import datetime
+import logging
+import sys
+import time
+import gevent
+import signal
+import os
+import yaml
+import zmq
+
+
+sys.path.append('../../')
+sys.path.append("../../agent_modules/wifi_ath")
+sys.path.append("../../agent_modules/wifi_wmp")
+sys.path.append("../../agent_modules/wifi")
+sys.path.append('../../upis')
+sys.path.append('../../framework')
+sys.path.append('../../agent')
+sys.path.append('../../controller')
+
+import wishful_controller
+import wishful_upis as upis
+
+__author__ = "Domenico Garlisi"
+__copyright__ = "Copyright (c) 2015, CNIT"
+__version__ = "0.1.0"
+__email__ = "domenico.garlisi@cnit.it"
+
+
+"""
+NODE IP
+
+apuN4 : 10.11.16.104
+apuT1 : 10.11.16.126
+apuU1 : 10.11.16.130
+apuO2 : 10.11.16.107
+apuP4 : 10.11.16.112
+apuU4 : 10.11.16.132
+apu04 : 10.11.16.108 (RAS)
+apuO5 : 10.11.16.109
+"""
+
+
+"""
+Setting of experiment nodes, ip address and name
+"""
+#PC
+controller_PC_name = "apuN4"
+controller_PC_ip_address = "10.11.16.104"
+controller_PC_interface = "eth0"
+
+# AP1 set in monitor on channel 40
+ap1_name = "apuT1"
+ap1_ip = "10.11.16.126"
+ap1_wlan_interface = "wlan0"
+
+# STA1 set in monitor on channel 40
+sta1_name = "apu04"
+sta1_ip = "10.11.16.108"
+sta1_wlan_interface = "wlan0"
+
+# AP2
+ap2_name = "apuU1"
+ap2_ip = "10.11.16.130"
+ap2_wlan_interface = "wlan0"
+
+# STA2
+sta2_name = "apuU4"
+sta2_ip = "10.11.16.132"
+sta2_wlan_interface = "wlan0"
+
+
+#Nodes number
+nodes_number=2
+ap_wlan_interface = "wlan0"
+sta_wlan_interface = "wlan0"
+
+# BSSID of our Network
+network_bssid = "wishful_ras_example"
+group_name = "ras_example"
+
+"""
+END setting of experiment nodes
+"""
+
+log = logging.getLogger('wishful_agent.main')
+controller = wishful_controller.Controller()
+
+nodes = []
+configuration_message_for_visualizzer = {}
+ap1_node = None
+sta1_node= None
+
+ap2_node = None
+sta2_node= None
+
+
+@controller.new_node_callback()
+def new_node(node):
+    nodes.append(node)
+    print("New node appeared:")
+    print(node)
+
+
+@controller.node_exit_callback()
+def node_exit(node, reason):
+    if node in nodes:
+        nodes.remove(node);
+    print("NodeExit : NodeID : {} Reason : {}".format(node.id, reason))
+
+
+@controller.set_default_callback()
+def default_callback(group, node, cmd, data):
+    print("{} DEFAULT CALLBACK : Group: {}, NodeName: {}, Cmd: {}, Returns: {}".format(datetime.datetime.now(), group, node.name, cmd, data))
+
+
+def setAP(controller, node, essid, conf_file, channel):
+    """ This function use WiSHFUL UPI functions to perform an IEEE 802.11 infrastructure BSS, the "node" parameter is used as
+        Network Access Point. The WiSHFUL UPI used hostapd daemon to create the network.
+
+    :param controller: framework controller object
+    :param node: elected Access Point Node
+    :param essid: the network SSID
+    """
+
+    #This UPI function stops the hostpad daemon, if present on node
+    rvalue = controller.nodes(node).net.stop_hostapd()
+    #This UPI function sets the node ip address on a specific interface
+    rvalue = controller.nodes(node).net.set_ip_address(ap_wlan_interface, '192.168.3.' + str(node.ip[9:12]))
+    #This UPI function sets the node modulation rate (value in Mbps)
+    #rvalue = controller.nodes(node).radio.set_modulation_rate(54)
+    gevent.sleep(1)
+    #This UPI function sets the hostapd configuration (starting from a generic file set interface, channel and SSID )
+    rvalue = controller.nodes(node).net.set_hostapd_conf(ap_wlan_interface, conf_file, channel, essid)
+    #This UPI function starts the hostapd daemon (it uses a specific hostapd.conf file present in the experiment directory
+    rvalue = controller.nodes(node).net.start_hostapd(conf_file)
+    #This UPI function sets the node power (value in dBm)
+    #rvalue = controller.nodes(node).radio.set_power(15)
+
+
+def setSTA(controller, node, essid):
+    """ This function use WiSHFUL UPI functions to connect a node to a IEEE 802.11 infrastructure BSS, the function
+    performs 10 attempts before to return a failure state.
+
+    :param controller: framework controller object
+    :param node: elected station node by associate
+    :param essid: the network SSID
+
+    :return connected: True if the connection has been successful, False in other cases.
+    """
+
+    #This UPI function stops the hostpad daemon, if present on node
+    rvalue = controller.nodes(node).net.stop_hostapd()
+    #This UPI function sets the node ip address on a specific interface
+    rvalue = controller.nodes(node).net.set_ip_address(sta_wlan_interface, '192.168.3.' + str(node.ip[9:12]))
+    #This UPI function sets the node power (value in dBm)
+    #rvalue = controller.nodes(node).radio.set_power(15)
+    #This UPI function sets the node modulation rate (value in Mbps)
+    #rvalue = controller.nodes(node).radio.set_modulation_rate(54)
+    connected = False
+    for ii in range(10):
+        #This UPI function sets the node modulation rate (value in Mbps)
+        rvalue = controller.nodes(node).net.connect_to_network(sta_wlan_interface, essid)
+        gevent.sleep(2)
+        #This UPI function gets the node connection state
+        rvalue = controller.nodes(node).net.network_dump(sta_wlan_interface)
+        flow_info_lines = rvalue.rstrip().split('\n')
+        if flow_info_lines[0][0:9] == "Connected" :
+                connected = True
+                break
+    #This UPI function sets the node power (value in dBm)
+    #rvalue = controller.nodes(node).radio.set_power(15)
+    return connected
+
+
+rxPkts1 = {}
+def csResultCollector1(group, node, data):
+    messagedata = data
+    log.info('1 - receives data msg at %s - %s' % (str(node.ip), str(messagedata) ))
+
+    if messagedata is None:
+        rxPkts1['num'] = 0
+        rxPkts1['avg_power'] = 0
+    else:
+        rxPkts1['num'] = messagedata['num']
+        rxPkts1['avg_power'] = messagedata['avg_power']
+
+
+
+rxPkts2 = {}
+def csResultCollector2(group, node, data):
+    messagedata = data
+    log.info('2 - receives data msg at %s - %s' % (str(node.ip), str(messagedata) ))
+
+    if messagedata is None:
+        rxPkts2['num'] = 0
+        rxPkts2['avg_power'] = 0
+    else:
+        rxPkts2['num'] = messagedata['num']
+        rxPkts2['avg_power'] = messagedata['avg_power']
+
+    send_socket_visualizer(messagedata, node.ip)
+
+
+def csResultCollector3(group, node, data):
+    global configuration_message_for_visualizzer
+    global sta1_node
+    messagedata = data
+    log.info('3 - at %s traffic THR %s ' % (str(node.ip), str(messagedata) ))
+    send_socket_visualizer(messagedata, node.ip)
+    send_socket_visualizer(configuration_message_for_visualizzer, sta1_node.ip)
+
+
+
+def csResultCollector4(group, node, data):
+    messagedata = data
+    log.info('4 - at %s traffic THR %s ' % (str(node.ip), str(messagedata) ))
+    send_socket_visualizer(messagedata, node.ip)
+
+
+socket_visualizer = None
+
+def setup_socket_visualizer():
+    #setup socket to send information outside the laboratory
+    ''' implement message zmq for realtime visualizer '''
+    global socket_visualizer
+    port = "8300"
+    context = zmq.Context()
+    socket_visualizer = context.socket(zmq.PUB)
+    socket_visualizer.bind("tcp://*:%s" % port)
+    print('start server on 8300 port ... sending protocol information to remote DEMO console')
+
+
+def send_socket_visualizer(message, node_ip_address):
+    global socket_visualizer
+    #send information to visualizer outside the laboratory
+    message['node_ip_address']=node_ip_address
+    socket_visualizer.send_json(message)
+
+
+def main(args):
+
+    global configuration_message_for_visualizzer
+    global ap1_node
+    global sta1_node
+
+    global ap2_node
+    global sta2_node
+
+    #select logging level
+    log.debug(args)
+
+    #open and load configuration file
+    config_file_path = args['--config']
+    config = None
+    with open(config_file_path, 'r') as f:
+        config = yaml.load(f)
+    controller.load_config(config)
+
+    #Start controller
+    controller.start()
+
+    #Setup plotter visualizer
+    setup_socket_visualizer()
+
+    #control loop
+    while True:
+        #wait for node discovery
+        gevent.sleep(5)
+        print("\nConnected nodes", [str(node.name) for node in nodes])
+        if len(nodes) == nodes_number:
+
+            """
+            This part of controller assigns the correct role for any experiment node found
+            """
+            #Find experiment nodes role
+            for ii in range(0, len(nodes)):
+                    if nodes[ii].ip == ap1_ip:
+                        ap1_node = nodes[ii]
+                    if nodes[ii].ip == sta1_ip:
+                        sta1_node = nodes[ii]
+
+            # We should exit when at least one is not fount
+            if ap1_node == None and sta1_node == None:
+                print("Experiment nodes found, however the reported ip address do not match, please check the setting ip address, the interface and the group name")
+                break
+
+            """
+            This part of the controller performs a IEEE 802.11 network
+                        INFRASTRUCTURE MODE NETWORK
+            """
+            #Create a IEEE 802.11 infrastructure network where the "ap_node" node is the network Access Point
+            setAP(controller, ap1_node, network_bssid, './hostapd1.conf', 40)
+            #
+            #Connect "sta_node" node to IEEE 802.11 infrastructure network
+            connected = setSTA(controller, sta1_node, network_bssid)
+            if not connected:
+                print('Station not connect, try again')
+                break
+            print('Node [ %s - %s ] connected' % (str(sta1_node.name), str(sta1_node.ip) ))
+
+            """
+            Start sniffing on monitor interface
+            We get receive power level from every frames and evaluate average
+            """
+            mon_dev = "fish0"
+            log.info('(2) sniff traffic at %s' % str(ap1_node.ip))
+            exec_time = datetime.datetime.now() + datetime.timedelta(seconds=2)
+            forever = 8000
+            controller.exec_time(exec_time).callback(csResultCollector2).node(ap1_node).net.sniff_layer2_traffic(mon_dev, forever, '192.168.3.' + str(ap1_node.ip[9:12]), '192.168.3.' + str(sta1_node.ip[9:12]))
+
+            """
+            Start network traffic
+            """
+            #start iperf server on AP node
+            log.info('(3) single server at %s' % str(ap1_node.ip))
+            exec_time = datetime.datetime.now() + datetime.timedelta(seconds=2)
+            controller.exec_time(exec_time).callback(csResultCollector3).nodes(ap1_node).net.create_packetflow_sink('5001')
+            #start iperf client on STA node
+            log.info('(4) start server at %s' % str(sta1_node.ip))
+            exec_time = datetime.datetime.now() + datetime.timedelta(seconds=4)
+            controller.exec_time(exec_time).callback(csResultCollector4).node(sta1_node).net.start_packetflow( '192.168.3.'+str(ap1_node.ip[9:12]), '5001', str(forever))
+
+            gevent.sleep(8)
+
+            #set default antenna configuration
+            ant1_configuration = 0
+            ant2_configuration = 0
+            #antenna has one omnidirectiona (0) configuration and 8 directiona configuration (1,2,...8)
+            for ii in range(0,9):
+
+                #change antenna configuration (using UPI set_sas_conf)
+                log.info('Set configuration %d - %d ' % (ant1_configuration, ant2_configuration) )
+                controller.blocking(True).node(sta1_node).radio.set_sas_conf(5, ant1_configuration, ant2_configuration, 0, 0)
+
+                #send configuration to plotter
+                configuration_message_for_visualizzer['ras_configuration'] = ant1_configuration
+                send_socket_visualizer(configuration_message_for_visualizzer, sta1_node.ip)
+
+                #test configuration for 5 seconds
+                gevent.sleep(5)
+
+                #next antenna configuration
+                ant1_configuration += 1
+                ant2_configuration += 1
+
+            break
+
+
+if __name__ == "__main__":
+    try:
+        from docopt import docopt
+    except:
+        print("""
+        Please install docopt using:
+            pip install docopt==0.6.1
+        For more refer to:
+        https://github.com/docopt/docopt
+        """)
+        raise
+
+    args = docopt(__doc__, version=__version__)
+
+    log_level = logging.INFO  # default
+    if args['--verbose']:
+        log_level = logging.DEBUG
+    elif args['--quiet']:
+        log_level = logging.ERROR
+
+    logfile = None
+    if args['--logfile']:
+        logfile = args['--logfile']
+
+    logging.basicConfig(filename=logfile, level=log_level,
+        format='%(asctime)s - %(name)s.%(funcName)s() - %(levelname)s - %(message)s')
+
+    try:
+        main(args)
+    except KeyboardInterrupt:
+        log.debug("Controller exits")
+    finally:
+        log.debug("Exit")
+        controller.stop()

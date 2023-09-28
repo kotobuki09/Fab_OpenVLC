@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+agent.py: A Linux IEEE 802.11 WiSHFUL agent.
+
+Usage:
+   agent.py [options] [-q | -v]
+
+Options:
+   --logfile name      Name of the logfile
+   --config configFile Config file path
+
+Example:
+   ./agent -v --config ./agent_config.yaml
+
+Other options:
+   -h, --help          show this help message and exit
+   -q, --quiet         print less text
+   -v, --verbose       print more text
+   --version           show version and exit
+"""
+
+
+import logging
+import sys
+import signal
+import sys, os
+import yaml
+
+
+sys.path.append('../../')
+sys.path.append("../../agent_modules/wifi_ath")
+sys.path.append("../../agent_modules/wifi_wmp")
+sys.path.append("../../agent_modules/wifi")
+sys.path.append("../../agent_modules/iperf")
+sys.path.append("../../agent_modules/ras_antenna")
+sys.path.append('../../upis')
+sys.path.append('../../framework')
+sys.path.append('../../agent')
+
+import wishful_upis as upis
+import wishful_agent
+
+__author__ = "Domenico Garlisi"
+__copyright__ = "Copyright (c) 2015, CNIT"
+__version__ = "0.1.0"
+__email__ = "domenico.garlisi@cnit.it"
+
+# # BSSID of our Network
+# network_bssid = "wishful_ras_examplel"
+# group_name = "ras_example"
+# node_interface = "eth0"
+#
+# log = logging.getLogger('wishful_agent')
+# logLevel = logging.DEBUG
+# logging.basicConfig(level=logLevel, format='%(asctime)s - %(name)s.%(funcName)s() - %(levelname)s - %(message)s')
+#
+# #Create and configure
+# agent = wishful_agent.Agent()
+#
+# agent.set_agent_info(name="RASAgent", info="RASAgentInfo", iface=node_interface)
+#
+# agent.add_module(moduleName="discovery", pyModule="wishful_module_discovery_pyre",
+#                  className="PyreDiscoveryAgentModule", kwargs={"iface":node_interface, "groupName":group_name})
+#
+# agent.add_module(moduleName="wifi", pyModuleName="wishful_module_wifi", className="WifiModule")
+#
+# # agent.add_module(moduleName="ras_antenna", pyModule="wishful_module_ras_antenna",
+# #                  className="RasAntennaModule")
+
+
+
+log = logging.getLogger('wishful_agent.main')
+agent = wishful_agent.Agent()
+
+def main(args):
+    log.debug(args)
+
+    config_file_path = args['--config']
+
+    config = None
+    with open(config_file_path, 'r') as f:
+        config = yaml.load(f)
+
+    agent.load_config(config)
+    agent.run()
+
+if __name__ == "__main__":
+    try:
+        from docopt import docopt
+    except:
+        print("""
+        Please install docopt using:
+            pip install docopt==0.6.1
+        For more refer to:
+        https://github.com/docopt/docopt
+        """)
+        raise
+
+    args = docopt(__doc__, version=__version__)
+
+    log_level = logging.INFO  # default
+    if args['--verbose']:
+        log_level = logging.DEBUG
+    elif args['--quiet']:
+        log_level = logging.ERROR
+
+    logfile = None
+    if args['--logfile']:
+        logfile = args['--logfile']
+
+    logging.basicConfig(filename=logfile, level=log_level,
+        format='%(asctime)s - %(name)s.%(funcName)s() - %(levelname)s - %(message)s')
+
+    try:
+        main(args)
+    except KeyboardInterrupt:
+        log.debug("Agent exits")
+    finally:
+        log.debug("Exit")
+        agent.stop()
+
