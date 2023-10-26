@@ -5,53 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3d38635b-a971-4295-971e-fcf715c4b557" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ControlUnit/fabfile.py" beforeDir="false" afterPath="$PROJECT_DIR$/ControlUnit/fabfile.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Doppler062023.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Doppler062023_alternate_style.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Doppler062023_improved.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Doppler062023_scientific_style.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Doppler062023v2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Doppler062023v3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Doppler062023v4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Doppler062023v5.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Doppler1806_individual_bars.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Doppler2908.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DopplerV.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DopplerV1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DopplerV2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Doppler_movement_speed.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Doppler_velocity_colors.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI 05m.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI 05m.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI 3103.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI 3103.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST maxdis.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST maxdis.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST test var.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST test var.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST test.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST test.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST2.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IDLE vs IPERF RSSI TEST2.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handover.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handover.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv2.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3 deactlight.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3 deactlight.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3d.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3d.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3e deactlight ave png.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3e deactlight ave.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3e deactlight.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3e deactlight.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3e-traffic .pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RSSI characteristic in horizontal handoverv3e.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.openvlc.o.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.openvlc.o.cmd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.reed_solomon.o.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.reed_solomon.o.cmd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.tmp_versions/vlc.mod" beforeDir="false" afterPath="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC/Latest_Version/Driver/.tmp_versions/vlc.mod" afterDir="false" />
@@ -136,20 +93,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "E:/Fab_OpenVLC",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/Fab_OpenVLC&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\Fab_OpenVLC" />
@@ -235,7 +192,9 @@
       <workItem from="1695307374988" duration="49000" />
       <workItem from="1695307541171" duration="30000" />
       <workItem from="1695307582945" duration="1712000" />
-      <workItem from="1695635375884" duration="2621000" />
+      <workItem from="1695635375884" duration="5021000" />
+      <workItem from="1696323004283" duration="308000" />
+      <workItem from="1696323343224" duration="2841000" />
     </task>
     <servers />
   </component>
