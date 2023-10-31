@@ -1,4 +1,0 @@
-#hostname,driver,eth0_ip,freq,txpower,wlan0_ip,mac_address,label,role,iface
-clapton.local,ath9k,10.8.9.3,5180,20,192.168.0.1,a8:54:b2:69:3b:e3,A,AP,wlan0
-nautilus.local,ath9k,10.8.8.1,5180,20,192.168.0.2,00:15:6d:85:75:b3,B,STA,wlan0
-extensa.local,ath9k,10.8.8.5,5180,20,192.168.0.3,00:15:6d:85:90:2d,C,STA,wlan0

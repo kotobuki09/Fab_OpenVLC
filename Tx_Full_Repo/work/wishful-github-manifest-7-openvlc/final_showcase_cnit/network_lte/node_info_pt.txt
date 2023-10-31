@@ -1,6 +1,0 @@
-#hostname,driver,eth0_ip,freq,txpower,wlan0_ip,mac_address,label,role,iface
-#nuc1,lte,10.8.9.13,2462,20,10.8.9.13,f4:4d:30:6c:63:a3,A,EB,eth0
-#nuc2,lte,10.8.9.14,2462,20,10.8.9.14,f4:4d:30:6c:00:ce,B,UE,eno1
-nuc11,lte,172.16.16.11,2462,20,172.16.16.11,b8:ae:ed:75:bb:1f,A,EB,eth0
-#nuc12,lte,172.16.16.12,2412,20,172.16.16.12,b8:ae:ed:75:a9:9f,B,UE,eth0
-nuc6,lte,172.16.16.6,2462,20,172.16.16.6,c0:3f:d5:68:27:33,B,UE,eth0
