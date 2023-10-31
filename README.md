@@ -9,8 +9,18 @@ https://glowing-hardcover-41b.notion.site/OpenVLC-PRU-f7f70c9ccc974c2abeacf5913e
 
 First we create this demo based on OpenVLC and using normal USB WiFi doungle for create WiFi network. 
 
-You can follow this instruction to get familliar with how to creat openVLC.
-Regard to WiFi doungle, there might need to be install different module based on your WiFi chipset. In our case, we use TP-Link USB dougle with Intel Chipset. If that is your case, you can use this driver to update in your system to make the dougle working in your system.
+You can follow this instruction to get familiar with how to creat openVLC connection.
+Regard to WiFi dougle, there might need to be install different module based on your WiFi chipset. In our case, we use TP-Link USB dougle with Intel Chipset. If that is your case, you can use this driver to update in your system to make the dougle working in your system.
+There are different driver that we can suggestion based on your USB chipset below:
+    
+1
+
+2
+
+3
+
+Before start the demo, you need to 
+
 
 We creating the Intelligent System based on Fabric framework that be able to gathering information from both network and act as brain to make different decison to make the hybrid system workin seemlessly and robustly as possible.
 
@@ -19,8 +29,10 @@ After completed all the setup related WiFi. you need to put different file into 
 
 Now can activate for the whole system from center controller 
 
-Go to IMS folder, and open the terminal in this folder 
+Go to IMS Center Controller Unit folder, and open the terminal in this folder 
+
 And now you can create WiFi network:
+
 #Intruction:
 
 Go to the controller directory:
