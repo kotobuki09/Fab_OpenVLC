@@ -19,7 +19,8 @@ There are different driver that we can suggestion based on your USB chipset belo
 
 3
 
-Before start the demo, you need to 
+Before start the demo, you need to make some adjustment so that the Center Control Unit can get the information about the VLC channel and also the WiFi channel. So the controller can make a decision based on the condition from both networks.
+
 
 
 We creating the Intelligent System based on Fabric framework that be able to gathering information from both network and act as brain to make different decison to make the hybrid system workin seemlessly and robustly as possible.
