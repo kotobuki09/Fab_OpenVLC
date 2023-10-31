@@ -1,0 +1,3 @@
+root      9101 20.6  1.1   8248  5796 pts/2    R    11:08   2:47 python3 dumpUDP 192.168.0.2 55555
+root      9698  0.0  0.5   5436  2624 ?        Ss   11:13   0:00 sudo -S -p sudo password: /bin/bash -l -c cd /home/debian/OpenVLC/Latest_Version/ >/dev/null && python3 dumpUDP 192.168.0.2 55555 &
+root      9750  1.0  0.3   3680  1660 pts/2    S+   11:21   0:00 grep dumpUDP

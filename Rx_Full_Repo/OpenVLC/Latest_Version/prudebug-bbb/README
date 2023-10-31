@@ -1,0 +1,274 @@
+
+Prudebug BBB Version 0.30
+
+(C) Copyright 2011, 2013 by Arctica Technologies Written by Steven Anderson
+
+(C) Copyright 2015 by Christopher C. Mills:
+    Modifications by Christopher C. Mills
+
+This program is distributed under the terms of the GNU General Public
+License v3 (GPLv3). A copy of this lisence is included with this archive.
+
+Prudebug-bbb (executable is prudbgb) is a lightweight debugger targeted at the
+Texas Instruments (TI) PRUSS-ICSS of the BeagleBone Black Rev. C. It is a fork
+of Steven Anderson's (Arctica Technologies) original debugger, prudebug, which
+was aimed more generally at TI SoCs containing the various revisions of the
+PRUSS. See "Steven Anderson's Original Description" below. This fork is intended
+primarily for BeagleBone Black users and is only being developed for and tested
+on the BeagleBone Black Rev C. The generality that Mr. Anderson and his
+associates provided has not been removed, and their is no intention to remove it
+unless there is direct conflict with support of the intented target system.
+Consequently, there may be utility of this debugger beyond the intended target
+of this fork.
+
+Note 1: An effort will be made to keep original functionality, while adding new
+functionality as required. However, there may be a necessity to make changes
+that conflict with original behavior.
+
+Note 2: The prudebug-bbb git repository's
+history starts with Mr. Anderson's version 0.25. This original version is
+tagged.
+
+THIS PROGRAM HAS VERY LIMITED TESTING - USE AT YOUR OWN RISK.
+
+
+Steven Anderson's Original Description
+(Note: This section included for historical reasons. Some content is outdated)
+---------------------------------------------------------------------
+Prudebug is a very small program that was initially intended to be 100-200 lines
+of code to start/stop the PRU and load a binary in the PRU.  As I worked through
+my PRU development project I added several addition features (some I needed for
+debugging the project, and a few just because they seemed nice).  After
+completing the PRU coding project this program sat unused for about a year
+before I decided that maybe someone else out there needed a PRU debugger.  After
+all, if you need a hard realtime process and you're using Linux, a PRU is an
+easy way to go.
+
+THIS PROGRAM HAS VERY LIMITED TESTING - USE AT YOUR OWN RISK.  I did test the
+features that I used, but there are many features I didn't need for my project.
+I attempted a couple quick tests with the unused features, but it would be very
+easy to miss something.  For example, I only used PRU0 for my coding, so very
+little testing was done with PRU1.  I'm sure the user interface has bugs but I
+haven't hit them yet....it's easy to miss issues when you know how it's supposed
+to work.  As I continue to add code, I'll try to do a more complete job of
+testing, but I will continue to use feedback for locating most bugs.
+
+USE WITH PRUSS v2: prudebug should work fine with the PRUSSv2.  It does not
+support any new features of the PRUSSv2, but I will try to add some as time
+permits.  I have done some testing on both the AM1707 (PRUSSv1) and AM3358
+(PRUSSv2) processors.
+
+
+RELEASE NOTES for prudebug
+---------------------------------------------------------------------
+Version 0.24 Improvements:
+	
+  - Added support for UIO PRUSS driver
+  - Moved to dynamic processor selection- user can pick a processor on the
+    command line
+  - Fixed watchpoints and breakpoints to support different values
+    on different PRUs
+
+Version 0.25 Bug fixes provided by Shoji Suzuki
+  - Correction to the QBA instruction decode
+  - Fix backspace code for terminals using 0x7f
+  - Corrected issue with writing numbers greater than 0x7fffffff to
+    PRU memory with the wr command
+
+RELEASE NOTES for prudebug-bbb
+---------------------------------------------------------------------
+Version 0.30 Changes and improvements by Christopher C. Mills
+
+Improvements:
+
+  - Added readline functionality to the command prompt
+  - Added shorter command aliases to facilitate quicker keyboard control
+
+  Changes:
+
+  - Removed cross-compilation compiler reference in the make file in favor on
+    comilation directly on the BBB using gcc
+  - Prepared for fork to Github project prudebug-bbb
+
+CONTRIBUTORS
+---------------------------------------------------------------------
+Christian Joly    - bug fixes, and modifications to make prudebug work
+                   with PRUSSv2.
+Shoji Suzuki      - bug fixes for v0.25
+Ram Radhakrishnan - design and patches
+
+
+INSTALLATION
+---------------------------------------------------------------------
+This program requires the header files for the readline library.
+These are likely not installed by default. To install these under
+Debian Wheezy on the BeagleBone Black type the following command:
+
+   sudo apt-get install libreadline-dev
+
+To then build just run make in the source code directory. The makefile is
+setup for compilation on the BBB using gcc.  The binary file is
+called prudbgb. To run it type the following:
+
+   sudo ./prudbgb
+
+
+USAGE
+---------------------------------------------------------------------
+Usage: prudbgb [-a pruss-address] [-u] [-m] [-p processor]
+    -a - pruss-address is the memory address of the PRU in ARM memory space
+    -u - force the use of UIO to map PRU memory space
+    -m - force the use of /dev/mem to map PRU memory space
+    if neither the -u or -m options are used then it will try the UIO first
+    -p - select processor to use (sets the PRU memory locations)
+        AM1707 - AM1707
+        AM335X - AM335x
+
+Generally the -a option should not be used.  If it is used, then prudbgb will
+use the -a address for the PRU base with the selected processor as the various
+PRU subsystem offsets.  -u and -m control the way the PRU base address is mapped
+for program access (either the /dev/mem or /dev/uio* device).  If -u or -m are
+selected then it will only used the selected method or fail.  If neither the -u
+or -m are selected then prudbgb will try to use the UIO device driver, and if
+that fails then it will use /dev/mem.  The -p option allows you to select the
+processor.  If your processor is not listed then determine if one of the listed
+processors has compatible PRU (same base address and PRU subsystem offsets).  If
+not, you'll need to modify prudbg.c and prudbg.h (see remarks near the beginning
+of prudbg.c).  If you do add to the list of processors, please send me the diff
+so I can add it into future releases.
+
+READLINE FUNCTIONALITY
+---------------------------------------------------------------------
+The readline library contains extensive functionality available to
+the user. This is the same functionality available at the Bash
+prompt. Some available commands:
+
+   - <up arrow>/<down arrow> provides access to previous commands.
+   - <CTRL-R> allows searching for previous commands
+
+Additionally, the user can write macros and bind them to keys. This
+provides the possibility of the user configuring functionality
+through the readline .inputrc file in the user's home folder, without
+the necessity of addressing the C code. Note that .inputrc allows
+for setting up application specific initialization, allowing you to
+configure behavior that is only available in prudbgb, but that
+won't alter the behavior of the Bash prompt or other programs.
+Exploring this configuration and the user interaction with the
+readline command prompt is not covered in this help. Resources
+for learning how to configure and use readline can be found by 
+searching the web or directly at this site:
+    
+    http://tiswww.case.edu/php/chet/readline/rluserman.html#SEC1
+
+COMMAND HELP
+---------------------------------------------------------------------
+There is a short (HB) and a long (HELP) command help available at the command
+prompt. The long help command output is shown below:
+
+PRU0> help
+Command help
+
+    Note: A brief version of help is available with the command HB
+
+    - Commands are case insensitive
+    - Address and numeric values can be dec (ex 12), hex (ex 0xC), or octal
+      (ex 014)
+    - Memory addresses can be wa=32-bit word address, ba=byte address.  Suffix
+      of i=instruction or d=data memory
+    - Return without a command will rerun a previous D, DD, or DI command while
+      displaying the next block
+    - Return without a command will rerun a previous SS
+
+    Note 1: Addresses, whether absolute, relative, or offsets, are all indexed
+            by 32 bit words, and not bytes. This means that addresses, lengths,
+            and offets taken from the Texas Instruments documentation need
+            to by divided by 4 (shifted right 2 bits) when used in all memory
+            commands below
+
+    Note 2: Vertical bars designate command aliases: e.g. 'BR | B' signifies
+            either BR or B as the command
+
+    BR | B [breakpoint_number [address]]
+    View or set an instruction breakpoint
+       -'b' by itself will display current breakpoints
+       - breakpoint_number is the breakpoint reference and ranges from 0 to 4
+       - address is the instruction word address at which the processor should
+         stop (instruction is not executed)
+       - if no address is provided, then the breakpoint is cleared
+
+    D memory_location [length]
+    Global PRUSS memory map data dump (indexed by 32 bit words, not bytes)
+
+    DD memory_location [length]
+    Global memory map data dump starting at current PRU's local data RAM
+    (indexed by 32 bit words, not bytes)
+
+    DI memory_location [length]
+    Dump instruction memory for current PRU (indexed by 32 bit words, not bytes)
+
+    DIS | II  memory_location [length]
+    Disassemble instruction memory of current PRU (indexed by 32 bit words, not bytes)
+
+    DISIP | I  [inst_cnt_prior [inst_cnt_after]]
+    Disassemble instruction memory of current PRU around the instruction pointer(IP).
+    inst_cnt_prior is number of instructions to display preceding the IP.
+    inst_cnt_after is number of instructions to display after the IP.
+
+    G
+    Start processor execution of instructions (at current IP)
+
+    GSS | GS
+    Start processor execution using automatic single stepping - this allows
+    running a program with breakpoints
+
+    HALT | H
+    Halt the processor
+
+    L memory_location file_name
+    Load program file into instruction memory at 32-bit word address provided
+    (offset from beginning of instruction memory)
+
+    PRU | P pru_number
+    Set the active PRU where pru_number ranges from 0 to 1
+    Some debugger commands do action on active PRU (such as halt and reset)
+
+    Q
+    Quit the debugger and return to shell prompt.
+
+    R
+    Display the current PRU registers.
+
+    RESET | T
+    Reset the current PRU
+
+    SS | S 
+    Single step the current instruction.
+
+    WA [watch_num [address [value]]]
+    Clear or set a watch point
+      format 1:  wa - print watch point list
+      format 2:  wa watch_num - clear watch point watch_num
+      format 3:  wa watch_num address - set a watch point (watch_num) so any
+                 change at that word address in data memory will be printed
+                 during program execution with gss command
+      format 4:  wa watch_num address value - set a watch point (watch_num)
+                 so that the program (run with gss) will be halted when the
+                 memory location equals the value
+      NOTE: for watchpoints to work, you must use gss command to run the
+            program
+
+    WR memory_location value1 [value2 [value3 ...]]
+    Write 32-bit values starting at a PRUSS memory location in its
+    global memory map. Memory_location is a 32-bit word index, not
+    a byte index
+
+    WRD memory_location value1 [value2 [value3 ...]]
+    Write 32-bit values in the current PRU's data memory
+    Memory_location is a 32-bit word index, not a byte index, starting
+    at the beginning of the current PRU's data memory.
+
+    WRI memory_location value1 [value2 [value3 ...]]
+    Write 32-bit values in the current PRU's instruction memory
+    Memory_location is a 32-bit word index, not a byte index, starting
+    at the beginning of the current PRU's instruction memory.
+

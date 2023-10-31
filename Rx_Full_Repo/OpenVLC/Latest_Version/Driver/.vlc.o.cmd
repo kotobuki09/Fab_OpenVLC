@@ -1,0 +1,1 @@
+cmd_/home/debian/OpenVLC/Latest_Version/Driver/vlc.o := ld -EL    -r -o /home/debian/OpenVLC/Latest_Version/Driver/vlc.o /home/debian/OpenVLC/Latest_Version/Driver/reed_solomon.o /home/debian/OpenVLC/Latest_Version/Driver/openvlc.o 
