@@ -7,7 +7,7 @@ A demo of our IMS in action can be found on YouTube: [IMS Demo](https://www.yout
 
 [![VideoIMS](https://i.imgur.com/rDzuBzk.png)](https://www.youtube.com/watch?v=jDsohtGlPcM "Hybrid Visible Light Communication/WiFi testbed")
 
-Our testbed is built on the OpenVLC platform and uses the WiFi dongle TP-link TL-WN722N v2. The topology of the testbed is depicted below:
+Our testbed is built on the OpenVLC platform and uses the WiFi adapter TP-link TL-WN722N v2. The topology of the testbed is depicted below:
 
 ![Fab_032022](https://user-images.githubusercontent.com/34347264/157910137-6f7f791e-4902-4057-868a-5b31315243ff.png)
 
