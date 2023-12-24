@@ -5,7 +5,134 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3d38635b-a971-4295-971e-fcf715c4b557" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BBB-Rx/handover.pcap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BBB-Rx/handover2.pcap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/ERN2022_code.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/Figure_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/Palermo1.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/Palermo2.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/Palermo3.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/Palermo5.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/Palermo6.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/Palermo_2023.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/Palermo_final.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/Palermo_final_with_DV.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/Palermo_final_with_DV_v2.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/Toshiba_DopplerVelocity.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/Toshiba_DopplerVelocity1.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/fabfile - Copy (2).py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/fabfile - Copy (3).py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/fabfile - Copy.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/fabfile_test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/file1.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/file2.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/file3.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/file4.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ControlUnit/icontrol_data.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dopper_1806.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dopper_2302.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DopplerVector.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/CL_KIENNGO_02092019_Equinor.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/CV_KIENNGO_07_2022-2.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/Copy_of_wifichannel2.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/DistanceThoughput.fig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/DistanceThoughput.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/RSSIThoughput.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/V2V.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/hanover.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/li2017_DopplerVelocity.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/p65-wangA.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/plotv2v.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/scenario1_RSSIvsTime_ThruvsTime.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/scenario2_RSSIvsTime_ThruvsTime.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/test.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/test2.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/test3.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/thruRSSIvlc.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/wifichannel.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/wifichannel2.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/V2V/~$V2V.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dumpUDP" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fabfile.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main - OriginalCode-2908.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/myplot.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/.vs/PythonSettings.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/.vs/VSWorkspaceState.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/.vs/openVLC_RSSI_analyzer/v16/.suo" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/.vs/slnx.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/All_Figs_NLOS.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 0.5.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 0.5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 05m.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 05m.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 0_5 NLOS.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 0_5 NLOS.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 1 NLOS.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 1 NLOS.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 1.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 1_5 NLOS.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 1_5 NLOS.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 1_5.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 1_5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 2.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI 2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI ALL NLOS.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI ALL NLOS.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI MAX TRAFFIC.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI NO TRAFFIC.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI REFLECT.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI REFLECT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI TEST test var.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI TEST test var.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI TEST.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI TEST.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI TEST1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI TEST2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/IDLE vs IPERF RSSI.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/dump_idle.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/dump_iperf_400K.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/main_backup.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/05m.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/15m.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/1m.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/dump_idle.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/dump_iperf_400K.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/outbox_0_5m_idle.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/outbox_0_5m_idle_nlos.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/outbox_0_5m_iperf.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/outbox_0_5m_iperf_nlos.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/outbox_1_5m_idle.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/outbox_1_5m_idle_nlos.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/outbox_1_5m_iperf.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/outbox_1_5m_iperf_nlos.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/outbox_1m_idle.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/outbox_1m_idle_nlos.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/outbox_1m_iperf.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/outbox_1m_iperf_nlos.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/outbox_2m_idle.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/outbox_2m_iperf.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/outbox_test_reflect_cover.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/test.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/test_05idle.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/test_05m.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/test_1m.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/test_2m.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/test_3m.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/test_max.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/test_maxdist.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openVLC_RSSI_analyzer/raw/test_no.raw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plot1806.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plotDopple.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pruedebug patches/pruedebug-bbb-read-shm-pru0-r3.patch" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +173,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
@@ -54,6 +182,7 @@
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -66,6 +195,7 @@
   <component name="RunManager">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="Fab_OpenVLC" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -88,6 +218,7 @@
     </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Fab_OpenVLC" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -108,6 +239,13 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-50da183f06c8-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13135.95" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -154,6 +292,14 @@
       <workItem from="1699442728647" duration="596000" />
       <workItem from="1701871593115" duration="23000" />
       <workItem from="1701871644107" duration="760000" />
+      <workItem from="1701875144641" duration="128000" />
+      <workItem from="1701896826162" duration="803000" />
+      <workItem from="1703065193001" duration="41000" />
+      <workItem from="1703065331102" duration="667000" />
+      <workItem from="1703068974648" duration="3990000" />
+      <workItem from="1703074408502" duration="4454000" />
+      <workItem from="1703236935918" duration="1095000" />
+      <workItem from="1703238317562" duration="17509000" />
     </task>
     <servers />
   </component>
@@ -174,6 +320,18 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC" />
+      <path value="$PROJECT_DIR$/Rx_Full_Repo/rtl8188eus" />
+      <path value="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC" />
+      <path value="$PROJECT_DIR$/Tx_Full_Repo/test/TL-WN722N-V2" />
+      <path value="$PROJECT_DIR$/Tx_Full_Repo/work/create_ap" />
+      <path value="$PROJECT_DIR$/Tx_Full_Repo/work/hostapd-rtl871xdrv" />
+      <path value="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eu" />
+      <path value="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eus" />
+    </ignored-roots>
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

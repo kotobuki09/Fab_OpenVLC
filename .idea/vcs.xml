@@ -2,13 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Rx_Full_Repo/OpenVLC" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Rx_Full_Repo/rtl8188eus" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Tx_Full_Repo/OpenVLC" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Tx_Full_Repo/test/TL-WN722N-V2" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Tx_Full_Repo/work/create_ap" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Tx_Full_Repo/work/hostapd-rtl871xdrv" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eu" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Tx_Full_Repo/work/rtl8188eus" vcs="Git" />
   </component>
 </project>
