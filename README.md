@@ -148,9 +148,11 @@ sudo ./prubgb > filename.raw # Get the sample out
 
 You can then use the provided Python script to visualize the RSSI output results.
 
-![FullRSSI](https://i.imgur.com/3O79pXO.png)
-![RSSI](https://i.imgur.com/Gv4ufDE.png)
-![StRSSI](https://i.imgur.com/gz8u2o0.png)
+<p float="left">
+  <img src="https://i.imgur.com/3O79pXO.png" width="500" />
+  <img src="https://i.imgur.com/Gv4ufDE.png" width="500" /> 
+  <img src="https://i.imgur.com/gz8u2o0.png" width="500" />
+</p>
 
 
 ## 📝Additional Notes📝
