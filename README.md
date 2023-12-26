@@ -70,13 +70,21 @@ Activating the monitor mode can provide more control over the WiFi network.
 
 ### 🧠IMS Module🧠
 
-The Intelligent Management System serves as the main controller, providing instructions to each OpenVLC in the network. IMS is built on the Fabric framework and can control all the activities of all the nodes in the network.
+The Intelligent Management System (IMS) serves as the central controller, providing instructions to each OpenVLC in the network. Built on the Fabric framework, IMS can oversee and manage all activities of all nodes within the network.
 
-Before starting the demo, you need to make some adjustments so that the Central Control Unit can get information about the VLC and WiFi channels. This allows the controller to make decisions based on the conditions of both networks.
+Before running the demo, certain adjustments are necessary to ensure the Central Control Unit can gather information about the VLC and WiFi channels. This allows the controller to make informed decisions based on the conditions of both networks.
 
-After completing all the WiFi-related setup, you need to transfer the appropriate files to both BBB-Tx (transmitter) and BBB-Rx (receiver). This will enable the IMS to operate effectively across both networks. Ensure that the file organization matches that of the GitHub folder for proper functionality.
+## Setup Instructions
 
-Please refer to the detailed instructions provided in the repository to configure your IMS setup properly.
+1. **File Transfer**: After completing all the WiFi-related setup, transfer the necessary files to both BBB-Tx (transmitter) and BBB-Rx (receiver). This will enable the IMS to operate effectively across both networks. Ensure that the file organization matches that of this GitHub repository for proper functionality. Copy the `BBB_Tx_Full_Repo` and `BBB_Rx_Full_Repo` folders to `BBB_Tx` and `BBB_Rx` respectively.
+
+2. **Directory Setup**: If you change the directory, you might need to adjust the setup directory in the `fabfile.py` file as well to make the IMS work.
+
+3. **Testbed Setup**: Modify the setup in `fabfile.py` to fit your testbed setup. Instructions are provided within the file.
+
+4. **Configuration File**: Copy the `hostapd.conf` file from the `ControlUnit` folder to the `/etc/hostapd/` directory in BBB-Tx.
+
+Please refer to the detailed instructions provided in the repository to configure your IMS setup properly. 
 
 ## 🚀Demo Activation🚀
 
@@ -84,8 +92,7 @@ Please refer to the detailed instructions provided in the repository to configur
 
 ### 🌐Creating a WiFi Network🌐
 
-From the controller terminal, follow these instructions to create a WiFi and VLC network:
-
+Navigate to the "ControlUnit" folder and open a terminal. Then, follow the instructions below to establish a WiFi and VLC network:
 ### 📶💡Activate BBB-Tx for WiFi and VLC channel📶💡
 ```bash
 fab vlc1 setup_wifi_ap
@@ -124,7 +131,7 @@ iperf -u -l 800 -s -i3 -B 192.168.10.2 -p 10001
 ```
 ### 🎮Activate the controller IMS🎮
 ```bash
-fab vlc1 schedule_controller
+fab icontrol_demo
 ```
 Now you can test how the handover work in your hybrid system.
 
@@ -148,7 +155,7 @@ sudo ./prubgb > filename.raw # Get the sample out
 
 You can then use the provided Python script to visualize the RSSI output results.
 
-<p float="left">
+<p float="center">
   <img src="https://i.imgur.com/3O79pXO.png" width="500" />
   <img src="https://i.imgur.com/Gv4ufDE.png" width="500" /> 
   <img src="https://i.imgur.com/gz8u2o0.png" width="500" />
