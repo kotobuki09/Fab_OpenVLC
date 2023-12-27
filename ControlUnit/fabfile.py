@@ -20,12 +20,12 @@ env.passwords = { 'debian@10.8.10.5:22':'temppwd', 'debian@10.8.10.8:22':'temppw
 @fab.task
 def vlc1():
     env.hosts={'debian@10.8.10.5'}
-    env.passwords = {'debian@10.8.10.5:22':'temppwd'}
+    env.passwords = {'debian@10.8.10.5:22':'temppwd'} #modify Tx information
     
 @fab.task
 def vlc2():
     env.hosts={'debian@10.8.10.6'}
-    env.passwords = {'debian@10.8.10.6:22':'temppwd'}
+    env.passwords = {'debian@10.8.10.6:22':'temppwd'} #modify Rx information
 
 @fab.task
 def getRSSI():
@@ -72,12 +72,12 @@ def setup_wifi_ap():
     #fab.sudo("service dnsmasq stop")
     #fab.sudo("create_ap -c 6 -n wlan0 MyAccessPoint 12345678")
     fab.sudo("killall wpa_supplicant") 
-    fab.sudo("sudo hostapd -B /etc/hostapd/hostapd.conf")
+    fab.sudo("sudo hostapd -B /etc/hostapd/hostapd.conf") #Change the hostapd file directory over here if it needed
 
 @fab.task
 def setup_wifi_sta():
     fab.sudo("connmanctl scan wifi")
-    fab.sudo("connmanctl connect wifi_7c8bca091d71_6f70656e564c432d73736964_managed_none")
+    fab.sudo("connmanctl connect wifi_7c8bca091d71_6f70656e564c432d73736964_managed_none") #Change the wifi network information over here
 
 @fab.task
 def setup_vlc_tx():
