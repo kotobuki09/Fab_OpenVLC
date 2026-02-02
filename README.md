@@ -213,8 +213,27 @@ We gratefully acknowledge support from:
 - The [IMDEA Networks Institute](https://networks.imdea.org/)
 - The [Toshiba Research Europe Ltd](https://www.toshiba.eu/pages/eu/Bristol-Research-and-Innovation-Laboratory/)
 
-## 👤Personal Profile👤
+---
 
-For more information about the contributor, visit: [https://kngo.netlify.app/](https://kngo.netlify.app/)
+## 👨‍💼 Author
+
+<table>
+  <tr>
+    <td>
+      <a href="https://kngo.netlify.app/">
+        <img src="images/profile.png" alt="NGO TRUNG KIEN" width="120" style="border-radius: 50%;">
+      </a>
+    </td>
+    <td>
+      <strong>NGÔ TRUNG KIÊN</strong><br>
+      🌐 <a href="https://kngo.netlify.app/">kngo.netlify.app</a><br>
+      📧 kiennt@hsb.edu.vn<br>
+      🏫 Hanoi School of Business and Management (HSB)<br>
+      📱 Faculty: Non-Traditional Security
+    </td>
+  </tr>
+</table>
+
+---
 
 
