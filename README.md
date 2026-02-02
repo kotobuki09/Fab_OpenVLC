@@ -1,7 +1,7 @@
 # Fab OpenVLC📡
 ## Intelligent Management System for OpenVLC 💡
 
-The Intelligent Management System (IMS) is an innovative framework that seamlessly manages handovers in a hybrid system of Visible Light Communication (VLC) and WiFi. This repository provides comprehensive information to help you recreate our testbed.
+The Intelligent Management System (IMS) is an innovative framework that seamlessly manages handovers in a hybrid system of Visible Light Communication (VLC) and WiFi. This repository provides comprehensive instructions for setting up and running the IMS on your testbed.
 
 A demo of our IMS in action can be found on YouTube: [IMS Demo](https://www.youtube.com/watch?v=jDsohtGlPcM)
 
@@ -19,7 +19,7 @@ To create the VLC channel, please follow the instructions provided on the [OpenV
 
 ### 📶WiFi Module📶
 
-For the WiFi channel, we have tested with different USB adapters. However, we encountered some issues with the TL-WN722N ver3 when integrating it into the testbed. If you have the same setup, you can use the following link to install the driver and test if the WLAN is working correctly in your system: [TL-WN722N V2 Driver](https://github.com/abhijeet2096/TL-WN722N-V2)
+For the WiFi channel, we have tested with different USB adapters. However, we encountered some issues with the TL-WN722N ver3 when integrating it into the testbed. If you have the same setup, you can refer to the [RTL8188EUS driver repository](https://github.com/aircrack-ng/rtl8188eus).
 
 Here are the main instructions:
 
@@ -70,13 +70,13 @@ Activating the monitor mode can provide more control over the WiFi network.
 
 ### 🧠IMS Module🧠
 
-The Intelligent Management System (IMS) serves as the central controller, providing instructions to each OpenVLC in the network. Built on the Fabric framework, IMS can oversee and manage all activities of all nodes within the network.
+The Intelligent Management System (IMS) serves as the central controller, providing instructions to each OpenVLC in the network. Built on the Fabric framework, IMS can oversee and manage all activities of the VLC network from a single terminal. This makes it an invaluable tool for maintaining efficient and effective communication across your hybrid system.
 
-Before running the demo, certain adjustments are necessary to ensure the Central Control Unit can gather information about the VLC and WiFi channels. This allows the controller to make informed decisions based on the conditions of both networks.
+Before running the demo, certain adjustments are necessary to ensure the Central Control Unit can gather information about the VLC and WiFi channels. This allows the controller to make informed decisions about when to perform handovers based on the quality of both channels.
 
 ## Setup Instructions
 
-1. **File Transfer**: After completing all the WiFi-related setup, transfer the necessary files to both BBB-Tx (transmitter) and BBB-Rx (receiver). This will enable the IMS to operate effectively across both networks. Ensure that the file organization matches that of this GitHub repository for proper functionality. Copy the `BBB_Tx_Full_Repo` and `BBB_Rx_Full_Repo` folders to `BBB_Tx` and `BBB_Rx` respectively.
+1. **File Transfer**: After completing all the WiFi-related setup, transfer the necessary files to both BBB-Tx (transmitter) and BBB-Rx (receiver). This will enable the IMS to operate effectively and manage both WiFi and VLC channels.
 
 2. **Directory Setup**: If you change the directory, you might need to adjust the setup directory in the `fabfile.py` file as well to make the IMS work.
 
@@ -213,10 +213,8 @@ We gratefully acknowledge support from:
 - The [IMDEA Networks Institute](https://networks.imdea.org/)
 - The [Toshiba Research Europe Ltd](https://www.toshiba.eu/pages/eu/Bristol-Research-and-Innovation-Laboratory/)
 
+## 👤Personal Profile👤
 
-
-
-
-
+For more information about the contributor, visit: [https://kngo.netlify.app/](https://kngo.netlify.app/)
 
 
