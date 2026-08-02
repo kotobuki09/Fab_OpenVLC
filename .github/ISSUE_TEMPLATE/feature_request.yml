@@ -1,0 +1,42 @@
+name: Feature or research proposal
+description: Suggest a capability, experiment, integration, or documentation improvement
+title: "[Proposal]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or research need
+      description: What limitation, use case, or research question should this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Describe the implementation or experiment at a practical level.
+    validations:
+      required: true
+  - type: textarea
+    id: value
+    attributes:
+      label: Expected value
+      description: Explain how this would improve reproducibility, usability, performance, extensibility, or scientific value.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation plan
+      description: What measurements, tests, logs, or acceptance criteria would demonstrate success?
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility considerations
+      description: Note required hardware, software, dependencies, or possible breaking changes.
+  - type: textarea
+    id: contribution
+    attributes:
+      label: Contribution plan
+      description: Indicate whether you can implement, test, document, or review the proposal.
