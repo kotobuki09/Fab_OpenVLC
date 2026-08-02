@@ -1,0 +1,53 @@
+name: Bug report
+description: Report a reproducible problem in the Fab OpenVLC testbed or controller
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve Fab OpenVLC. Please remove passwords, tokens, and private information from all logs.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Problem summary
+      description: What happened, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: Include the exact commands and sequence used.
+      placeholder: |
+        1. Configure ...
+        2. Run ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Testbed environment
+      description: Include board, OS image, kernel, OpenVLC commit/version, WiFi adapter, driver, Python/Fabric, hostapd, and iperf versions.
+    validations:
+      required: true
+  - type: textarea
+    id: topology
+    attributes:
+      label: Topology and configuration
+      description: Describe transmitter, receiver, controller, interfaces, addressing, and relevant configuration changes.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or plots
+      description: Paste sanitized output or attach files and images.
+      render: shell
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Add suspected causes, workarounds, frequency, or anything else that may help.
