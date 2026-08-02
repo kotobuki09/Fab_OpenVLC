@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use Fab OpenVLC in research, please cite this software and the related publications listed in the repository."
+title: "Fab OpenVLC: Intelligent Management for Hybrid Visible Light Communication and WiFi"
+type: software
+authors:
+  - family-names: "Ngo"
+    given-names: "Trung Kien"
+    email: "kiennt@hsb.edu.vn"
+repository-code: "https://github.com/kotobuki09/Fab_OpenVLC"
+url: "https://github.com/kotobuki09/Fab_OpenVLC"
+abstract: >-
+  Fab OpenVLC provides an Intelligent Management System and reproducible
+  testbed resources for centralized monitoring and handover management in
+  hybrid Visible Light Communication and WiFi networks built around OpenVLC.
+keywords:
+  - visible light communication
+  - OpenVLC
+  - hybrid networks
+  - WiFi
+  - handover management
+  - BeagleBone Black
+  - experimental testbed
+license: GPL-3.0-or-later
