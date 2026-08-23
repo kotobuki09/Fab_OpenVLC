@@ -452,3 +452,8 @@ This repository contains original research code together with third-party softwa
 If Fab OpenVLC supports your research or teaching, consider starring the repository and sharing a reproducible experiment or improvement.
 
 </div>
+
+## Sample RSSI dataset
+
+- Data: [`data/sample_rssi.csv`](data/sample_rssi.csv)
+- Plot: `python examples/plot_rssi.py`
